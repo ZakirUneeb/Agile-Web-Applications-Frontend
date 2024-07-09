@@ -3,6 +3,6 @@ module.exports = {
     PORT: 3306,
     USER: "root",
     PASSWORD: "",
-    DB: "hire_shop",
+    DB: "agile_a1",
     dialect: "mysql",
-    };
+};

@@ -6,5 +6,6 @@ function formatErrorResponse(res, code, message) {
     },
     };
     return res.status(code).send(err);
-   }
-   module.exports = {formatErrorResponse};
+}
+
+module.exports = {formatErrorResponse};

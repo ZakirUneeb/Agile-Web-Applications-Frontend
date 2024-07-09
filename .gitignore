@@ -1,2 +1,7 @@
+<<<<<<< Updated upstream
 # Node.js dependencies
 node_modules/
+=======
+node_modules/
+.env
+>>>>>>> Stashed changes
