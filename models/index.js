@@ -1,24 +1,40 @@
 const config = require("../config/config");
-const Department = require("././department");
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
     config.DB,
     config.USER,
     config.PASSWORD, {
-    host: config.HOST,
-    dialect: config.dialect,
-    port: config.PORT
-});
+        host: config.HOST,
+        dialect: config.dialect,
+        port: config.PORT
+    }
+);
+
+// Attempt to connect to the database.
 sequelize
     .authenticate()
     .then(() => {
-    console.log('Connection has been established successfully.');
+        console.log('Connection has been established successfully.');
     })
     .catch(err => {
-    console.error('Unable to connect to the database:', err);
-    })
+        console.error('Unable to connect to the database:', err);
+    });
+
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.department = Department(sequelize, Sequelize);
+
+// Require models
+db.department = require("./department")(sequelize, Sequelize);
+db.user = require("./user")(sequelize, Sequelize);
+db.jobRole = require("./job_role")(sequelize, Sequelize);
+db.systemRole = require("./system_role")(sequelize, Sequelize);
+
+// Set up associations
+Object.keys(db).forEach(modelName => {
+    if (db[modelName].associate) {
+        db[modelName].associate(db);
+    }
+});
+
 module.exports = db;
