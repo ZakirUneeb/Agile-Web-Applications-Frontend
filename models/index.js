@@ -29,6 +29,8 @@ db.department = require("./department")(sequelize, Sequelize);
 db.user = require("./user")(sequelize, Sequelize);
 db.jobRole = require("./job_role")(sequelize, Sequelize);
 db.systemRole = require("./system_role")(sequelize, Sequelize);
+db.skill = require("./skill")(sequelize, Sequelize);
+db.skillCategory = require("./skill_category")(sequelize, Sequelize);
 
 // Set up associations
 Object.keys(db).forEach(modelName => {

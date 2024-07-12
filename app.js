@@ -5,6 +5,8 @@ const app = express();
 const port = process.env.PORT || '8900';
 const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
+const skillsRouter = require('./routes/skill');
+const skillCategoriesRouter = require('./routes/skill_category');
 const utilities = require('./utilities/utility');
 
 app.use(express.json());
@@ -14,6 +16,8 @@ app.listen(port); //Start the server
 
 app.use("/api/departments", departmentsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/skills", skillsRouter);
+app.use("/api/skill_categories", skillCategoriesRouter);
 app.use((req, res) =>
     utilities.formatErrorResponse(res,400,
         "End point not recognised"));
