@@ -25,7 +25,7 @@ const getById = async (req, res) => {
 };
 
 const getByName = async (req, res) => {
-    const name = req.query.system_role_name;
+    const name = req.params.system_role_name;
     try {
         const systemRoles = await SystemRole.findAll({
             where: { system_role_name: name }

@@ -89,7 +89,7 @@ const update = async (req, res) => {
 };
 
 const deleteSkill = async (req, res) => {
-    const { skill_id } = req.body;
+    const skill_id = req.params.skill_id;
     try {
         const deleted = await Skill.destroy({ where: { skill_id: skill_id } });
         if (deleted === 0) {

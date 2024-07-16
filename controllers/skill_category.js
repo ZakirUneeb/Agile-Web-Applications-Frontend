@@ -67,7 +67,7 @@ const update = async (req, res) => {
 };
 
 const deleteCategory = async (req, res) => {
-    const { skill_category_id } = req.body;
+    const skill_category_id  = req.params.skill_category_id;
     try {
         const deleted = await SkillCategory.destroy({ where: { skill_category_id: skill_category_id } });
         if (deleted === 0) {
