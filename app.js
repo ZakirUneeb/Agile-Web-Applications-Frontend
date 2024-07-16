@@ -7,6 +7,8 @@ const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
 const skillsRouter = require('./routes/skill');
 const skillCategoriesRouter = require('./routes/skill_category');
+const jobRolesRouter = require('./routes/job_role');
+const systemRolesRouter = require('./routes/system_role');
 const utilities = require('./utilities/utility');
 
 app.use(express.json());
@@ -18,6 +20,8 @@ app.use("/api/departments", departmentsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/skills", skillsRouter);
 app.use("/api/skill_categories", skillCategoriesRouter);
+app.use("/api/job_roles", jobRolesRouter);
+app.use("/api/system_roles", systemRolesRouter);
 app.use((req, res) =>
     utilities.formatErrorResponse(res,400,
         "End point not recognised"));
