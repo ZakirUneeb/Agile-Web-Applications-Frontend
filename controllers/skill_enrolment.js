@@ -1,9 +1,10 @@
+const router = require('../routes/skill_enrolment');
 const utilities = require('../utilities/utility');
 const db = require('../models');
-const SkillEnrolment = db.SkillEnrolment;
+const SkillEnrolment = db.skillEnrolment;
 const User = db.user;
-const Skill = db.Skill;
-const SkillStrength = db.SkillStength;
+const Skill = db.skill;
+const SkillStrength = db.skillStrength;
 
 create = async (req, res) => {
   const { user_id, skill_id, skill_strength_id, expiry_date, notes } = req.body;
