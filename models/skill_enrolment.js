@@ -1,3 +1,4 @@
+// Created by Zakir Uneeb
 module.exports = (sequelize, Sequelize) => {
   const SkillEnrolment = sequelize.define("skill_enrolment", {
       skill_enrolment_id: {

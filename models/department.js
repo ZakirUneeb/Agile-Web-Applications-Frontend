@@ -1,3 +1,4 @@
+// Created by Zakir Uneeb
 module.exports = (sequelize, Sequelize) => {
     const Department = sequelize.define("department", {
         department_id: {

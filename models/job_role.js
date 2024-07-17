@@ -1,3 +1,4 @@
+// Created by Zakir Uneeb
 module.exports = (sequelize, Sequelize) => {
   const JobRole = sequelize.define("job_role", {
       job_role_id: {

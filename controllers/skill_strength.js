@@ -1,3 +1,4 @@
+// Created by Zakir Uneeb
 const utilities = require('../utilities/utility');
 const db = require('../models');
 const SkillStrength = db.skillStrength;
