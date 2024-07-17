@@ -7,6 +7,6 @@ router.get('/', controller.getAll);
 router.get('/:skill_strength_id', controller.getById);
 router.get('/name/:skill_category_name', controller.getByName);
 router.put('/', controller.update);
-router.delete('/:skill_strength_id', controller.deleteCategory);
+router.delete('/:skill_strength_id', controller.deleteStrength);
 
 module.exports = router;
