@@ -17,7 +17,7 @@ const getById = async (req, res) => {
     try {
         const strength = await SkillStrength.findByPk(id);
         if (!strength) {
-            throw new Error("Unable to find Skill Strength with id " + id);
+            throw new Error("Unable to find skill strength with id " + id);
         }
         res.status(200).json(strength);
     } catch (error) {
@@ -32,7 +32,7 @@ const getByName = async (req, res) => {
             where: { skill_strength_name: name }
         });
         if (categories.length === 0) {
-            throw new Error("Unable to find Skill Categories with name " + name);
+            throw new Error("Unable to find skill strength with name " + name);
         }
         res.status(200).json(categories);
     } catch (error) {
@@ -72,9 +72,9 @@ const deleteStrength = async (req, res) => {
     try {
         const deleted = await SkillStrength.destroy({ where: { skill_strength_id: skill_strength_id } });
         if (deleted === 0) {
-            throw new Error("Skill Strength not found or already deleted.");
+            throw new Error("Skill strength not found.");
         }
-        res.status(200).send("Skill Strength deleted successfully.");
+        res.status(200).send("Skill strength deleted successfully.");
     } catch (error) {
         utilities.formatErrorResponse(res, 404, error.message);
     }

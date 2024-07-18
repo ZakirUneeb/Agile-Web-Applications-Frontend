@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
   SkillStrength.associate = (models) => {
       SkillStrength.hasMany(models.skillEnrolment, {
           foreignKey: 'skill_strength_id',
-          as: 'skills'
+          as: 'skillEnrolments'
       });
   };
 
