@@ -41,9 +41,9 @@ getAll = async (req, res) => {
 
     const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
         skill_enrolment_id: skillEnrolment.skill_enrolment_id,
-        user_id: user.user_id,
-        skill_id: skill.skill_id,
-        skill_strength_id: skillStrength.skill_strength_id,
+        user_id: skillEnrolment.user.user_id,
+        skill_id: skillEnrolment.skill.skill_id,
+        skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
         expiry_date: skillEnrolment.expiry_date,
         notes: skillEnrolment.notes
     }));
@@ -57,7 +57,7 @@ getAll = async (req, res) => {
 getById = async (req, res) => {
   const id = req.params.skill_enrolment_id;
   try {
-    const skillEnrolments = await SkillEnrolment.findByPk(id, {
+    const skillEnrolment = await SkillEnrolment.findByPk(id, {
       include: [
         { model: User, as: 'user', attributes: ['user_id'] },
         { model: Skill, as: 'skill', attributes: ['skill_id'] },
@@ -65,14 +65,18 @@ getById = async (req, res) => {
       ]
     });
 
-    const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
+    if (skillEnrolment == null) {
+      throw new Error("Unable to find skill enrolment with id " + id);
+  }
+
+    const allSkillEnrolments = {
         skill_enrolment_id: skillEnrolment.skill_enrolment_id,
-        user_id: user.user_id,
-        skill_id: skill.skill_id,
-        skill_strength_id: skillStrength.skill_strength_id,
+        user_id: skillEnrolment.user.user_id,
+        skill_id: skillEnrolment.skill.skill_id,
+        skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
         expiry_date: skillEnrolment.expiry_date,
         notes: skillEnrolment.notes
-    }));
+    };
 
     res.status(200).json(allSkillEnrolments);
   } catch (error) {
@@ -83,7 +87,7 @@ getById = async (req, res) => {
 getByUserId = async (req, res) => {
   const id = req.params.user_id;
   try {
-    const skillEnrolments = await SkillEnrolment.findByPk(id, {
+    const skillEnrolment = await SkillEnrolment.findByPk(id, {
       include: [
         { model: User, as: 'user', attributes: ['user_id'] },
         { model: Skill, as: 'skill', attributes: ['skill_id'] },
@@ -91,14 +95,18 @@ getByUserId = async (req, res) => {
       ]
     });
 
-    const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
+    if (skillEnrolment == null) {
+      throw new Error("Unable to find skill enrolment with user id " + id);
+  }
+
+    const allSkillEnrolments = {
         skill_enrolment_id: skillEnrolment.skill_enrolment_id,
-        user_id: user.user_id,
-        skill_id: skill.skill_id,
-        skill_strength_id: skillStrength.skill_strength_id,
+        user_id: skillEnrolment.user.user_id,
+        skill_id: skillEnrolment.skill.skill_id,
+        skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
         expiry_date: skillEnrolment.expiry_date,
         notes: skillEnrolment.notes
-    }));
+    };
 
     res.status(200).json(allSkillEnrolments);
   } catch (error) {
@@ -109,7 +117,7 @@ getByUserId = async (req, res) => {
 getByStrengthId = async (req, res) => {
   const id = req.params.skill_strength_id;
   try {
-    const skillEnrolments = await SkillEnrolment.findByPk(id, {
+    const skillEnrolment = await SkillEnrolment.findByPk(id, {
       include: [
         { model: User, as: 'user', attributes: ['user_id'] },
         { model: Skill, as: 'skill', attributes: ['skill_id'] },
@@ -117,14 +125,18 @@ getByStrengthId = async (req, res) => {
       ]
     });
 
-    const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
+    if (skillEnrolment == null) {
+      throw new Error("Unable to find skill enrolment with skill strength id " + id);
+  }
+
+    const allSkillEnrolments = {
         skill_enrolment_id: skillEnrolment.skill_enrolment_id,
-        user_id: user.user_id,
-        skill_id: skill.skill_id,
-        skill_strength_id: skillStrength.skill_strength_id,
+        user_id: skillEnrolment.user.user_id,
+        skill_id: skillEnrolment.skill.skill_id,
+        skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
         expiry_date: skillEnrolment.expiry_date,
         notes: skillEnrolment.notes
-    }));
+    };
 
     res.status(200).json(allSkillEnrolments);
   } catch (error) {
@@ -136,15 +148,19 @@ update = async (req, res) => {
   const id = req.body.skill_enrolment_id;
 
   const skillEnrolmentUpdate = {
-      user_id: user.user_id,
-      skill_id: skill.skill_id,
-      skill_strength_id: skillStrength.skill_strength_id,
-      expiry_date: skillEnrolment.expiry_date,
-      notes: skillEnrolment.notes
+      user_id: req.body.user_id,
+      skill_id: req.body.skill_id,
+      skill_strength_id: req.body.skill_strength_id,
+      expiry_date: req.body.expiry_date,
+      notes: req.body.notes
   };
 
   try {
-    if (!user_id || !skill_id || !skill_strength_id) {
+    if (
+      !skillEnrolmentUpdate.user_id ||
+      !skillEnrolmentUpdate.skill_id || 
+      !skillEnrolmentUpdate.skill_strength_id
+    ) {
       throw new Error("Missing required fields");
     }
 
