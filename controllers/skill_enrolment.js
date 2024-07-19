@@ -15,19 +15,20 @@ create = async (req, res) => {
   }
 
   try {
-      const skillEnrolment = await SkillEnrolment.create({
-        user_id,
-        skill_id,
-        skill_strength_id,
-        expiry_date,
-        notes
-      });
+    const skillEnrolment = await SkillEnrolment.create({
+      user_id: parseInt(user_id, 10),
+      skill_id: parseInt(skill_id, 10),
+      skill_strength_id: parseInt(skill_strength_id, 10),
+      expiry_date,
+      notes
+    });
 
       res.status(201).json(skillEnrolment);
   } catch (error) {
       utilities.formatErrorResponse(res, 400, error.message);
   }
 }
+
 
 getAll = async (req, res) => {
   try {
@@ -85,9 +86,10 @@ getById = async (req, res) => {
 }
 
 getByUserId = async (req, res) => {
-  const id = req.params.user_id;
+  const userId = req.params.user_id;
   try {
-    const skillEnrolment = await SkillEnrolment.findByPk(id, {
+    const skillEnrolments = await SkillEnrolment.findAll({
+      where: { user_id: userId },
       include: [
         { model: User, as: 'user', attributes: ['user_id'] },
         { model: Skill, as: 'skill', attributes: ['skill_id'] },
@@ -95,18 +97,18 @@ getByUserId = async (req, res) => {
       ]
     });
 
-    if (skillEnrolment == null) {
-      throw new Error("Unable to find skill enrolment with user id " + id);
-  }
+    if (!skillEnrolments.length) {
+      throw new Error("No skill enrolments found for user id " + userId);
+    }
 
-    const allSkillEnrolments = {
+    const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
         skill_enrolment_id: skillEnrolment.skill_enrolment_id,
         user_id: skillEnrolment.user.user_id,
         skill_id: skillEnrolment.skill.skill_id,
         skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
         expiry_date: skillEnrolment.expiry_date,
         notes: skillEnrolment.notes
-    };
+    }));
 
     res.status(200).json(allSkillEnrolments);
   } catch (error) {
@@ -115,9 +117,10 @@ getByUserId = async (req, res) => {
 }
 
 getByStrengthId = async (req, res) => {
-  const id = req.params.skill_strength_id;
+  const skillStrengthId = req.params.skill_strength_id;
   try {
-    const skillEnrolment = await SkillEnrolment.findByPk(id, {
+    const skillEnrolments = await SkillEnrolment.findAll({
+      where: { skill_strength_id: skillStrengthId },
       include: [
         { model: User, as: 'user', attributes: ['user_id'] },
         { model: Skill, as: 'skill', attributes: ['skill_id'] },
@@ -125,18 +128,18 @@ getByStrengthId = async (req, res) => {
       ]
     });
 
-    if (skillEnrolment == null) {
-      throw new Error("Unable to find skill enrolment with skill strength id " + id);
-  }
+    if (!skillEnrolments.length) {
+      throw new Error("No skill enrolments found for skill strength id " + skillStrengthId);
+    }
 
-    const allSkillEnrolments = {
+    const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
         skill_enrolment_id: skillEnrolment.skill_enrolment_id,
         user_id: skillEnrolment.user.user_id,
         skill_id: skillEnrolment.skill.skill_id,
         skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
         expiry_date: skillEnrolment.expiry_date,
         notes: skillEnrolment.notes
-    };
+    }));
 
     res.status(200).json(allSkillEnrolments);
   } catch (error) {
@@ -145,37 +148,48 @@ getByStrengthId = async (req, res) => {
 }
 
 update = async (req, res) => {
-  const id = req.body.skill_enrolment_id;
+  const id = parseInt(req.body.skill_enrolment_id, 10);
+
+  if (isNaN(id)) {
+    return utilities.formatErrorResponse(res, 400, "Invalid skill_enrolment_id");
+  }
 
   const skillEnrolmentUpdate = {
-      user_id: req.body.user_id,
-      skill_id: req.body.skill_id,
-      skill_strength_id: req.body.skill_strength_id,
-      expiry_date: req.body.expiry_date,
-      notes: req.body.notes
+    user_id: parseInt(req.body.user_id, 10),
+    skill_id: parseInt(req.body.skill_id, 10),
+    skill_strength_id: parseInt(req.body.skill_strength_id, 10),
+    expiry_date: req.body.expiry_date,
+    notes: req.body.notes
   };
 
   try {
     if (
-      !skillEnrolmentUpdate.user_id ||
-      !skillEnrolmentUpdate.skill_id || 
-      !skillEnrolmentUpdate.skill_strength_id
+      isNaN(skillEnrolmentUpdate.user_id) ||
+      isNaN(skillEnrolmentUpdate.skill_id) || 
+      isNaN(skillEnrolmentUpdate.skill_strength_id)
     ) {
       throw new Error("Missing required fields");
     }
 
-    await SkillEnrolment.update(skillEnrolmentUpdate, {
+    const [updated] = await SkillEnrolment.update(skillEnrolmentUpdate, {
       where: { skill_enrolment_id: id }
     });
 
-    res.status(200).json(userUpdates);
+    if (updated) {
+      const updatedSkillEnrolment = await SkillEnrolment.findByPk(id);
+      res.status(200).json(updatedSkillEnrolment);
+    } else {
+      throw new Error("Skill Enrolment not found");
+    }
   } catch (error) {
       utilities.formatErrorResponse(res, 400, error.message);
   }
 }
 
 deleteEnrolment = async (req, res) => {
-  const id = req.body.skill_enrolment_id;
+  const id = req.params.skill_enrolment_id;
+
+  console.log(`Attempting to delete skill enrolment with id: ${id}`);
 
   try {
     if (!id) {
@@ -190,10 +204,12 @@ deleteEnrolment = async (req, res) => {
       throw new Error("Skill Enrolment not found");
     }
 
-    res.status(200).send("Skill Enrolment deleted successfully");
+    res.status(200).json({ message: "Skill Enrolment deleted successfully" });
   } catch (error) {
-      utilities.formatErrorResponse(res, 400, error.message);
+    console.error(`Error deleting skill enrolment: ${error.message}`);
+    utilities.formatErrorResponse(res, 400, error.message);
   }
 }
+
 
 module.exports = { create, getAll, getById, getByUserId, getByStrengthId, update, deleteEnrolment };
