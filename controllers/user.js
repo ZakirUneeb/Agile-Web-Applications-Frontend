@@ -78,17 +78,14 @@ searchUsers = async (req, res) => {
     const { first_name, last_name, email, job_role_id, department_id, system_role_id, date_joined } = req.query;
     const conditions = {};
 
-    // Add text-based conditions
     if (first_name) conditions.first_name = first_name;
     if (last_name) conditions.last_name = last_name;
     if (email) conditions.email = email;
 
-    // Add numeric conditions
     if (job_role_id) conditions.job_role_id = job_role_id;
     if (department_id) conditions.department_id = department_id;
     if (system_role_id) conditions.system_role_id = system_role_id;
 
-    // Add date condition
     if (date_joined) conditions.date_joined = date_joined;
 
     try {
@@ -129,7 +126,7 @@ searchUsers = async (req, res) => {
 create = async (req, res) => {
     const { first_name, last_name, department_id, email, password, job_role_id, system_role_id } = req.body;
 
-    // Check if all required fields are provided
+
     if (!first_name || !last_name || !department_id || !email || !password || !job_role_id || !system_role_id) {
         return utilities.formatErrorResponse(res, 400, "All fields are required.");
     }
@@ -143,7 +140,7 @@ create = async (req, res) => {
             password,
             job_role_id,
             system_role_id,
-            date_joined: new Date() // Set to current date
+            date_joined: new Date() 
         });
 
         res.status(201).json(user);

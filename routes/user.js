@@ -4,10 +4,10 @@ const controller = require('../controllers/user');
 const express = require('express');
 const router = express.Router();
 
-// Specific Routes First
+// Specific Routes First - If at bottom, it will not run
 router.get('/search', controller.searchUsers);
 
-// General Routes after
+
 router.get('/', controller.getAll);
 router.get('/:user_id', controller.getById);
 

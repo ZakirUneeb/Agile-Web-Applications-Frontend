@@ -1,4 +1,4 @@
-// Johnathan
+// Jack + Johnathan
 module.exports = {
     HOST: "localhost",
     PORT: 3306,

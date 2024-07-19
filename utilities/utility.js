@@ -1,4 +1,4 @@
-// Johnathan
+// Johnathan + Jack
 function formatErrorResponse(res, code, message) {
     const err = {
     error: {
