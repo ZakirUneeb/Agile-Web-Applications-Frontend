@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "a14d4c27-4e9d-4545-b06a-13fc22a341fd",
-		"name": "Johnathan's Tests",
+		"name": "Skill App API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37030465"
 	},
@@ -575,6 +575,13 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1090,6 +1097,13 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1541,6 +1555,13 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1961,6 +1982,1659 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "department",
+			"item": [
+				{
+					"name": "Get All Departments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Departments have required properties\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    if (jsonData.length > 0) {\r",
+									"        pm.expect(jsonData[0]).to.have.property('department_id');\r",
+									"        pm.expect(jsonData[0]).to.have.property('department_name');\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/departments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"departments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Department by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Department retrieved successfully\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.department_id).to.eql(parseInt(pm.environment.get(\"created_department_id\")));\r",
+									"    pm.expect(jsonData.department_name).to.eql(pm.environment.get(\"new_department_name\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/departments`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_id\": pm.environment.get(\"created_department_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: Department deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_department_id\");\r",
+									"    pm.environment.unset(\"new_department_name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_department_name\", \"Test Department \" + Date.now());\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/departments',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_name\": pm.environment.get(\"new_department_name\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_department_id\", jsonData.department_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/departments/{{created_department_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"departments",
+								"{{created_department_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Department by Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Department retrieved successfully by name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].department_name).to.eql(pm.environment.get(\"new_department_name\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/departments`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_id\": pm.environment.get(\"created_department_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: Department deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_department_id\");\r",
+									"    pm.environment.unset(\"new_department_name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_department_name\", \"Test Department for Name Search \" + Date.now());\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/departments',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_name\": pm.environment.get(\"new_department_name\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_department_id\", jsonData.department_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/departments/name/{{new_department_name}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"departments",
+								"name",
+								"{{new_department_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Department",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_department_name\", \"Test Department \" + Date.now());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Department created successfully\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('department_id');\r",
+									"    pm.expect(jsonData.department_name).to.eql(pm.environment.get(\"new_department_name\"));\r",
+									"    pm.environment.set(\"created_department_id\", jsonData.department_id);\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/departments`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_id\": pm.environment.get(\"created_department_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: Department deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_department_id\");\r",
+									"    pm.environment.unset(\"new_department_name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department_name\": \"{{new_department_name}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/departments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"departments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Department",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"original_department_name\", \"Original Department \" + Date.now());\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/departments',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_name\": pm.environment.get(\"original_department_name\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_department_id\", jsonData.department_id);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"updated_department_name\", \"Updated Department \" + Date.now());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Department updated successfully\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.department_name).to.eql(pm.environment.get(\"updated_department_name\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/departments`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_id\": pm.environment.get(\"created_department_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: Department deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_department_id\");\r",
+									"    pm.environment.unset(\"original_department_name\");\r",
+									"    pm.environment.unset(\"updated_department_name\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department_id\": {{created_department_id}},\r\n    \"department_name\": \"{{updated_department_name}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/departments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"departments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Department",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"department_to_delete\", \"Department to Delete \" + Date.now());\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/departments',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"department_name\": pm.environment.get(\"department_to_delete\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"department_id_to_delete\", jsonData.department_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Department deleted successfully\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Department deleted successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/departments/${pm.environment.get(\"department_id_to_delete\")}`,\r",
+									"    method: 'GET'\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Verify department is no longer in database\", function () {\r",
+									"        pm.expect(res.code).to.equal(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"department_id_to_delete\");\r",
+									"    pm.environment.unset(\"department_to_delete\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department_id\": {{department_id_to_delete}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/departments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"departments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Users have required properties\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    if (jsonData.length > 0) {\r",
+									"        pm.expect(jsonData[0]).to.have.property('user_id');\r",
+									"        pm.expect(jsonData[0]).to.have.property('first_name');\r",
+									"        pm.expect(jsonData[0]).to.have.property('last_name');\r",
+									"        pm.expect(jsonData[0]).to.have.property('email');\r",
+									"        pm.expect(jsonData[0]).to.have.property('department_id');\r",
+									"        pm.expect(jsonData[0]).to.have.property('job_role_id');\r",
+									"        pm.expect(jsonData[0]).to.have.property('system_role_id');\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User retrieved successfully\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.user_id).to.eql(parseInt(pm.environment.get(\"created_user_id\")));\r",
+									"    pm.expect(jsonData.first_name).to.eql(pm.environment.get(\"new_user_first_name\"));\r",
+									"    pm.expect(jsonData.last_name).to.eql(pm.environment.get(\"new_user_last_name\"));\r",
+									"    pm.expect(jsonData.email).to.eql(pm.environment.get(\"new_user_email\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"new_user_first_name\");\r",
+									"    pm.environment.unset(\"new_user_last_name\");\r",
+									"    pm.environment.unset(\"new_user_email\");\r",
+									"    pm.environment.unset(\"new_user_password\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_user_first_name\", \"Jane\");\r",
+									"pm.environment.set(\"new_user_last_name\", \"Doe\");\r",
+									"pm.environment.set(\"new_user_email\", \"jane.doe\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"new_user_password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"new_user_first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"new_user_last_name\"),\r",
+									"            \"email\": pm.environment.get(\"new_user_email\"),\r",
+									"            \"password\": pm.environment.get(\"new_user_password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/{{created_user_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"{{created_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Fullname",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"first_name\", \"John\");\r",
+									"pm.environment.set(\"last_name\", \"Doe\");\r",
+									"pm.environment.set(\"email\", \"john.doe\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"last_name\"),\r",
+									"            \"email\": pm.environment.get(\"email\"),\r",
+									"            \"password\": pm.environment.get(\"password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User retrieved successfully by full name\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].first_name).to.eql(pm.environment.get(\"first_name\"));\r",
+									"    pm.expect(jsonData[0].last_name).to.eql(pm.environment.get(\"last_name\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"first_name\");\r",
+									"    pm.environment.unset(\"last_name\");\r",
+									"    pm.environment.unset(\"email\");\r",
+									"    pm.environment.unset(\"password\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/search?first_name={{first_name}}&last_name={{last_name}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "first_name",
+									"value": "{{first_name}}"
+								},
+								{
+									"key": "last_name",
+									"value": "{{last_name}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Email",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_user_first_name\", \"Alice\");\r",
+									"pm.environment.set(\"new_user_last_name\", \"Smith\");\r",
+									"pm.environment.set(\"new_user_email\", \"alice.smith\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"new_user_password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"new_user_first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"new_user_last_name\"),\r",
+									"            \"email\": pm.environment.get(\"new_user_email\"),\r",
+									"            \"password\": pm.environment.get(\"new_user_password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User retrieved successfully by email\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].email).to.eql(pm.environment.get(\"new_user_email\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"new_user_first_name\");\r",
+									"    pm.environment.unset(\"new_user_last_name\");\r",
+									"    pm.environment.unset(\"new_user_email\");\r",
+									"    pm.environment.unset(\"new_user_password\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/search?email={{new_user_email}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{new_user_email}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Job Role ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"first_name\", \"Jane\");\r",
+									"pm.environment.set(\"last_name\", \"Smith\");\r",
+									"pm.environment.set(\"email\", \"jane.smith\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 2);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"last_name\"),\r",
+									"            \"email\": pm.environment.get(\"email\"),\r",
+									"            \"password\": pm.environment.get(\"password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Users retrieved successfully by job role\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].job_role_id).to.eql(parseInt(pm.environment.get(\"job_role_id\")));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"first_name\");\r",
+									"    pm.environment.unset(\"last_name\");\r",
+									"    pm.environment.unset(\"email\");\r",
+									"    pm.environment.unset(\"password\");\r",
+									"    pm.environment.unset(\"job_role_id\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/search?job_role_id={{job_role_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "job_role_id",
+									"value": "{{job_role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Department ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"first_name\", \"Charlie\");\r",
+									"pm.environment.set(\"last_name\", \"Davis\");\r",
+									"pm.environment.set(\"email\", \"charlie.davis\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 2);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"last_name\"),\r",
+									"            \"email\": pm.environment.get(\"email\"),\r",
+									"            \"password\": pm.environment.get(\"password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Users retrieved successfully by department ID\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].department_id).to.eql(parseInt(pm.environment.get(\"department_id\")));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"first_name\");\r",
+									"    pm.environment.unset(\"last_name\");\r",
+									"    pm.environment.unset(\"email\");\r",
+									"    pm.environment.unset(\"password\");\r",
+									"    pm.environment.unset(\"department_id\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/search?department_id={{department_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "department_id",
+									"value": "{{department_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by System Role ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"first_name\", \"Alice\");\r",
+									"pm.environment.set(\"last_name\", \"Johnson\");\r",
+									"pm.environment.set(\"email\", \"alice.johnson\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 2);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"last_name\"),\r",
+									"            \"email\": pm.environment.get(\"email\"),\r",
+									"            \"password\": pm.environment.get(\"password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Users retrieved successfully by system role\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].system_role_id).to.eql(parseInt(pm.environment.get(\"system_role_id\")));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"first_name\");\r",
+									"    pm.environment.unset(\"last_name\");\r",
+									"    pm.environment.unset(\"email\");\r",
+									"    pm.environment.unset(\"password\");\r",
+									"    pm.environment.unset(\"system_role_id\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/search?system_role_id={{system_role_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "system_role_id",
+									"value": "{{system_role_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Date Joined",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"first_name\", \"Bob\");\r",
+									"pm.environment.set(\"last_name\", \"Brown\");\r",
+									"pm.environment.set(\"email\", \"bob.brown\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"last_name\"),\r",
+									"            \"email\": pm.environment.get(\"email\"),\r",
+									"            \"password\": pm.environment.get(\"password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"    pm.environment.set(\"date_joined\", jsonData.date_joined);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Users retrieved successfully by date joined\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    pm.expect(jsonData.length).to.be.at.least(1);\r",
+									"    pm.expect(jsonData[0].date_joined).to.eql(pm.environment.get(\"date_joined\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"first_name\");\r",
+									"    pm.environment.unset(\"last_name\");\r",
+									"    pm.environment.unset(\"email\");\r",
+									"    pm.environment.unset(\"password\");\r",
+									"    pm.environment.unset(\"date_joined\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8900/api/users/search?date_joined={{date_joined}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "date_joined",
+									"value": "{{date_joined}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_user_first_name\", \"John\");\r",
+									"pm.environment.set(\"new_user_last_name\", \"Doe\");\r",
+									"pm.environment.set(\"new_user_email\", \"john.doe\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"new_user_password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User created successfully\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('user_id');\r",
+									"    pm.expect(jsonData.first_name).to.eql(pm.environment.get(\"new_user_first_name\"));\r",
+									"    pm.expect(jsonData.last_name).to.eql(pm.environment.get(\"new_user_last_name\"));\r",
+									"    pm.expect(jsonData.email).to.eql(pm.environment.get(\"new_user_email\"));\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"new_user_first_name\");\r",
+									"    pm.environment.unset(\"new_user_last_name\");\r",
+									"    pm.environment.unset(\"new_user_email\");\r",
+									"    pm.environment.unset(\"new_user_password\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"{{new_user_first_name}}\",\r\n    \"last_name\": \"{{new_user_last_name}}\",\r\n    \"email\": \"{{new_user_email}}\",\r\n    \"password\": \"{{new_user_password}}\",\r\n    \"department_id\": {{department_id}},\r\n    \"job_role_id\": {{job_role_id}},\r\n    \"system_role_id\": {{system_role_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"new_user_first_name\", \"Bob\");\r",
+									"pm.environment.set(\"new_user_last_name\", \"Johnson\");\r",
+									"pm.environment.set(\"new_user_email\", \"bob.johnson\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"new_user_password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"new_user_first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"new_user_last_name\"),\r",
+									"            \"email\": pm.environment.get(\"new_user_email\"),\r",
+									"            \"password\": pm.environment.get(\"new_user_password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"created_user_id\", jsonData.user_id);\r",
+									"    pm.environment.set(\"date_joined\", jsonData.date_joined);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"updated_user_first_name\", \"Robert\");\r",
+									"pm.environment.set(\"updated_user_last_name\", \"Smith\");\r",
+									"pm.environment.set(\"updated_user_email\", \"robert.smith\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"updated_user_password\", \"newpassword123\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User updated successfully\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.first_name).to.eql(pm.environment.get(\"updated_user_first_name\"));\r",
+									"    pm.expect(jsonData.last_name).to.eql(pm.environment.get(\"updated_user_last_name\"));\r",
+									"    pm.expect(jsonData.email).to.eql(pm.environment.get(\"updated_user_email\"));\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users`,\r",
+									"    method: 'DELETE',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({ \"user_id\": pm.environment.get(\"created_user_id\") })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Cleanup: User deleted successfully\", function () {\r",
+									"        pm.expect(err).to.be.null;\r",
+									"        pm.expect(res.code).to.equal(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"created_user_id\");\r",
+									"    pm.environment.unset(\"new_user_first_name\");\r",
+									"    pm.environment.unset(\"new_user_last_name\");\r",
+									"    pm.environment.unset(\"new_user_email\");\r",
+									"    pm.environment.unset(\"new_user_password\");\r",
+									"    pm.environment.unset(\"updated_user_first_name\");\r",
+									"    pm.environment.unset(\"updated_user_last_name\");\r",
+									"    pm.environment.unset(\"updated_user_email\");\r",
+									"    pm.environment.unset(\"updated_user_password\");\r",
+									"    pm.environment.unset(\"department_id\");\r",
+									"    pm.environment.unset(\"job_role_id\");\r",
+									"    pm.environment.unset(\"system_role_id\");\r",
+									"    pm.environment.unset(\"date_joined\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": {{created_user_id}},\r\n    \"first_name\": \"{{updated_user_first_name}}\",\r\n    \"last_name\": \"{{updated_user_last_name}}\",\r\n    \"email\": \"{{updated_user_email}}\",\r\n    \"password\": \"{{updated_user_password}}\",\r\n    \"department_id\": {{department_id}},\r\n    \"job_role_id\": {{job_role_id}},\r\n    \"system_role_id\": {{system_role_id}},\r\n    \"date_joined\": \"{{date_joined}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"user_to_delete_first_name\", \"User\");\r",
+									"pm.environment.set(\"user_to_delete_last_name\", \"ToDelete\");\r",
+									"pm.environment.set(\"user_to_delete_email\", \"user.todelete\" + Date.now() + \"@example.com\");\r",
+									"pm.environment.set(\"user_to_delete_password\", \"password123\");\r",
+									"pm.environment.set(\"department_id\", 1);\r",
+									"pm.environment.set(\"job_role_id\", 1);\r",
+									"pm.environment.set(\"system_role_id\", 1);\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:8900/api/users',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type': 'application/json'},\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            \"first_name\": pm.environment.get(\"user_to_delete_first_name\"),\r",
+									"            \"last_name\": pm.environment.get(\"user_to_delete_last_name\"),\r",
+									"            \"email\": pm.environment.get(\"user_to_delete_email\"),\r",
+									"            \"password\": pm.environment.get(\"user_to_delete_password\"),\r",
+									"            \"department_id\": pm.environment.get(\"department_id\"),\r",
+									"            \"job_role_id\": pm.environment.get(\"job_role_id\"),\r",
+									"            \"system_role_id\": pm.environment.get(\"system_role_id\")\r",
+									"        })\r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.expect(err).to.be.null;\r",
+									"    pm.expect(res.code).to.equal(201);\r",
+									"    var jsonData = res.json();\r",
+									"    pm.environment.set(\"user_id_to_delete\", jsonData.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User deleted successfully\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"User deleted successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:8900/api/users/${pm.environment.get(\"user_id_to_delete\")}`,\r",
+									"    method: 'GET'\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"Verify user is no longer in database\", function () {\r",
+									"        pm.expect(res.code).to.equal(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.environment.unset(\"user_id_to_delete\");\r",
+									"    pm.environment.unset(\"user_to_delete_first_name\");\r",
+									"    pm.environment.unset(\"user_to_delete_last_name\");\r",
+									"    pm.environment.unset(\"user_to_delete_email\");\r",
+									"    pm.environment.unset(\"user_to_delete_password\");\r",
+									"    pm.environment.unset(\"department_id\");\r",
+									"    pm.environment.unset(\"job_role_id\");\r",
+									"    pm.environment.unset(\"system_role_id\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": {{user_id_to_delete}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8900/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8900",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "skill_strength",
+			"item": []
+		},
+		{
+			"name": "skill_enrolment",
+			"item": []
 		}
 	]
 }
