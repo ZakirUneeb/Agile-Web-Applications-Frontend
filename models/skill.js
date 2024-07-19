@@ -1,3 +1,4 @@
+// Johnathan
 module.exports = (sequelize, Sequelize) => {
     const Skill = sequelize.define("skill", {
         skill_id: {

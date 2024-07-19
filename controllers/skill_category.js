@@ -1,3 +1,4 @@
+// Johnathan
 const utilities = require('../utilities/utility');
 const db = require('../models');
 const SkillCategory = db.skillCategory;

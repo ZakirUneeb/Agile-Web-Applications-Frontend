@@ -1,3 +1,4 @@
+// Jack
 module.exports = (sequelize, Sequelize) => {
     const SystemRole = sequelize.define("system_role", {
         system_role_id: {
