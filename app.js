@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser');
 const createError = require('http-errors');  
 const app = express();
 
-const port = process.env.PORT || '8900';
 const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
 const skillsRouter = require('./routes/skill');
@@ -26,9 +25,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.set('port', port);
-app.listen(port);
 
 app.use("/api/departments", departmentsRouter);
 app.use("/api/users", usersRouter);
