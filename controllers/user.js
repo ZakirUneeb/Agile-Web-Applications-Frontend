@@ -123,21 +123,24 @@ searchUsers = async (req, res) => {
     }
 }
 
+const bcrypt = require('bcrypt');
+
 create = async (req, res) => {
     const { first_name, last_name, department_id, email, password, job_role_id, system_role_id } = req.body;
-
 
     if (!first_name || !last_name || !department_id || !email || !password || !job_role_id || !system_role_id) {
         return utilities.formatErrorResponse(res, 400, "All fields are required.");
     }
 
     try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const user = await User.create({
             first_name,
             last_name,
             department_id,
             email,
-            password,
+            password: hashedPassword,
             job_role_id,
             system_role_id,
             date_joined: new Date() 
@@ -157,7 +160,6 @@ update = async (req, res) => {
         last_name: req.body.last_name,
         department_id: req.body.department_id,
         email: req.body.email,
-        password: req.body.password,
         job_role_id: req.body.job_role_id,
         system_role_id: req.body.system_role_id,
         date_joined: req.body.date_joined
@@ -170,12 +172,15 @@ update = async (req, res) => {
             !userUpdates.last_name ||
             !userUpdates.department_id ||
             !userUpdates.email ||
-            !userUpdates.password ||
             !userUpdates.job_role_id ||
             !userUpdates.system_role_id ||
             !userUpdates.date_joined
         ) {
             throw new Error("Missing essential fields");
+        }
+
+        if (req.body.password) {
+            userUpdates.password = await bcrypt.hash(req.body.password, 10);
         }
 
         await User.update(userUpdates, {

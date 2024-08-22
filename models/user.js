@@ -27,7 +27,7 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
         password: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(255),
             allowNull: false
         },
         job_role_id: {
