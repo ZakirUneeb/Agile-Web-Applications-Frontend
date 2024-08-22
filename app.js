@@ -9,7 +9,6 @@ const app = express();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-
 const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
 const skillsRouter = require('./routes/skill');
