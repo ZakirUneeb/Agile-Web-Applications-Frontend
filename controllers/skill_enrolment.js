@@ -30,30 +30,24 @@ create = async (req, res) => {
 }
 
 
-getAll = async (req, res) => {
+getAll = async (req, res) => {    //Edited by Jack Lythgoe, Renders the Employee Report of Skill Enrolments.
   try {
     const skillEnrolments = await SkillEnrolment.findAll({
       include: [
-        { model: User, as: 'user', attributes: ['user_id'] },
-        { model: Skill, as: 'skill', attributes: ['skill_id'] },
-        { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id'] }
+        { model: User, as: 'user', attributes: ['first_name', 'last_name'] },
+        { model: Skill, as: 'skill', attributes: ['skill_id', 'skill_name'] },
+        { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id', 'skill_strength_name'] }
       ]
     });
-
-    const allSkillEnrolments = skillEnrolments.map(skillEnrolment => ({
-        skill_enrolment_id: skillEnrolment.skill_enrolment_id,
-        user_id: skillEnrolment.user.user_id,
-        skill_id: skillEnrolment.skill.skill_id,
-        skill_strength_id: skillEnrolment.skillStrength.skill_strength_id,
-        expiry_date: skillEnrolment.expiry_date,
-        notes: skillEnrolment.notes
-    }));
-
-    res.status(200).json(allSkillEnrolments);
+    res.render('employee_report', { skillEnrolments: skillEnrolments });
   } catch (error) {
-    utilities.formatErrorResponse(res, 400, error.message);
+    console.log('Error retrieving skill enrollments:', error);
+    res.status(500).send('Error retrieving skill enrollments');
   }
 }
+
+
+
 
 getById = async (req, res) => {
   const id = req.params.skill_enrolment_id;
