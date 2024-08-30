@@ -51,7 +51,7 @@ app.use("/api/departments", authenticateToken, departmentsRouter);
 app.use("/api/users", authenticateToken, usersRouter);
 app.use("/api/skills", authenticateToken, skillsRouter);
 app.use("/api/skill_categories", authenticateToken, skillCategoriesRouter);
-app.use("/api/skill_enrolments", authenticateToken, skillEnrolmentsRouter);
+app.use("/api/skill_enrolments", skillEnrolmentsRouter);
 app.use("/api/skill_strengths", authenticateToken, skillStrengthsRouter);
 app.use("/api/job_roles", authenticateToken, jobRolesRouter);
 app.use("/api/system_roles", authenticateToken, systemRolesRouter);
