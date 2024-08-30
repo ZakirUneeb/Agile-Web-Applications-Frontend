@@ -1,4 +1,5 @@
-// File: C:\repos\Agile-Web-Applications-Frontend\middleware\authenticateToken.js
+// Jack
+// Created a dedicated file for token verification logic, making it easier to manage and reuse across different routes.
 
 const jwt = require('jsonwebtoken');
 

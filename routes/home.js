@@ -1,4 +1,5 @@
-// File: C:\repos\Agile-Web-Applications-Frontend\routes\home.js
+// Jack
+// Created a dedicated file for token verification logic, making it easier to manage and reuse across different routes.
 
 const express = require('express');
 const router = express.Router();

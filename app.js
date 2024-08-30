@@ -1,4 +1,12 @@
 // Everyone
+
+// Jack
+// Middleware Import: The authenticateToken middleware is now imported from a dedicated file.
+// Routing Order: The routing order was adjusted to ensure /login is handled first, and unrecognized endpoints are caught last.
+
+
+
+
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');  
