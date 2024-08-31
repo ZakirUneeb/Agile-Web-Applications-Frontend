@@ -48,10 +48,7 @@ login = async (req, res) => {
 
         console.log('Token set in cookie');
 
-        // Inside the login function after authentication:
-        if (user.systemRole.system_role_name) {
-            res.redirect('/home');
-        } 
+        res.redirect('/home');
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Internal server error' });

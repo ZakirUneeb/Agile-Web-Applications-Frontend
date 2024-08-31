@@ -9,9 +9,7 @@ const userController = require('../controllers/user');
 const User = db.user;
 const Department = db.department;
 const JobRole = db.jobRole;
-
-
-
+const SystemRole = db.systemRole;
 
 router.get('/home', authenticateToken, async (req, res) => {
     try {
@@ -20,7 +18,7 @@ router.get('/home', authenticateToken, async (req, res) => {
             include: [
                 { model: Department, as: 'department', attributes: ['department_name'] },
                 { model: JobRole, as: 'jobRole', attributes: ['job_role_name'] },
-                { model: db.systemRole, as: 'systemRole', attributes: ['system_role_name'] }
+                { model: SystemRole, as: 'systemRole', attributes: ['system_role_name'] }
             ]
         });
 
@@ -28,14 +26,26 @@ router.get('/home', authenticateToken, async (req, res) => {
             return res.status(404).send('User not found');
         }
 
-        res.render('common/home', {
+        let viewName;
+        switch (user.systemRole.system_role_name.toUpperCase()) {
+            case 'MANAGER':
+                viewName = 'manager/manager_home';
+                break;
+            case 'ADMIN':
+                viewName = 'common/home';
+                break;
+            default:
+                viewName = 'common/home';
+        }
+
+        res.render(viewName, {
             user: {
                 first_name: user.first_name,
                 systemRole: user.systemRole.system_role_name
             }
         });
     } catch (error) {
-        console.error('Error fetching user home:', error);
+        console.error('Error fetching home:', error);
         res.status(500).send('Internal Server Error');
     }
 });
