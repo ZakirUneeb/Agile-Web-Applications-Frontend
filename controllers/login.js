@@ -48,14 +48,10 @@ login = async (req, res) => {
 
         console.log('Token set in cookie');
 
-        if (user.systemRole.system_role_name === 'STAFF') {
-            console.log('Redirecting to /staff/home');
-            res.redirect('/staff/home');
-        } else {
-            console.log('Redirecting to /other/home');
-            res.redirect('/other/home');
-        }
-
+        // Inside the login function after authentication:
+        if (user.systemRole.system_role_name) {
+            res.redirect('/home');
+        } 
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Internal server error' });

@@ -1,5 +1,4 @@
 // Jack
-const router = require('../routes/user');
 const utilities = require('../utilities/utility');
 const db = require('../models');
 const User = db.user;
@@ -7,7 +6,7 @@ const Department = db.department;
 const JobRole = db.jobRole;
 const SystemRole = db.systemRole;
 
-getAll = async (req, res) => {
+const getAll = async (req, res) => {
     try {
         const users = await User.findAll({
             include: [
@@ -38,7 +37,7 @@ getAll = async (req, res) => {
     }
 }
 
-getById = async (req, res) => {
+const getById = async (req, res) => {
     const id = req.params.user_id;
     try {
         const user = await User.findByPk(id, {
@@ -74,7 +73,7 @@ getById = async (req, res) => {
     }
 }
 
-searchUsers = async (req, res) => {
+const searchUsers = async (req, res) => {
     const { first_name, last_name, email, job_role_id, department_id, system_role_id, date_joined } = req.query;
     const conditions = {};
 
@@ -123,9 +122,7 @@ searchUsers = async (req, res) => {
     }
 }
 
-const bcrypt = require('bcrypt');
-
-create = async (req, res) => {
+const create = async (req, res) => {
     const { first_name, last_name, department_id, email, password, job_role_id, system_role_id } = req.body;
 
     if (!first_name || !last_name || !department_id || !email || !password || !job_role_id || !system_role_id) {
@@ -152,7 +149,7 @@ create = async (req, res) => {
     }
 }
 
-update = async (req, res) => {
+const update = async (req, res) => {
     const id = req.body.user_id;
 
     const userUpdates = {
@@ -193,7 +190,7 @@ update = async (req, res) => {
     }
 }
 
-deleting = async (req, res) => {
+const deleting = async (req, res) => {
     const id = req.body.user_id;
 
     try {

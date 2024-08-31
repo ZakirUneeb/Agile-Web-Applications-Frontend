@@ -4,17 +4,57 @@
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middleware/authenticateToken');
+const db = require('../models');
+const userController = require('../controllers/user');
+const User = db.user;
+const Department = db.department;
+const JobRole = db.jobRole;
 
-router.get('/staff/home', authenticateToken, (req, res) => {
-    if (req.user.systemRole === 'STAFF') {
-        res.render('staff/home');
-    } else {
-        res.redirect('/other/home');
+
+
+
+router.get('/home', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findOne({
+            where: { user_id: req.user.userId },
+            include: [
+                { model: Department, as: 'department', attributes: ['department_name'] },
+                { model: JobRole, as: 'jobRole', attributes: ['job_role_name'] },
+                { model: db.systemRole, as: 'systemRole', attributes: ['system_role_name'] }
+            ]
+        });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        res.render('common/home', {
+            user: {
+                first_name: user.first_name,
+                systemRole: user.systemRole.system_role_name
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching user home:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
-router.get('/other/home', authenticateToken, (req, res) => {
-    res.render('other/home');
+router.get('/profile', authenticateToken, async (req, res) => {
+    req.params.user_id = req.user.userId;
+
+    userController.getById(req, {
+        status: (statusCode) => ({
+            json: (user) => {
+                if (statusCode === 200) {
+                    res.render('common/profile', { user });
+                } else {
+                    res.status(statusCode).send(user); 
+                }
+            }
+        }),
+        send: (message) => res.status(500).send(message)
+    });
 });
 
 module.exports = router;

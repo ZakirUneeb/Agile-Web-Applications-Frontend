@@ -1,0 +1,61 @@
+<!-- Jack -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <img src="/img/G5.png" alt="Logo" class="logo">
+                <a href="/home"><button class="nav-button active">Home</button></a>
+                <a href="/profile"><button class="nav-button active">Personal Details</button></a>
+                <a href=""><button class="nav-button">My Skills</button></a>
+            </div>
+            <div class="navbar-right">
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-button">Log out</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-container">
+        <h2>My Personal Details</h2>
+        <div class="profile-details">
+            <div class="profile-column">
+                <label>First Name</label>
+                <p><%= user.first_name %></p>
+
+                <label>Last Name</label>
+                <p><%= user.last_name %></p>
+
+                <label>E-mail</label>
+                <p><%= user.email %></p>
+
+                <label>Password</label>
+                <p><%= user.password %></p>
+            </div>
+
+            <div class="profile-column">
+                <label>Department</label>
+                <p><%= user.department_name %></p>
+
+                <label>Job Role</label>
+                <p><%= user.job_role_name %></p>
+
+                <label>System Role</label>
+                <p><%= user.system_role_name %></p>
+
+                <label>Date Joined</label>
+                <p><%= user.date_joined %></p>
+            </div>
+        </div>
+        <button class="save-button">Save</button>
+    </main>
+</body>
+</html>

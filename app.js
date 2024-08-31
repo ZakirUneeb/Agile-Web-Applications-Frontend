@@ -17,10 +17,12 @@ const app = express();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const authenticateToken = require('./middleware/authenticateToken'); // Import the middleware
+const authenticateToken = require('./middleware/authenticateToken');
 
 const homeRouter = require('./routes/home');
 const loginRouter = require('./routes/login');
+const logoutRouter = require('./routes/logout');
+
 const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
 const skillsRouter = require('./routes/skill');
@@ -31,30 +33,24 @@ const jobRolesRouter = require('./routes/job_role');
 const systemRolesRouter = require('./routes/system_role');
 const utilities = require('./utilities/utility');
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Use JSON and URL-encoded body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); 
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Debug message for incoming requests
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.url}`);
     next();
 });
 
-// Login route should be processed first
 app.use("/login", loginRouter);
-
-// The home routes handle paths like /staff/home and /other/home
 app.use(homeRouter);
+app.use(logoutRouter);
 
-// Add your API routes
 app.use("/api/departments", authenticateToken, departmentsRouter);
 app.use("/api/users", authenticateToken, usersRouter);
 app.use("/api/skills", authenticateToken, skillsRouter);
@@ -64,7 +60,7 @@ app.use("/api/skill_strengths", authenticateToken, skillStrengthsRouter);
 app.use("/api/job_roles", authenticateToken, jobRolesRouter);
 app.use("/api/system_roles", authenticateToken, systemRolesRouter);
 
-// Catch-all for unrecognized endpoints
+// Catch all for unrecognized endpoints
 app.use((req, res) => {
     console.log("Unrecognized endpoint hit");
     utilities.formatErrorResponse(res, 400, "End point not recognised");

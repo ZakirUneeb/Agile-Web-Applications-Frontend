@@ -1,12 +1,9 @@
 // Jack
-const app = require('../app');
-const controller = require('../controllers/user');
 const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/user');
 
-// Specific Routes First - If at bottom, it will not run
 router.get('/search', controller.searchUsers);
-
 
 router.get('/', controller.getAll);
 router.get('/:user_id', controller.getById);
