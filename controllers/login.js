@@ -1,8 +1,8 @@
 // Johnathan + Jack
 
-// Jacks Changes
-// The login controller handled the POST request but didn’t properly validate passwords or set up JWT tokens correctly.
-// No role-based redirection was present.
+// Jack
+//  The login controller handled the POST request but didn’t properly validate passwords or set up JWT tokens correctly.
+//  No role-based redirection was present.
 //  Token Handling: Generates a JWT token and sets it in an HTTP-only cookie.
 //  Redirection: Redirects users to /staff/home if they have the STAFF role; otherwise, redirects to /other/home.
 

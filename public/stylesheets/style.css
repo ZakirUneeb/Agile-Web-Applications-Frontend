@@ -1,4 +1,4 @@
-/* General body styles for the entire application */
+/* Everyone Comment contributions per section */
 body {
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -6,7 +6,7 @@ body {
 }
 
 /* ---------------------------------------------- */
-/* Styles for the Login Page */
+/* Styles for the Login Page Jack */
 /* ---------------------------------------------- */
 .login-container {
   display: flex;
@@ -72,7 +72,7 @@ body {
 
 
 /* ---------------------------------------------- */
-/* Styles for the Navbar */
+/* Styles for the Navbar Jack */
 /* ---------------------------------------------- */
 .navbar {
   display: flex;
@@ -136,7 +136,7 @@ body {
 }
 
 /* ---------------------------------------------- */
-/* Styles for the Profile Page */
+/* Styles for the Profile Page Jack */
 /* ---------------------------------------------- */
 
 .profile-container {
