@@ -1,10 +1,12 @@
 // Jack
 const utilities = require('../utilities/utility');
+const userValidation = require('../utilities/user_validation');
 const db = require('../models');
 const User = db.user;
 const Department = db.department;
 const JobRole = db.jobRole;
 const SystemRole = db.systemRole;
+const bcrypt = require('bcrypt');
 
 const getAll = async (req, res) => {
     try {
@@ -123,31 +125,31 @@ const searchUsers = async (req, res) => {
 }
 
 const create = async (req, res) => {
-    const { first_name, last_name, department_id, email, password, job_role_id, system_role_id } = req.body;
-
-    if (!first_name || !last_name || !department_id || !email || !password || !job_role_id || !system_role_id) {
-        return utilities.formatErrorResponse(res, 400, "All fields are required.");
-    }
+    const userData = req.body;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const validationErrors = await userValidation.validateUserDetails(userData);
+        if (validationErrors.length > 0) {
+            return utilities.formatErrorResponse(res, 400, validationErrors.join(', '));
+        }
+
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
 
         const user = await User.create({
-            first_name,
-            last_name,
-            department_id,
-            email,
+            ...userData,
             password: hashedPassword,
-            job_role_id,
-            system_role_id,
-            date_joined: new Date() 
+            date_joined: new Date()
         });
 
-        res.status(201).json(user);
+        const userResponse = user.toJSON();
+        delete userResponse.password;
+
+        res.status(201).json(userResponse);
     } catch (error) {
+        console.error('Error creating user:', error);
         utilities.formatErrorResponse(res, 400, error.message);
     }
-}
+};
 
 const update = async (req, res) => {
     const id = req.body.user_id;

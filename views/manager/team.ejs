@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Team</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        .page-content {
+            padding: 20px;
+        }
+        .team-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .team-list, .skills-view {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 400px;
+        }
+        .team-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .team-list li {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+        }
+        .team-list li:hover {
+            background-color: #e0e0e0;
+        }
+        .active {
+            font-weight: bold;
+            background-color: #d0d0d0 !important;
+        }
+        .add-user-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <img src="/img/G5.png" alt="Logo" class="logo">
+            <a href="/profile"><button class="nav-button">My Profile</button></a>
+            <a href=""><button class="nav-button">My Skills</button></a>
+            <a href="/manager/team"><button class="nav-button active">My Team</button></a>
+        </div>
+        <div class="navbar-right">
+            <form action="/logout" method="POST" style="display:inline;">
+                <button type="submit" class="logout-button">Log out</button>
+            </form>
+        </div>        
+    </div>
+    <div class="page-content">
+        <div class="team-header">
+            <h2>My Team - <%= manager.department_name %></h2>
+        </div>
+        <div class="container">
+            <div class="team-list">
+                <ul id="team-members">
+                    <% teamMembers.forEach(member => { %>
+                        <li data-id="<%= member.user_id %>">
+                            <%= member.first_name %> <%= member.last_name %> - <%= member.jobRole.job_role_name %>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+            <div class="skills-view">
+                <div id="skills-list"></div>
+            </div>
+        </div>
+        <button id="addUserBtn" class="add-user-button">Add New User</button>
+    </div>
+
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New User</h2>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="department_name">Department:</label>
+                    <input type="text" id="department_name" name="department_name" readonly>
+                    <input type="hidden" id="department_id" name="department_id">
+                </div>
+                <div class="form-group">
+                    <label for="job_role_id">Job Role:</label>
+                    <select id="job_role_id" name="job_role_id" required>
+                        <option value="">Select a job role</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="system_role_id">System Role:</label>
+                    <select id="system_role_id" name="system_role_id" required>
+                        <option value="">Select a system role</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const teamMembersList = document.getElementById('team-members');
+            const addUserBtn = document.getElementById("addUserBtn");
+            const modal = document.getElementById("addUserModal");
+            const modalContent = modal.querySelector('.modal-content');
+            const closeBtn = document.getElementsByClassName("close")[0];
+            const addUserForm = document.getElementById("addUserForm");
+
+            teamMembersList.addEventListener('click', async (e) => {
+                if (e.target.tagName === 'LI') {
+                    handleTeamMemberSelection(e.target);
+                }
+            });
+
+            addUserBtn.onclick = (e) => {
+                e.stopPropagation();
+                modal.style.display = "block";
+                populateDropdowns();
+            };
+
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
+                modal.style.display = "none";
+            };
+
+            modal.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            modalContent.onclick = (e) => {
+                e.stopPropagation();
+            };
+
+            addUserForm.addEventListener("submit", handleFormSubmission);
+
+            setManagerDepartment();
+        });
+
+        async function handleTeamMemberSelection(memberElement) {
+            document.querySelectorAll('#team-members li').forEach(li => li.classList.remove('active'));
+            memberElement.classList.add('active');
+
+            const memberId = memberElement.dataset.id;
+            try {
+                const response = await fetch(`/manager/team/member/${memberId}`);
+                const skills = await response.json();
+                displayMemberSkills(skills);
+            } catch (error) {
+                console.error('Error fetching member skills:', error);
+                document.getElementById('skills-list').innerHTML = '<p>Error loading skills. Please try again.</p>';
+            }
+        }
+
+        function displayMemberSkills(skills) {
+            const skillsList = document.getElementById('skills-list');
+            if (skills.length === 0) {
+                skillsList.innerHTML = '<p>No skills recorded for this team member.</p>';
+            } else {
+                skillsList.innerHTML = skills.map(skill => `
+                    <p><strong>${skill.skill.skill_name}</strong> - ${skill.skillStrength.skill_strength_name}</p>
+                `).join('');
+            }
+        }
+
+        async function fetchAndPopulateDropdown(url, selectElement) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch data');
+                const data = await response.json();
+
+                selectElement.innerHTML = `<option value="">Select a ${selectElement.id.replace('_id', '')}</option>`;
+                
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    const idField = selectElement.id === 'job_role_id' ? 'job_role_id' : 'system_role_id';
+                    const nameField = selectElement.id === 'job_role_id' ? 'job_role_name' : 'system_role_name';
+                    option.value = item[idField];
+                    option.textContent = item[nameField];
+                    selectElement.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                alert('Failed to load options. Please try again.');
+            }
+        }
+
+        function decodeHTMLEntities(text) {
+            const textArea = document.createElement('textarea');
+            textArea.innerHTML = text;
+            return textArea.value;
+        }
+
+        function setManagerDepartment() {
+            const departmentIdInput = document.getElementById('department_id');
+            const departmentNameInput = document.getElementById('department_name');
+            if (departmentIdInput && departmentNameInput) {
+                departmentIdInput.value = '<%= manager.department_id %>';
+                departmentNameInput.value = decodeHTMLEntities('<%= manager.department_name %>');
+            } else {
+                console.error('Department input elements not found');
+            }
+        }
+
+        function populateDropdowns() {
+            fetchAndPopulateDropdown('/api/job_roles', document.getElementById('job_role_id'));
+            fetchAndPopulateDropdown('/api/system_roles', document.getElementById('system_role_id'));
+        }
+
+    async function handleFormSubmission(e) {
+    e.preventDefault();
+    console.log('Form submission started');
+
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData.entries());
+
+    ['department_id', 'job_role_id', 'system_role_id'].forEach(field => {
+        userData[field] = parseInt(userData[field], 10);
+    });
+
+    console.log('Processed user data:', userData);
+
+    try {
+        console.log('Sending request to /api/users');
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData),
+        });
+
+        console.log('Response status:', response.status);
+
+        if (response.ok) {
+            const successData = await response.json();
+            console.log('User added successfully:', successData);
+            alert('User added successfully!');
+            closeModal(); 
+            refreshTeamList();
+        } else {
+            const errorData = await response.json();
+            console.error('Error response:', errorData);
+            alert(`Failed to add user: ${errorData.error?.message || errorData.message || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error adding user:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById("addUserModal");
+    modal.style.display = "none";
+    document.getElementById("addUserForm").reset();
+}
+
+async function refreshTeamList() {
+    location.reload();
+}
+    </script>
+</body>
+</html>

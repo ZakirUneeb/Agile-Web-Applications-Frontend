@@ -1,0 +1,40 @@
+const db = require('../models');
+const User = db.user;
+
+const userValidation = {
+    isEmailUnique: async (email) => {
+        try {
+            const existingUser = await User.findOne({ where: { email: email } });
+            return existingUser === null;
+        } catch (error) {
+            console.error('Error checking email uniqueness:', error);
+            throw error;
+        }
+    },
+
+    validateUserDetails: async (userData) => {
+        const errors = [];
+
+        const requiredFields = ['first_name', 'last_name', 'email', 'password', 'department_id', 'job_role_id', 'system_role_id'];
+        for (const field of requiredFields) {
+            if (!userData[field]) {
+                errors.push(`${field.replace('_', ' ')} is required`);
+            }
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (userData.email && !emailRegex.test(userData.email)) {
+            errors.push('Invalid email format');
+        }
+
+        if (userData.email && emailRegex.test(userData.email)) {
+            const isUnique = await userValidation.isEmailUnique(userData.email);
+            if (!isUnique) {
+                errors.push('Email is already in use');
+            }
+        }
+        return errors;
+    }
+};
+
+module.exports = userValidation;
