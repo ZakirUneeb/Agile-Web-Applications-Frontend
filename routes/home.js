@@ -32,7 +32,7 @@ router.get('/home', authenticateToken, async (req, res) => {
                 viewName = 'manager/manager_home';
                 break;
             case 'ADMIN':
-                viewName = 'common/home';
+                viewName = 'admin/admin_home';
                 break;
             default:
                 viewName = 'common/home';

@@ -32,6 +32,7 @@ const skillStrengthsRouter = require('./routes/skill_strength');
 const jobRolesRouter = require('./routes/job_role');
 const systemRolesRouter = require('./routes/system_role');
 const managerTeamRouter = require('./routes/manager/my_team');
+const adminStaffRouter = require('./routes/admin');
 const utilities = require('./utilities/utility');
 
 app.set('views', path.join(__dirname, 'views'));
@@ -61,6 +62,7 @@ app.use("/api/skill_strengths", authenticateToken, skillStrengthsRouter);
 app.use("/api/job_roles", authenticateToken, jobRolesRouter);
 app.use("/api/system_roles", authenticateToken, systemRolesRouter);
 app.use("/manager/team", authenticateToken, managerTeamRouter);
+app.use("/admin/staff", authenticateToken, adminStaffRouter);
 
 
 // Catch all for unrecognized endpoints
