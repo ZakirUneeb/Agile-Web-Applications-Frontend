@@ -187,3 +187,76 @@ body {
 .save-button:hover {
   background-color: #4E2672;
 }
+
+
+/* ---------------------------------------------- */
+/* Styles for all_staff on Admin page Zakir */
+/* ---------------------------------------------- */
+
+.content {
+  width: 90%; /* Increased width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.staff-table th, .staff-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.staff-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.staff-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.pagination {
+  text-align: left;
+}
+
+.pagination a {
+  margin: 0 5px;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #4CAF50;
+}
+
+.pagination a:hover {
+  background-color: #ddd;
+}
+
+.action-buttons {
+  text-align: center;
+}
+
+.action-buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  background-color: #4CAF50;
+}
+
+.action-buttons button:hover {
+  background-color: #45a049;
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Staff</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home">
+                    <img src="/img/G5.png" alt="Logo" class="logo">
+                </a>
+                <a href="/admin/all_staff"><button class="nav-button active">All Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">All Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button">All Departments</button></a>
+            </div>
+            <div class="navbar-right">
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-button">Log out</button>
+                </form>
+            </div>
+        </div>
+        <h2>All Staff Members</h2>
+        <div class="content">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Job Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% staffMembers.forEach(function(staff) { %>
+                        <tr>
+                            <td><input type="radio" name="selectedUser" value="<%= staff.user_id %>"></td>
+                            <td><%= staff.first_name %> <%= staff.last_name %></td>
+                            <td><%= staff.department.department_name %></td>
+                            <td><%= staff.jobRole.job_role_name %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>">Previous</a>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>">Next</a>
+                <% } %>
+            </div>
+        </div>
+        <div class="action-buttons">
+            <button onclick="viewDetails()">View Details</button>
+            <button onclick="editUser()">Edit User</button>
+            <button onclick="deleteUser()">Delete User</button>
+        </div>
+    </header>
+
+    <script>
+        function getSelectedUserId() {
+            const selectedUser = document.querySelector('input[name="selectedUser"]:checked');
+            return selectedUser ? selectedUser.value : null;
+        }
+
+        function viewDetails() {
+            const userId = getSelectedUserId();
+            if (userId) {
+                window.location.href = `/admin/view_user/${userId}`;
+            } else {
+                alert("Please select a user.");
+            }
+        }
+
+        function editUser() {
+            const userId = getSelectedUserId();
+            if (userId) {
+                window.location.href = `/admin/edit_user/${userId}`;
+            } else {
+                alert("Please select a user.");
+            }
+        }
+
+        function deleteUser() {
+            const userId = getSelectedUserId();
+            if (userId) {
+                if (confirm("Are you sure you want to delete this user?")) {
+                }
+            } else {
+                alert("Please select a user.");
+            }
+        }
+    </script>
+</body>
+</html>
