@@ -1,3 +1,4 @@
+// Johnathan
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../../middleware/authenticateToken');
@@ -13,13 +14,16 @@ router.get('/', authenticateToken, async (req, res) => {
     try {
         const manager = await User.findOne({
             where: { user_id: req.user.userId },
-            include: [{ model: Department, as: 'department' }]
+            include: [
+                { model: Department, as: 'department' },
+                { model: db.systemRole, as: 'systemRole' } //  - Jack - Include systemRole
+            ]
         });
-
+        
         if (!manager) {
             return res.status(404).send('Manager not found');
         }
-
+        
         const teamMembers = await User.findAll({
             where: { 
                 department_id: manager.department_id,
@@ -30,15 +34,19 @@ router.get('/', authenticateToken, async (req, res) => {
                 { model: JobRole, as: 'jobRole' }
             ]
         });
-
+        
         res.render('manager/team', {
-            manager: {
+            user: {
                 first_name: manager.first_name,
                 department_id: manager.department_id,
-                department_name: manager.department.department_name
+                department_name: manager.department.department_name,
+                systemRole: manager.systemRole // Pass systemRole to the view
             },
+            manager: manager, // Pass the manager object as well
             teamMembers: teamMembers
         });
+        
+        
     } catch (error) {
         console.error('Error fetching team:', error);
         res.status(500).send('Internal Server Error');

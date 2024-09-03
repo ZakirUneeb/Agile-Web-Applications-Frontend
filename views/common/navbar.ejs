@@ -1,0 +1,17 @@
+<!-- Jack -->
+<div class="navbar">
+    <div class="navbar-left">
+        <a href="/home"><img src="/img/G5.png" alt="Logo" class="logo"></a>
+        <a href="/profile"><button class="nav-button <%= currentPage === 'profile' ? 'active' : '' %>">Personal Details</button></a>
+        <a href="#"><button class="nav-button <%= currentPage === 'skills' ? 'active' : '' %>">My Skills</button></a>
+
+        <% if (user.systemRole && user.systemRole.system_role_name.toUpperCase() !== 'STAFF') { %>
+            <a href="/manager/team"><button class="nav-button <%= currentPage === 'team' ? 'active' : '' %>">My Team</button></a>
+        <% } %>
+    </div>
+    <div class="navbar-right">
+        <form action="/logout" method="POST" style="display:inline;">
+            <button type="submit" class="logout-button">Log out</button>
+        </form>
+    </div>        
+</div>
