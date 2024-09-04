@@ -31,7 +31,6 @@ const skillEnrolmentsRouter = require('./routes/skill_enrolment');
 const skillStrengthsRouter = require('./routes/skill_strength');
 const jobRolesRouter = require('./routes/job_role');
 const systemRolesRouter = require('./routes/system_role');
-const managerTeamRouter = require('./routes/manager/my_team');
 const adminStaffRouter = require('./routes/admin/all_staff');
 const utilities = require('./utilities/utility');
 

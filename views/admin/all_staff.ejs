@@ -24,27 +24,33 @@
             </div>
         </div>
         <div class="content">
-            <h3>All Staff</h3>
-            <div class="staff-list">
-                <% staffMembers.forEach(function(staff) { %>
-                    <div class="staff-member">
-                        <div class="radio-container">
-                            <input type="radio" id="staff_<%= staff.user_id %>" name="selectedStaff" value="<%= staff.user_id %>" />
-                        </div>
-                        <div class="staff-info">
-                            <label for="staff_<%= staff.user_id %>">
-                                <div class="staff-detail">
-                                    <div class="staff-name"><strong><%= staff.first_name %> <%= staff.last_name %></strong></div>
-                                    <span class="staff-department"><%= staff.department.department_name %></span>
-                                    <span class="staff-role"><%= staff.jobRole.job_role_name %></span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                <% }); %>
+            <div class="staff-table-container">
+                <table class="staff-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Job Role</th>
+                            <th>Email</th>
+                            <th>Date Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% staffMembers.forEach(function(staff) { %>
+                            <tr>
+                                <td><input type="radio" id="staff_<%= staff.user_id %>" name="selectedStaff" value="<%= staff.user_id %>" /></td>
+                                <td><label for="staff_<%= staff.user_id %>"><%= staff.first_name %> <%= staff.last_name %></label></td>
+                                <td><%= staff.department.department_name %></td>
+                                <td><%= staff.jobRole.job_role_name %></td>
+                                <td><%= staff.email %></td>
+                                <td><%= staff.date_joined %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
             </div>
             <div class="action-buttons">
-                <button onclick="viewDetails()">View Details</button>
                 <button onclick="editStaff()">Edit Staff</button>
                 <button onclick="deleteStaff()">Delete Staff</button>
             </div>
@@ -55,15 +61,6 @@
         function getSelectedStaffId() {
             const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
             return selectedStaff ? selectedStaff.value : null;
-        }
-
-        function viewDetails() {
-            const selectedId = getSelectedStaffId();
-            if (selectedId) {
-                window.location.href = `/admin/view_staff/${selectedId}`;
-            } else {
-                alert("Please select a staff member.");
-            }
         }
 
         function editStaff() {

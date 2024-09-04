@@ -11,7 +11,8 @@ router.get('/', async (req, res) => {
         const staffMembers = await User.findAll({
             include: [
                 { model: Department, as: 'department' },
-                { model: JobRole, as: 'jobRole' }
+                { model: JobRole, as: 'jobRole' },
+                { model: SystemRole, as: 'systemRole'}
             ]
         });
 
