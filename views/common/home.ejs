@@ -8,24 +8,13 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-left">
-            <img src="/img/G5.png" alt="Logo" class="logo">
-            <a href="/home"><button class="nav-button active">Home</button></a>
-            <a href="/profile"><button class="nav-button active">Personal Details</button></a>
-            <a href=""><button class="nav-button">My Skills</button></a>
-        </div>
-        <div class="navbar-right">
-            <form action="/logout" method="POST" style="display:inline;">
-                <button type="submit" class="logout-button">Log out</button>
-            </form>
-        </div>        
-    </div>
+
+    <%- include('navbar') %>
+
     <div class="content">
         <h2>Welcome, <%= user.first_name %></h2>
     </div>
 </body>
-
 </html>
 
 

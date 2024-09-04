@@ -15,8 +15,11 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const authenticateToken = require('./middleware/authenticateToken');
+const setCurrentPage = require('./middleware/setCurrentPage');
 
-const homeRouter = require('./routes/home');
+const homeRouter = require('./routes/common/home');
+const profileRouter = require('./routes/common/profile');
+const managerTeamRouter = require('./routes/manager/my_team');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 
@@ -32,6 +35,8 @@ const managerTeamRouter = require('./routes/manager/my_team');
 const adminStaffRouter = require('./routes/admin/all_staff');
 const utilities = require('./utilities/utility');
 
+
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -41,14 +46,18 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(setCurrentPage);  // Apply setCurrentPage middleware globally
+
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.url}`);
     next();
 });
 
-app.use("/login", loginRouter);
-app.use(homeRouter);
-app.use(logoutRouter);
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
+app.use('/home', homeRouter);
+app.use('/profile', profileRouter);
+app.use('/manager/team', managerTeamRouter);
 
 app.use("/api/departments", authenticateToken, departmentsRouter);
 app.use("/api/users", authenticateToken, usersRouter);
@@ -58,6 +67,7 @@ app.use("/api/skill_enrolments", skillEnrolmentsRouter);
 app.use("/api/skill_strengths", authenticateToken, skillStrengthsRouter);
 app.use("/api/job_roles", authenticateToken, jobRolesRouter);
 app.use("/api/system_roles", authenticateToken, systemRolesRouter);
+
 app.use("/manager/team", authenticateToken, managerTeamRouter);
 app.use("/admin/all_staff", authenticateToken, adminStaffRouter);
 

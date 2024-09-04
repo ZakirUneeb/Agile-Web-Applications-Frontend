@@ -1,4 +1,4 @@
-/* Everyone Comment contributions per section */
+/* Everyone Comment Contributions per section */
 body {
   margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -124,7 +124,6 @@ body {
   background-color: #e04444;
 }
 
-/* Content area styling */
 .content {
   display: flex;
   justify-content: center;
@@ -133,6 +132,11 @@ body {
   background-color: #f2f2f2;
   color: #7a7a7a;
   font-size: 24px;
+}
+
+.nav-button.active {
+  background-color: #d0d0d0; /* A slightly darker color to indicate the active page */
+  border-color: #b0b0b0; /* Slightly darker border for the active button */
 }
 
 /* ---------------------------------------------- */
@@ -186,6 +190,123 @@ body {
 
 .save-button:hover {
   background-color: #4E2672;
+}
+
+/* ---------------------------------------------- */
+/* Styles for the Team Page - Johnathan */
+/* ---------------------------------------------- */
+
+.page-content {
+  padding: 20px;
+}
+
+.team-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.team-list, .skills-view {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  min-height: 400px;
+}
+
+.team-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.team-list li {
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+.team-list li:hover {
+  background-color: #e0e0e0;
+}
+
+
+.add-user-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
 
