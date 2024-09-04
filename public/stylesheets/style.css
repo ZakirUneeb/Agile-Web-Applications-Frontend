@@ -189,61 +189,73 @@ body {
 }
 
 
-/* ---------------------------------------------- */
+/* -----------------------------------------*/
 /* Styles for all_staff on Admin page Zakir */
-/* ---------------------------------------------- */
+/* -----------------------------------------*/
 
 .content {
-  width: 90%; /* Increased width */
-  margin-left: auto;
-  margin-right: auto;
+  margin-top: 20px; /* Space between navbar and content */
+  display: flex;
+  justify-content: flex-start; /* Aligns content to the left */
+  align-items: flex-start; /* Ensures content starts at the top */
+  flex-direction: column; /* Stacks elements vertically */
+  width: 40%; /* Adjust the width as needed */
+  margin-left: 5%; /* Centers content with margin on both sides */
 }
 
-.staff-table {
+.staff-list {
   width: 100%;
-  border-collapse: collapse;
 }
 
-.staff-table th, .staff-table td {
+.staff-member {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
   padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 100%;
 }
 
-.staff-table th {
-  background-color: #f2f2f2;
-  text-align: left;
+.radio-container {
+  flex: 0 0 5%; /* Adjust this for how much space the checkbox should take */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.staff-table tr:hover {
-  background-color: #f1f1f1;
+.staff-info {
+  flex: 1; /* The staff info takes the rest of the space */
+  display: flex;
+  flex-direction: column;
 }
 
-.pagination {
-  text-align: left;
+.staff-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures equal spacing between elements */
 }
 
-.pagination a {
-  margin: 0 5px;
-  padding: 8px 16px;
-  text-decoration: none;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.staff-department, .staff-role {
+  margin-left: 20px; /* Adds space between name, department, and role */
+  font-weight: normal; /* Make these slightly less prominent than the name */
+  color: #555;
 }
 
-.pagination a.active {
-  background-color: #4CAF50;
-  color: white;
-  border: 1px solid #4CAF50;
+.staff-member p {
+  margin: 5px 0;
+  font-size: 0.5em;
 }
 
-.pagination a:hover {
-  background-color: #ddd;
+.staff-member p strong {
+  font-size: 1.2em;
 }
 
 .action-buttons {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .action-buttons button {
@@ -260,3 +272,5 @@ body {
 .action-buttons button:hover {
   background-color: #45a049;
 }
+
+

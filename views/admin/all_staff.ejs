@@ -23,78 +23,66 @@
                 </form>
             </div>
         </div>
-        <h2>All Staff Members</h2>
         <div class="content">
-            <table class="staff-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Job Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% staffMembers.forEach(function(staff) { %>
-                        <tr>
-                            <td><input type="radio" name="selectedUser" value="<%= staff.user_id %>"></td>
-                            <td><%= staff.first_name %> <%= staff.last_name %></td>
-                            <td><%= staff.department.department_name %></td>
-                            <td><%= staff.jobRole.job_role_name %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <% if (currentPage > 1) { %>
-                    <a href="?page=<%= currentPage - 1 %>">Previous</a>
-                <% } %>
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <a href="?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
-                <% } %>
-                <% if (currentPage < totalPages) { %>
-                    <a href="?page=<%= currentPage + 1 %>">Next</a>
-                <% } %>
+            <h3>All Staff</h3>
+            <div class="staff-list">
+                <% staffMembers.forEach(function(staff) { %>
+                    <div class="staff-member">
+                        <div class="radio-container">
+                            <input type="radio" id="staff_<%= staff.user_id %>" name="selectedStaff" value="<%= staff.user_id %>" />
+                        </div>
+                        <div class="staff-info">
+                            <label for="staff_<%= staff.user_id %>">
+                                <div class="staff-detail">
+                                    <div class="staff-name"><strong><%= staff.first_name %> <%= staff.last_name %></strong></div>
+                                    <span class="staff-department"><%= staff.department.department_name %></span>
+                                    <span class="staff-role"><%= staff.jobRole.job_role_name %></span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                <% }); %>
             </div>
-        </div>
-        <div class="action-buttons">
-            <button onclick="viewDetails()">View Details</button>
-            <button onclick="editUser()">Edit User</button>
-            <button onclick="deleteUser()">Delete User</button>
+            <div class="action-buttons">
+                <button onclick="viewDetails()">View Details</button>
+                <button onclick="editStaff()">Edit Staff</button>
+                <button onclick="deleteStaff()">Delete Staff</button>
+            </div>
         </div>
     </header>
 
     <script>
-        function getSelectedUserId() {
-            const selectedUser = document.querySelector('input[name="selectedUser"]:checked');
-            return selectedUser ? selectedUser.value : null;
+        function getSelectedStaffId() {
+            const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
+            return selectedStaff ? selectedStaff.value : null;
         }
 
         function viewDetails() {
-            const userId = getSelectedUserId();
-            if (userId) {
-                window.location.href = `/admin/view_user/${userId}`;
+            const selectedId = getSelectedStaffId();
+            if (selectedId) {
+                window.location.href = `/admin/view_staff/${selectedId}`;
             } else {
-                alert("Please select a user.");
+                alert("Please select a staff member.");
             }
         }
 
-        function editUser() {
-            const userId = getSelectedUserId();
-            if (userId) {
-                window.location.href = `/admin/edit_user/${userId}`;
+        function editStaff() {
+            const selectedId = getSelectedStaffId();
+            if (selectedId) {
+                window.location.href = `/admin/edit_staff/${selectedId}`;
             } else {
-                alert("Please select a user.");
+                alert("Please select a staff member.");
             }
         }
 
-        function deleteUser() {
-            const userId = getSelectedUserId();
-            if (userId) {
-                if (confirm("Are you sure you want to delete this user?")) {
+        async function deleteStaff() {
+            const selectedId = getSelectedStaffId();
+            if (selectedId) {
+                if (confirm("Are you sure you want to delete the selected staff?")) {
+                    // Delete functionality to be written
                 }
             } else {
-                alert("Please select a user.");
+                alert("Please select a staff member.");
             }
         }
     </script>
