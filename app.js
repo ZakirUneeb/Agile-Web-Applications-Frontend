@@ -33,6 +33,7 @@ const jobRolesRouter = require('./routes/job_role');
 const systemRolesRouter = require('./routes/system_role');
 const adminAddStaffRouter = require('./routes/admin/add_staff');
 const adminAllStaffRouter = require('./routes/admin/all_staff');
+const adminDeleteStaffRouter = require('./routes/admin/delete_staff');
 const adminEditStaffRouter = require('./routes/admin/edit_staff');
 const utilities = require('./utilities/utility');
 
@@ -72,6 +73,7 @@ app.use("/api/system_roles", authenticateToken, systemRolesRouter);
 app.use("/manager/team", authenticateToken, managerTeamRouter);
 app.use("/admin/add_staff", authenticateToken, adminAddStaffRouter);
 app.use("/admin/all_staff", authenticateToken, adminAllStaffRouter);
+app.use("/admin/delete_staff", authenticateToken, adminDeleteStaffRouter);
 app.use("/admin/edit_staff", authenticateToken, adminEditStaffRouter);
 
 // Catch all for unrecognized endpoints

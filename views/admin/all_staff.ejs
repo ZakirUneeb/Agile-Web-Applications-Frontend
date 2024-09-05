@@ -64,6 +64,7 @@
         <div class="action-buttons">
         <button id="editUserBtn" class="edit-user-button">Edit Selected User</button>
         <button id="addUserBtn" class="add-user-button">Add New User</button>
+        <button id="deleteUserBtn" class="delete-user-button">Delete Selected User</button>
         </div>
         <div id="editUserModal" class="modal">
             <div class="modal-content">
@@ -146,6 +147,7 @@
             const addUserModal = document.getElementById("addUserModal");
             const editUserForm = document.getElementById("editUserForm");
             const addUserForm = document.getElementById("addUserForm");
+            const deleteUserBtn = document.getElementById("deleteUserBtn");
             const closeBtns = document.getElementsByClassName("close");
 
             editUserBtn.onclick = () => {
@@ -162,6 +164,20 @@
                 resetAddForm();
                 populateDropdownsForAddUser();
                 addUserModal.style.display = "block";
+            };
+
+            deleteUserBtn.onclick = () => {
+            const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
+            if (!selectedStaff) {
+                alert("Please select a staff member to delete.");
+                return;
+            }
+
+            const confirmed = confirm("Are you sure you want to delete this user?");
+            if (!confirmed) return;
+
+            const userId = selectedStaff.value;
+            deleteUser(userId);
             };
 
             Array.from(closeBtns).forEach(btn => {
@@ -285,6 +301,25 @@
                     alert("An error occurred. Please try again.");
                 }
             }
+
+            async function deleteUser(userId) {
+            try {
+                const response = await fetch(`/admin/delete_staff/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (response.ok) {
+                    alert("User deleted successfully");
+                    location.reload();
+                } else {
+                    alert("Failed to delete user");
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert("An error occurred. Please try again.");
+            }
+        }
         });
     </script>
 </body>
