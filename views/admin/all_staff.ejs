@@ -63,6 +63,7 @@
         </div>
         <div class="action-buttons">
         <button id="editUserBtn" class="edit-user-button">Edit Selected User</button>
+        <button id="addUserBtn" class="add-user-button">Add New User</button>
         </div>
         <div id="editUserModal" class="modal">
             <div class="modal-content">
@@ -98,15 +99,54 @@
                 </form>
             </div>
         </div>
+        <div id="addUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Add New User</h2>
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="new_first_name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="new_last_name" name="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="new_email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="new_password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department_id">Department:</label>
+                        <select id="new_department_id" name="department_id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="job_role_id">Job Role:</label>
+                        <select id="new_job_role_id" name="job_role_id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="system_role_id">System Role:</label>
+                        <select id="new_system_role_id" name="system_role_id" required></select>
+                    </div>
+                    <button type="submit" class="submit-button">Add User</button>
+                </form>
+            </div>
+        </div>
     </header>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const editUserBtn = document.getElementById("editUserBtn");
-            const modal = document.getElementById("editUserModal");
-            const modalContent = modal.querySelector('.modal-content');
-            const closeBtn = document.getElementsByClassName("close")[0];
+            const addUserBtn = document.getElementById("addUserBtn");
+            const editUserModal = document.getElementById("editUserModal");
+            const addUserModal = document.getElementById("addUserModal");
             const editUserForm = document.getElementById("editUserForm");
+            const addUserForm = document.getElementById("addUserForm");
+            const closeBtns = document.getElementsByClassName("close");
 
             editUserBtn.onclick = () => {
                 const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
@@ -118,21 +158,22 @@
                 modal.style.display = "block";
             };
 
-            closeBtn.onclick = () => {
-                modal.style.display = "none";
+            addUserBtn.onclick = () => {
+                resetAddForm();
+                populateDropdownsForAddUser();
+                addUserModal.style.display = "block";
             };
 
-            modal.onclick = (event) => {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            };
+            Array.from(closeBtns).forEach(btn => {
+                btn.onclick = () => {
+                    editUserModal.style.display = "none";
+                    addUserModal.style.display = "none";
+                };
+            });
 
-            modalContent.onclick = (e) => {
-                e.stopPropagation();
-            };
+            editUserForm.addEventListener("submit", handleEditFormSubmission);
 
-            editUserForm.addEventListener("submit", handleFormSubmission);
+            addUserForm.addEventListener("submit", handleAddFormSubmission);
 
             async function populateEditForm(selectedStaff) {
                 document.getElementById('edit_user_id').value = selectedStaff.value;
@@ -149,26 +190,40 @@
                 await populateDropdown('/api/system_roles', 'system_role_id', systemRoleId);
             }
 
+            async function populateDropdownsForAddUser() {
+                await populateDropdown('/api/departments', 'new_department_id');
+                await populateDropdown('/api/job_roles', 'new_job_role_id');
+                await populateDropdown('/api/system_roles', 'new_system_role_id');
+            }
+
+            function resetAddForm() {
+                document.getElementById('new_first_name').value = '';
+                document.getElementById('new_last_name').value = '';
+                document.getElementById('new_email').value = '';
+                document.getElementById('new_password').value = '';
+                document.getElementById('new_department_id').innerHTML = '';
+                document.getElementById('new_job_role_id').innerHTML = '';
+                document.getElementById('new_system_role_id').innerHTML = '';
+            }
+
             async function populateDropdown(url, selectId, selectedValue) {
                 const selectElement = document.getElementById(selectId);
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
 
-                    // Clear and repopulate the select options
                     selectElement.innerHTML = '<option value="">Select</option>';
                     data.forEach(item => {
                         const option = document.createElement('option');
-                        const idKey = selectId === 'department_id' ? 'department_id' :
-                                    selectId === 'job_role_id' ? 'job_role_id' : 'system_role_id';
-                        const nameKey = selectId === 'department_id' ? 'department_name' :
-                                        selectId === 'job_role_id' ? 'job_role_name' : 'system_role_name';
+                        const idKey = selectId === 'department_id' || selectId === 'new_department_id' ? 'department_id' :
+                                      selectId === 'job_role_id' || selectId === 'new_job_role_id' ? 'job_role_id' : 'system_role_id';
+                        const nameKey = selectId === 'department_id' || selectId === 'new_department_id' ? 'department_name' :
+                                        selectId === 'job_role_id' || selectId === 'new_job_role_id' ? 'job_role_name' : 'system_role_name';
 
                         option.value = item[idKey];
                         option.textContent = item[nameKey];
 
-                        // Set the existing value as selected
-                        if (item[idKey].toString() === selectedValue.toString()) {
+                        if (selectedValue && item[idKey].toString() === selectedValue.toString()) {
                             option.selected = true;
                         }
 
@@ -179,7 +234,7 @@
                 }
             }
 
-            async function handleFormSubmission(e) {
+            async function handleEditFormSubmission(e) {
                 e.preventDefault();
 
                 const formData = new FormData(editUserForm);
@@ -195,12 +250,38 @@
                     if (response.ok) {
                         alert("User updated successfully");
                         modal.style.display = "none";
-                        location.reload(); // refresh the staff list
+                        location.reload();
                     } else {
                         alert("Failed to update user");
                     }
                 } catch (error) {
                     console.error('Error updating user:', error);
+                    alert("An error occurred. Please try again.");
+                }
+            }
+
+            async function handleAddFormSubmission(e) {
+                e.preventDefault();
+
+                const formData = new FormData(addUserForm);
+                const userData = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch(`/admin/add_staff`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(userData),
+                    });
+
+                    if (response.ok) {
+                        alert("User added successfully");
+                        addUserModal.style.display = "none";
+                        location.reload();
+                    } else {
+                        alert("Failed to add user");
+                    }
+                } catch (error) {
+                    console.error('Error adding user:', error);
                     alert("An error occurred. Please try again.");
                 }
             }
