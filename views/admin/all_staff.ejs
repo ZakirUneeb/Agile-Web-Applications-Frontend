@@ -33,55 +33,178 @@
                             <th>Department</th>
                             <th>Job Role</th>
                             <th>Email</th>
+                            <th>System Role</th>
                             <th>Date Joined</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% staffMembers.forEach(function(staff) { %>
+                        <% staffMembers.forEach(member => { %>
                             <tr>
-                                <td><input type="radio" id="staff_<%= staff.user_id %>" name="selectedStaff" value="<%= staff.user_id %>" /></td>
-                                <td><label for="staff_<%= staff.user_id %>"><%= staff.first_name %> <%= staff.last_name %></label></td>
-                                <td><%= staff.department.department_name %></td>
-                                <td><%= staff.jobRole.job_role_name %></td>
-                                <td><%= staff.email %></td>
-                                <td><%= staff.date_joined %></td>
+                                <td>
+                                    <input type="radio" name="selectedStaff" value="<%= member.user_id %>"
+                                        data-firstname="<%= member.first_name %>"
+                                        data-lastname="<%= member.last_name %>"
+                                        data-department="<%= member.department.department_id %>"
+                                        data-jobrole="<%= member.jobRole.job_role_id %>"
+                                        data-email="<%= member.email %>"
+                                        data-systemrole="<%= member.systemRole.system_role_id %>">
+                                </td>
+                                <td><%= member.first_name %> <%= member.last_name %></td>
+                                <td><%= member.department.department_name %></td>
+                                <td><%= member.jobRole.job_role_name %></td>
+                                <td><%= member.email %></td>
+                                <td><%= member.systemRole.system_role_name %></td>
+                                <td><%= member.date_joined %></td>
                             </tr>
                         <% }); %>
                     </tbody>
                 </table>
             </div>
-            <div class="action-buttons">
-                <button onclick="editStaff()">Edit Staff</button>
-                <button onclick="deleteStaff()">Delete Staff</button>
+        </div>
+        <div class="action-buttons">
+        <button id="editUserBtn" class="edit-user-button">Edit Selected User</button>
+        </div>
+        <div id="editUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit User</h2>
+                <form id="editUserForm">
+                    <input type="hidden" id="edit_user_id" name="user_id">
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department_id">Department:</label>
+                        <select id="department_id" name="department_id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="job_role_id">Job Role:</label>
+                        <select id="job_role_id" name="job_role_id" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="system_role_id">System Role:</label>
+                        <select id="system_role_id" name="system_role_id" required></select>
+                    </div>
+                    <button type="submit" class="submit-button">Save Changes</button>
+                </form>
             </div>
         </div>
     </header>
 
     <script>
-        function getSelectedStaffId() {
-            const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
-            return selectedStaff ? selectedStaff.value : null;
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const editUserBtn = document.getElementById("editUserBtn");
+            const modal = document.getElementById("editUserModal");
+            const modalContent = modal.querySelector('.modal-content');
+            const closeBtn = document.getElementsByClassName("close")[0];
+            const editUserForm = document.getElementById("editUserForm");
 
-        function editStaff() {
-            const selectedId = getSelectedStaffId();
-            if (selectedId) {
-                window.location.href = `/admin/edit_staff/${selectedId}`;
-            } else {
-                alert("Please select a staff member.");
-            }
-        }
-
-        async function deleteStaff() {
-            const selectedId = getSelectedStaffId();
-            if (selectedId) {
-                if (confirm("Are you sure you want to delete the selected staff?")) {
-                    // Delete functionality to be written
+            editUserBtn.onclick = () => {
+                const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
+                if (!selectedStaff) {
+                    alert("Please select a staff member.");
+                    return;
                 }
-            } else {
-                alert("Please select a staff member.");
+                populateEditForm(selectedStaff);
+                modal.style.display = "block";
+            };
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+            };
+
+            modal.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            modalContent.onclick = (e) => {
+                e.stopPropagation();
+            };
+
+            editUserForm.addEventListener("submit", handleFormSubmission);
+
+            async function populateEditForm(selectedStaff) {
+                document.getElementById('edit_user_id').value = selectedStaff.value;
+                document.getElementById('first_name').value = selectedStaff.getAttribute('data-firstname');
+                document.getElementById('last_name').value = selectedStaff.getAttribute('data-lastname');
+                document.getElementById('email').value = selectedStaff.getAttribute('data-email');
+                
+                const departmentId = selectedStaff.getAttribute('data-department');
+                const jobRoleId = selectedStaff.getAttribute('data-jobrole');
+                const systemRoleId = selectedStaff.getAttribute('data-systemrole');
+
+                await populateDropdown('/api/departments', 'department_id', departmentId);
+                await populateDropdown('/api/job_roles', 'job_role_id', jobRoleId);
+                await populateDropdown('/api/system_roles', 'system_role_id', systemRoleId);
             }
-        }
+
+            async function populateDropdown(url, selectId, selectedValue) {
+                const selectElement = document.getElementById(selectId);
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    // Clear and repopulate the select options
+                    selectElement.innerHTML = '<option value="">Select</option>';
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        const idKey = selectId === 'department_id' ? 'department_id' :
+                                    selectId === 'job_role_id' ? 'job_role_id' : 'system_role_id';
+                        const nameKey = selectId === 'department_id' ? 'department_name' :
+                                        selectId === 'job_role_id' ? 'job_role_name' : 'system_role_name';
+
+                        option.value = item[idKey];
+                        option.textContent = item[nameKey];
+
+                        // Set the existing value as selected
+                        if (item[idKey].toString() === selectedValue.toString()) {
+                            option.selected = true;
+                        }
+
+                        selectElement.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error(`Error populating ${selectId} dropdown:`, error);
+                }
+            }
+
+            async function handleFormSubmission(e) {
+                e.preventDefault();
+
+                const formData = new FormData(editUserForm);
+                const userData = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch(`/admin/edit_staff/${userData.user_id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(userData),
+                    });
+
+                    if (response.ok) {
+                        alert("User updated successfully");
+                        modal.style.display = "none";
+                        location.reload(); // refresh the staff list
+                    } else {
+                        alert("Failed to update user");
+                    }
+                } catch (error) {
+                    console.error('Error updating user:', error);
+                    alert("An error occurred. Please try again.");
+                }
+            }
+        });
     </script>
 </body>
 </html>
