@@ -40,7 +40,7 @@ const getAll = async (req, res) => {
 }
 
 const getById = async (req, res) => {
-    const id = req.params.user_id;
+    const id = req.params.user_id || req.user.userId;
     try {
         const user = await User.findByPk(id, {
             include: [
@@ -69,11 +69,17 @@ const getById = async (req, res) => {
             system_role_name: user.systemRole.system_role_name
         };
 
-        res.status(200).json(transformedUser);
+        if (req.headers['content-type'] === 'application/json') {
+            return res.status(200).json(transformedUser);
+        } else {
+            return res.render('common/profile', { user: transformedUser });
+        }
+
     } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
+        return utilities.formatErrorResponse(res, 400, error.message);
     }
-}
+};
+
 
 const searchUsers = async (req, res) => {
     const { first_name, last_name, email, job_role_id, department_id, system_role_id, date_joined } = req.query;
@@ -154,43 +160,40 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     const id = req.body.user_id;
 
-    const userUpdates = {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        department_id: req.body.department_id,
-        email: req.body.email,
-        job_role_id: req.body.job_role_id,
-        system_role_id: req.body.system_role_id,
-        date_joined: req.body.date_joined
-    };
-
     try {
-        if (
-            !id ||
-            !userUpdates.first_name ||
-            !userUpdates.last_name ||
-            !userUpdates.department_id ||
-            !userUpdates.email ||
-            !userUpdates.job_role_id ||
-            !userUpdates.system_role_id ||
-            !userUpdates.date_joined
-        ) {
-            throw new Error("Missing essential fields");
+        const user = await User.findByPk(id);
+        if (!user) {
+            throw new Error("User not found");
         }
 
-        if (req.body.password) {
+        const userUpdates = {
+            first_name: req.body.first_name || user.first_name,
+            last_name: req.body.last_name || user.last_name,
+            email: req.body.email || user.email,
+            department_id: user.department_id, 
+            job_role_id: user.job_role_id, 
+            system_role_id: user.system_role_id, 
+            date_joined: user.date_joined 
+        };
+
+        if (req.body.password && req.body.password !== '') {
             userUpdates.password = await bcrypt.hash(req.body.password, 10);
+        } else {
+            userUpdates.password = user.password;  // Keep the old password if the password is not changed
         }
 
         await User.update(userUpdates, {
             where: { user_id: id }
         });
 
-        res.status(200).json(userUpdates);
+        // After updating, redirect to the profile page
+        return res.redirect('/profile');
+
     } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
+        return utilities.formatErrorResponse(res, 400, error.message);
     }
-}
+};
+
 
 const deleting = async (req, res) => {
     const id = req.body.user_id;
