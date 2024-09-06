@@ -135,14 +135,15 @@ body {
 }
 
 .nav-button.active {
-  background-color: #d0d0d0; /* A slightly darker color to indicate the active page */
-  border-color: #b0b0b0; /* Slightly darker border for the active button */
+  background-color: #d0d0d0;
+  border-color: #b0b0b0; 
 }
 
 /* ---------------------------------------------- */
 /* Styles for the Profile Page Jack */
 /* ---------------------------------------------- */
 
+/* Updated Profile Page CSS */
 .profile-container {
   padding: 30px;
   background-color: #f8f8f8;
@@ -170,12 +171,24 @@ body {
   margin-bottom: 5px;
 }
 
-.profile-column p {
-  background-color: #fff;
+.profile-column input[type="text"],
+.profile-column input[type="email"],
+.profile-column input[type="password"] {
+  width: 100%;
   padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  margin-bottom: 20px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+/* Greyed out inputs (non-editable) */
+input[disabled] {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
 }
 
 .save-button {
@@ -191,6 +204,7 @@ body {
 .save-button:hover {
   background-color: #4E2672;
 }
+
 
 /* ---------------------------------------------- */
 /* Styles for the Team Page - Johnathan */
