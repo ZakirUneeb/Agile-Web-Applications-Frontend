@@ -22,6 +22,7 @@ const profileRouter = require('./routes/common/profile');
 const managerTeamRouter = require('./routes/manager/my_team');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
+const mySkillsRouter = require('./routes/my_skills');
 
 const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
@@ -59,6 +60,7 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/home', homeRouter);
 app.use('/profile', profileRouter);
+app.use('/my_skills', authenticateToken, mySkillsRouter);
 app.use('/manager/team', managerTeamRouter);
 
 app.use("/api/departments", authenticateToken, departmentsRouter);
