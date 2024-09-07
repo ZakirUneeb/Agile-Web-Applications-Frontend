@@ -1,4 +1,4 @@
-// Jack
+// Jack & Zakir
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
         user_id: {
@@ -60,6 +60,14 @@ module.exports = (sequelize, Sequelize) => {
         User.belongsTo(models.systemRole, {
             foreignKey: 'system_role_id',
             as: 'systemRole'
+        });
+
+        // Zakir - Added cascade deletion for skill enrolments upon deleting a user
+        User.hasMany(models.skillEnrolment, {
+            foreignKey: 'user_id',
+            as: 'skillEnrolments',
+            onDelete: 'CASCADE',
+            hooks: true
         });
     };
 

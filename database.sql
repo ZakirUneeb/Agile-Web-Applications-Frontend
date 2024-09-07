@@ -120,6 +120,18 @@ CREATE TABLE `skill_enrolment` (
   `notes` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Zakir
+-- Modifying table to add on cascade deletion
+--
+
+ALTER TABLE `skill_enrolment`
+DROP FOREIGN KEY `skill_enrolment_ibfk_1`;
+
+ALTER TABLE `skill_enrolment`
+ADD CONSTRAINT `skill_enrolment_ibfk_1`
+FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+ON DELETE CASCADE;
+
 --
 -- Dumping data for table `skill_enrolment`
 --
