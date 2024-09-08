@@ -1,4 +1,4 @@
-// Johnathan
+// Johnathan & Zakir
 const utilities = require('../utilities/utility');
 const db = require('../models');
 const Skill = db.skill;
@@ -12,6 +12,18 @@ const getAll = async (req, res) => {
         res.status(200).json(skills);
     } catch (error) {
         utilities.formatErrorResponse(res, 400, error.message);
+    }
+};
+
+// Zakir
+const renderAllSkills = async (req, res) => {
+    try {
+        const skills = await Skill.findAll({
+            include: [{ model: SkillCategory, as: 'skillCategory', attributes: ['skill_category_name'] }]
+        });
+        res.render('admin/all_skills', { skills });
+    } catch (error) {
+        res.status(400).send('Error loading skills');
     }
 };
 
@@ -102,4 +114,4 @@ const deleteSkill = async (req, res) => {
     }
 };
 
-module.exports = { getAll, getById, getByName, getByCategory, create, update, deleteSkill };
+module.exports = { getAll, renderAllSkills, getById, getByName, getByCategory, create, update, deleteSkill };

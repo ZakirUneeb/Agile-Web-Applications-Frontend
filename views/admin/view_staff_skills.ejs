@@ -1,0 +1,67 @@
+<!-- Zakir -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Staff Skills</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home">
+                    <img src="/img/G5.png" alt="Logo" class="logo">
+                </a>
+                <a href="/admin/all_staff"><button class="nav-button">All Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">All Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button">All Departments</button></a>
+            </div>
+            <div class="navbar-right">
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-button">Log out</button>
+                </form>
+            </div>
+        </div>
+        <% if (user) { %>
+            <h3>Skills of <%= user.first_name %> <%= user.last_name %></h3>
+        <% } else { %>
+            <h3>No skills found for this user.</h3>
+        <% } %>
+    </header>
+
+    <div class="content">
+        <% if (skills.length > 0) { %>
+            <div class="staff-table-container">
+                <table class="staff-table">
+                    <thead>
+                        <tr>
+                            <th>Skill Name</th>
+                            <th>Skill Strength</th>
+                            <th>Expiry Date</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% skills.forEach(skill => { %>
+                            <tr>
+                                <td><%= skill.skill.skill_name %></td>
+                                <td><%= skill.skillStrength.skill_strength_name %></td>
+                                <td><%= new Date(skill.expiry_date).toLocaleDateString() %></td>
+                                <td><%= skill.notes %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p>No skills available for this user.</p>
+        <% } %>
+    </div>
+
+    <div class="action-buttons">
+        <a href="/admin/all_staff"><button class="nav-button">Back to All Staff</button></a>
+    </div>
+</body>
+</html>

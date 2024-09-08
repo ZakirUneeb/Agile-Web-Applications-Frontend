@@ -1,0 +1,224 @@
+<!-- Zakir -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Skills</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home">
+                    <img src="/img/G5.png" alt="Logo" class="logo">
+                </a>
+                <a href="/admin/all_staff"><button class="nav-button">All Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button active">All Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button">All Departments</button></a>
+            </div>
+            <div class="navbar-right">
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-button">Log out</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="staff-table-container"> <!-- Reusing staff-table-container class for uniform design -->
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Skill Name</th>
+                        <th>Skill Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% skills.forEach(skill => { %>
+                        <tr>
+                            <td>
+                                <input type="radio" name="selectedSkill" value="<%= skill.skill_id %>"
+                                    data-skillname="<%= skill.skill_name %>"
+                                    data-skillcategory="<%= skill.skill_category_id %>">
+                            </td>
+                            <td><%= skill.skill_name %></td>
+                            <td><%= skill.skillCategory.skill_category_name %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <button id="editSkillBtn" class="edit-skill-button">Edit Selected Skill</button>
+            <button id="addSkillBtn" class="add-skill-button">Add New Skill</button>
+            <button id="deleteSkillBtn" class="delete-skill-button">Delete Selected Skill</button>
+        </div>
+    </div>
+
+    <div id="editSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Skill</h2>
+            <form id="editSkillForm" method="POST">
+                <input type="hidden" id="edit_skill_id" name="skill_id">
+                <div class="form-group">
+                    <label for="skill_name">Skill Name:</label>
+                    <input type="text" id="skill_name" name="skill_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="skill_category_id">Skill Category:</label>
+                    <select id="skill_category_id" name="skill_category_id" required></select>
+                </div>
+                <button type="submit" class="submit-button">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="addSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Skill</h2>
+            <form id="addSkillForm">
+                <div class="form-group">
+                    <label for="new_skill_name">Skill Name:</label>
+                    <input type="text" id="new_skill_name" name="skill_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="new_skill_category_id">Skill Category:</label>
+                    <select id="new_skill_category_id" name="skill_category_id" required></select>
+                </div>
+                <button type="submit" class="submit-button">Add Skill</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editSkillBtn = document.getElementById('editSkillBtn');
+            const addSkillBtn = document.getElementById('addSkillBtn');
+            const deleteSkillBtn = document.getElementById('deleteSkillBtn');
+            const editSkillModal = document.getElementById('editSkillModal');
+            const addSkillModal = document.getElementById('addSkillModal');
+            const closeBtns = document.getElementsByClassName('close');
+
+            editSkillBtn.onclick = () => {
+                const selectedSkill = document.querySelector('input[name="selectedSkill"]:checked');
+                if (!selectedSkill) {
+                    alert("Please select a skill.");
+                    return;
+                }
+                populateEditForm(selectedSkill);
+                editSkillModal.style.display = "block";
+            };
+
+            addSkillBtn.onclick = () => {
+                resetAddForm();
+                populateDropdown('/api/skill_categories', 'new_skill_category_id');
+                addSkillModal.style.display = "block";
+            };
+
+            deleteSkillBtn.onclick = () => {
+                const selectedSkill = document.querySelector('input[name="selectedSkill"]:checked');
+                if (!selectedSkill) {
+                    alert("Please select a skill to delete.");
+                    return;
+                }
+
+                const confirmed = confirm("Are you sure you want to delete this skill?");
+                if (!confirmed) return;
+
+                const skillId = selectedSkill.value;
+                deleteSkill(skillId);
+            };
+
+            Array.from(closeBtns).forEach(btn => {
+                btn.onclick = () => {
+                    editSkillModal.style.display = "none";
+                    addSkillModal.style.display = "none";
+                };
+            });
+
+            document.getElementById('editSkillForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const skillId = document.getElementById('edit_skill_id').value;
+                const skillName = document.getElementById('skill_name').value;
+                const skillCategoryId = document.getElementById('skill_category_id').value;
+
+                const formData = {
+                    skill_id: skillId,
+                    skill_name: skillName,
+                    skill_category_id: skillCategoryId
+                };
+
+                try {
+                    const response = await fetch(`/admin/edit_skill/${skillId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert('Skill updated successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to update skill');
+                    }
+                } catch (error) {
+                    console.error('Error updating skill:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
+            async function populateDropdown(url, selectId, selectedValue = null) {
+                const selectElement = document.getElementById(selectId);
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    selectElement.innerHTML = '<option value="">Select</option>';
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.skill_category_id;
+                        option.textContent = item.skill_category_name;
+                        if (selectedValue && item.skill_category_id === selectedValue) {
+                            option.selected = true;
+                        }
+                        selectElement.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error("Error populating dropdown:", error);
+                }
+            }
+
+            async function deleteSkill(skillId) {
+                try {
+                    const response = await fetch(`/admin/all_skills/${skillId}`, {
+                        method: 'DELETE',
+                    });
+                    if (response.ok) {
+                        alert("Skill deleted successfully");
+                        location.reload();
+                    } else {
+                        alert("Failed to delete skill");
+                    }
+                } catch (error) {
+                    console.error("Error deleting skill:", error);
+                }
+            }
+
+            function resetAddForm() {
+                document.getElementById('new_skill_name').value = '';
+                document.getElementById('new_skill_category_id').innerHTML = '';
+            }
+        });
+    </script>
+
+</body>
+</html>

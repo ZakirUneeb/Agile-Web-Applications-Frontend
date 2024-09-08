@@ -110,6 +110,31 @@ getByUserId = async (req, res) => {
   }
 }
 
+const renderSkillsByUserId = async (req, res) => {
+  const userId = req.params.user_id;
+
+  try {
+      const skillEnrolments = await SkillEnrolment.findAll({
+          where: { user_id: userId },
+          include: [
+              { model: User, as: 'user', attributes: ['first_name', 'last_name'] },
+              { model: Skill, as: 'skill', attributes: ['skill_name'] },
+              { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] }
+          ]
+      });
+
+      if (!skillEnrolments.length) {
+          return res.status(404).render('admin/view_staff_skills', { skills: [], user: null });
+      }
+
+      const user = skillEnrolments[0].user;
+      res.render('admin/view_staff_skills', { skills: skillEnrolments, user });
+  } catch (error) {
+      console.error('Error fetching skills:', error);
+      res.status(500).send('Internal server error');
+  }
+};
+
 getByStrengthId = async (req, res) => {
   const skillStrengthId = req.params.skill_strength_id;
   try {
@@ -206,4 +231,4 @@ deleteEnrolment = async (req, res) => {
 }
 
 
-module.exports = { create, getAll, getById, getByUserId, getByStrengthId, update, deleteEnrolment };
+module.exports = { create, getAll, getById, getByUserId, renderSkillsByUserId, getByStrengthId, update, deleteEnrolment };
