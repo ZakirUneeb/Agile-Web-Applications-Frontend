@@ -27,7 +27,7 @@
     </header>
 
     <div class="content">
-        <div class="staff-table-container"> <!-- Reusing staff-table-container class for uniform design -->
+        <div class="staff-table-container">
             <table class="staff-table">
                 <thead>
                     <tr>
@@ -176,6 +176,38 @@
                 }
             });
 
+            document.getElementById('addSkillForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const skillName = document.getElementById('new_skill_name').value;
+                const skillCategoryId = document.getElementById('new_skill_category_id').value;
+
+                const formData = {
+                    skill_name: skillName,
+                    skill_category_id: skillCategoryId
+                };
+
+                try {
+                    const response = await fetch('/admin/add_skill', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert('Skill added successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to add skill');
+                    }
+                } catch (error) {
+                    console.error('Error adding skill:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
             async function populateDropdown(url, selectId, selectedValue = null) {
                 const selectElement = document.getElementById(selectId);
                 try {
@@ -199,7 +231,7 @@
 
             async function deleteSkill(skillId) {
                 try {
-                    const response = await fetch(`/admin/all_skills/${skillId}`, {
+                    const response = await fetch(`/admin/delete_skill/${skillId}`, {
                         method: 'DELETE',
                     });
                     if (response.ok) {
@@ -216,6 +248,16 @@
             function resetAddForm() {
                 document.getElementById('new_skill_name').value = '';
                 document.getElementById('new_skill_category_id').innerHTML = '';
+            }
+
+            function populateEditForm(selectedSkill) {
+                const skillId = selectedSkill.value;
+                const skillName = selectedSkill.getAttribute('data-skillname');
+                const skillCategoryId = selectedSkill.getAttribute('data-skillcategory');
+
+                document.getElementById('edit_skill_id').value = skillId;
+                document.getElementById('skill_name').value = skillName;
+                populateDropdown('/api/skill_categories', 'skill_category_id', skillCategoryId);
             }
         });
     </script>
