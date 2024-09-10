@@ -278,9 +278,12 @@
                     });
 
                     if (response.ok) {
+                        const updatedUser = await response.json();
+
+                        updateTableRow(updatedUser);
+
                         alert("User updated successfully");
-                        modal.style.display = "none";
-                        location.reload();
+                        editUserModal.style.display = "none";
                     } else {
                         alert("Failed to update user");
                     }
@@ -288,6 +291,16 @@
                     console.error('Error updating user:', error);
                     alert("An error occurred. Please try again.");
                 }
+            }
+
+            function updateTableRow(updatedUser) {
+                const selectedRow = document.querySelector(`input[name="selectedStaff"][value="${updatedUser.user_id}"]`).closest('tr');
+
+                selectedRow.querySelector('td:nth-child(2)').textContent = `${updatedUser.first_name} ${updatedUser.last_name}`;
+                selectedRow.querySelector('td:nth-child(3)').textContent = updatedUser.department.department_name;
+                selectedRow.querySelector('td:nth-child(4)').textContent = updatedUser.jobRole.job_role_name;
+                selectedRow.querySelector('td:nth-child(5)').textContent = updatedUser.email;
+                selectedRow.querySelector('td:nth-child(6)').textContent = updatedUser.systemRole.system_role_name;
             }
 
             async function handleAddFormSubmission(e) {

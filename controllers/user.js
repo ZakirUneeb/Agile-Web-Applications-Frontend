@@ -1,4 +1,4 @@
-// Jack
+// Jack & Zakir
 const utilities = require('../utilities/utility');
 const userValidation = require('../utilities/user_validation');
 const db = require('../models');
@@ -151,6 +151,7 @@ const create = async (req, res) => {
     }
 };
 
+// Zakir - updated function to return updated user with all its assocications too
 const update = async (req, res) => {
     const id = req.body.user_id;
 
@@ -186,7 +187,15 @@ const update = async (req, res) => {
             where: { user_id: id }
         });
 
-        res.status(200).json(userUpdates);
+        const updatedUser = await User.findByPk(id, {
+            include: [
+                { model: Department, as: 'department' },
+                { model: JobRole, as: 'jobRole' },
+                { model: SystemRole, as: 'systemRole' }
+            ]
+        });
+
+        res.status(200).json(updatedUser);
     } catch (error) {
         utilities.formatErrorResponse(res, 400, error.message);
     }
