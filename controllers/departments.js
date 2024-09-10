@@ -1,8 +1,11 @@
-// Jack
+// Jack & Zakir
 const router = require('../routes/departments');
 const utilities = require('../utilities/utility');
 const db = require('../models');
 const Department = db.department;
+const User = db.user;
+const JobRole = db.jobRole; 
+const SystemRole = db.systemRole;
 
 getAll = async (req, res) =>{
     const department = await Department.findAll();
@@ -98,5 +101,39 @@ update = async (req, res) =>{
     }
 }
 
+// Zakir - Function to get users by their department
+const getUsersByDepartment = async (departmentId = null) => {
+    try {
+        const whereClause = departmentId ? { department_id: departmentId } : {};
 
-module.exports = {getAll, getByName, getById, create, deleting, update};
+        const departments = await Department.findAll({
+            where: whereClause,  
+            include: [
+                {
+                    model: User,
+                    as: 'users',
+                    attributes: ['user_id', 'first_name', 'last_name', 'email', 'job_role_id', 'system_role_id'],
+                    include: [
+                        {
+                            model: JobRole,
+                            as: 'jobRole',
+                            attributes: ['job_role_name'],
+                        },
+                        {
+                            model: SystemRole,
+                            as: 'systemRole',
+                            attributes: ['system_role_name'],
+                        }
+                    ]
+                }
+            ]
+        });
+
+        return departments;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+
+module.exports = {getAll, getByName, getById, create, deleting, update, getUsersByDepartment};

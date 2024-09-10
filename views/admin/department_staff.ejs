@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff in Department</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        .role-indicator {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+        .manager {
+            background-color: #4CAF50; /* Green for managers */
+        }
+        .staff {
+            background-color: #FFC107; /* Yellow for staff */
+        }
+        .role-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home">
+                    <img src="/img/G5.png" alt="Logo" class="logo">
+                </a>
+                <a href="/admin/all_staff"><button class="nav-button">All Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">All Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button active">All Departments</button></a>
+            </div>
+            <div class="navbar-right">
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-button">Log out</button>
+                </form>
+            </div>
+        </div>
+    </header>
+    <h2><%= department.department_name %></h2>
+    <div class="content">
+        <div class="staff-table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Job Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td class="role-cell">
+                                <% if (user.systemRole.system_role_name === 'MANAGER') { %>
+                                    <div class="role-indicator manager"></div>
+                                <% } else { %>
+                                    <div class="role-indicator staff"></div>
+                                <% } %>
+                            </td>                            
+                            <td><%= user.first_name %></td>
+                            <td><%= user.last_name %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.jobRole.job_role_name %></td>                 
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button id="viewDetailsBtn" class="view-details-button">View Details</button>
+        <button id="addStaffBtn" class="add-staff-button">Add Staff</button>
+        <button id="deleteStaffBtn" class="delete-staff-button">Delete Staff</button>
+    </div>
+</body>
+</html>

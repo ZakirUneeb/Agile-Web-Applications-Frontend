@@ -229,6 +229,16 @@
                 }
             }
 
+            function populateEditForm(selectedSkill) {
+                const skillId = selectedSkill.value;
+                const skillName = selectedSkill.getAttribute('data-skillname');
+                const skillCategoryId = selectedSkill.getAttribute('data-skillcategory');
+
+                document.getElementById('edit_skill_id').value = skillId;
+                document.getElementById('skill_name').value = skillName;
+                populateDropdown('/api/skill_categories', 'skill_category_id', skillCategoryId);
+            }
+
             async function deleteSkill(skillId) {
                 try {
                     const response = await fetch(`/admin/delete_skill/${skillId}`, {
@@ -248,16 +258,6 @@
             function resetAddForm() {
                 document.getElementById('new_skill_name').value = '';
                 document.getElementById('new_skill_category_id').innerHTML = '';
-            }
-
-            function populateEditForm(selectedSkill) {
-                const skillId = selectedSkill.value;
-                const skillName = selectedSkill.getAttribute('data-skillname');
-                const skillCategoryId = selectedSkill.getAttribute('data-skillcategory');
-
-                document.getElementById('edit_skill_id').value = skillId;
-                document.getElementById('skill_name').value = skillName;
-                populateDropdown('/api/skill_categories', 'skill_category_id', skillCategoryId);
             }
         });
     </script>
