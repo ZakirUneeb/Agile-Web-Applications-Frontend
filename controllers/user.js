@@ -1,4 +1,4 @@
-// Jack
+// Jack & Zakir
 const utilities = require('../utilities/utility');
 const userValidation = require('../utilities/user_validation');
 const db = require('../models');
@@ -8,6 +8,7 @@ const JobRole = db.jobRole;
 const SystemRole = db.systemRole;
 const bcrypt = require('bcrypt');
 
+// Get all users
 const getAll = async (req, res) => {
     try {
         const users = await User.findAll({
@@ -37,8 +38,9 @@ const getAll = async (req, res) => {
     } catch (error) {
         utilities.formatErrorResponse(res, 400, error.message);
     }
-}
+};
 
+// Get user by ID
 const getById = async (req, res) => {
     const id = req.params.user_id || req.user.userId;
     try {
@@ -80,7 +82,7 @@ const getById = async (req, res) => {
     }
 };
 
-
+// Search users based on query params
 const searchUsers = async (req, res) => {
     const { first_name, last_name, email, job_role_id, department_id, system_role_id, date_joined } = req.query;
     const conditions = {};
@@ -106,7 +108,7 @@ const searchUsers = async (req, res) => {
         });
 
         if (users.length === 0) {
-            return res.status(404).json({ error: { status: 404, message: "No users found matching the criteria." }});
+            return res.status(404).json({ error: { status: 404, message: "No users found matching the criteria." } });
         }
 
         const transformedUsers = users.map(user => ({
@@ -128,8 +130,9 @@ const searchUsers = async (req, res) => {
     } catch (error) {
         utilities.formatErrorResponse(res, 400, error.message);
     }
-}
+};
 
+// Create a new user
 const create = async (req, res) => {
     const userData = req.body;
 
@@ -157,6 +160,7 @@ const create = async (req, res) => {
     }
 };
 
+// Update user details by ID
 const update = async (req, res) => {
     const id = req.body.user_id;
 
@@ -170,10 +174,10 @@ const update = async (req, res) => {
             first_name: req.body.first_name || user.first_name,
             last_name: req.body.last_name || user.last_name,
             email: req.body.email || user.email,
-            department_id: user.department_id, 
-            job_role_id: user.job_role_id, 
-            system_role_id: user.system_role_id, 
-            date_joined: user.date_joined 
+            department_id: user.department_id,
+            job_role_id: user.job_role_id,
+            system_role_id: user.system_role_id,
+            date_joined: user.date_joined
         };
 
         if (req.body.password && req.body.password !== '') {
@@ -186,15 +190,26 @@ const update = async (req, res) => {
             where: { user_id: id }
         });
 
-        // After updating, redirect to the profile page
-        return res.redirect('/profile');
+        const updatedUser = await User.findByPk(id, {
+            include: [
+                { model: Department, as: 'department' },
+                { model: JobRole, as: 'jobRole' },
+                { model: SystemRole, as: 'systemRole' }
+            ]
+        });
 
+        // Handle post-update redirection
+        if (req.headers['content-type'] === 'application/json') {
+            res.status(200).json(updatedUser);
+        } else {
+            return res.redirect('/profile');
+        }
     } catch (error) {
         return utilities.formatErrorResponse(res, 400, error.message);
     }
 };
 
-
+// Delete a user by ID
 const deleting = async (req, res) => {
     const id = req.body.user_id;
 
@@ -215,6 +230,13 @@ const deleting = async (req, res) => {
     } catch (error) {
         utilities.formatErrorResponse(res, 400, error.message);
     }
-}
+};
 
-module.exports = { getAll, getById, searchUsers, create, update, deleting };
+module.exports = {
+    getAll,
+    getById,
+    searchUsers,
+    create,
+    update,
+    deleting
+};

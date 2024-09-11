@@ -1,0 +1,132 @@
+<!-- Zakir -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Departments</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home">
+                    <img src="/img/G5.png" alt="Logo" class="logo">
+                </a>
+                <a href="/admin/all_staff"><button class="nav-button">All Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">All Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button active">All Departments</button></a>
+            </div>
+            <div class="navbar-right">
+                <form action="/logout" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-button">Log out</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="staff-table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Department Name</th>
+                        <th>Number of Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% departments.forEach(department => { %>
+                        <tr>
+                            <td>
+                                <input type="radio" name="selectedDepartment" value="<%= department.department_id %>">
+                            </td>
+                            <td><%= department.department_name %></td>
+                            <td><%= department.userCount %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <button id="viewStaffBtn" class="view-staff-button">View Staff</button>
+            <button id="addDepartmentBtn" class="add-department-button">Add New Department</button>
+        </div>
+    </div>
+
+    <div id="addDepartmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Department</h2>
+            <form id="addDepartmentForm">
+                <div class="form-group">
+                    <label for="department_name">Department Name:</label>
+                    <input type="text" id="department_name" name="department_name" required>
+                </div>
+                <button type="submit" class="submit-button">Add Department</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const viewStaffBtn = document.getElementById('viewStaffBtn');
+            const addDepartmentBtn = document.getElementById('addDepartmentBtn');
+            const addDepartmentModal = document.getElementById('addDepartmentModal');
+            const closeBtns = document.getElementsByClassName('close');
+
+            viewStaffBtn.onclick = () => {
+                const selectedDepartment = document.querySelector('input[name="selectedDepartment"]:checked');
+                if (!selectedDepartment) {
+                    alert("Please select a department.");
+                    return;
+                }
+                const departmentId = selectedDepartment.value;
+                window.location.href = `/admin/view_staff_by_department/${departmentId}/staff`;
+            };
+
+            addDepartmentBtn.onclick = () => {
+                addDepartmentModal.style.display = "block";
+            };
+
+            Array.from(closeBtns).forEach(btn => {
+                btn.onclick = () => {
+                    addDepartmentModal.style.display = "none";
+                };
+            });
+
+            document.getElementById('addDepartmentForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const departmentName = document.getElementById('department_name').value;
+
+                const formData = {
+                    department_name: departmentName
+                };
+
+                try {
+                    const response = await fetch('/admin/add_department', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert('Department added successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to add department');
+                    }
+                } catch (error) {
+                    console.error('Error adding department:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

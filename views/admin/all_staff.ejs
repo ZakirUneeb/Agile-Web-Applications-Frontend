@@ -1,3 +1,4 @@
+<!-- Zakir -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,6 +66,7 @@
         <button id="editUserBtn" class="edit-user-button">Edit Selected User</button>
         <button id="addUserBtn" class="add-user-button">Add New User</button>
         <button id="deleteUserBtn" class="delete-user-button">Delete Selected User</button>
+        <button id="viewSkillsBtn" class="view-skills-button">View Selected User Skills</button>
         </div>
         <div id="editUserModal" class="modal">
             <div class="modal-content">
@@ -149,6 +151,7 @@
             const addUserForm = document.getElementById("addUserForm");
             const deleteUserBtn = document.getElementById("deleteUserBtn");
             const closeBtns = document.getElementsByClassName("close");
+            const viewSkillsBtn = document.getElementById("viewSkillsBtn");
 
             editUserBtn.onclick = () => {
                 const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
@@ -157,7 +160,7 @@
                     return;
                 }
                 populateEditForm(selectedStaff);
-                modal.style.display = "block";
+                editUserModal.style.display = "block";
             };
 
             addUserBtn.onclick = () => {
@@ -167,17 +170,28 @@
             };
 
             deleteUserBtn.onclick = () => {
-            const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
-            if (!selectedStaff) {
-                alert("Please select a staff member to delete.");
-                return;
-            }
+                const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
+                if (!selectedStaff) {
+                    alert("Please select a staff member to delete.");
+                    return;
+                }
 
-            const confirmed = confirm("Are you sure you want to delete this user?");
-            if (!confirmed) return;
+                const confirmed = confirm("Are you sure you want to delete this user?");
+                if (!confirmed) return;
 
-            const userId = selectedStaff.value;
-            deleteUser(userId);
+                const userId = selectedStaff.value;
+                deleteUser(userId);
+            };
+
+            viewSkillsBtn.onclick = () => {
+                const selectedStaff = document.querySelector('input[name="selectedStaff"]:checked');
+                if (!selectedStaff) {
+                    alert("Please select a staff member.");
+                    return;
+                }
+
+                const userId = selectedStaff.value;
+                window.location.href = `/admin/view_staff_skills/${userId}`;
             };
 
             Array.from(closeBtns).forEach(btn => {
@@ -264,9 +278,12 @@
                     });
 
                     if (response.ok) {
+                        const updatedUser = await response.json();
+
+                        updateTableRow(updatedUser);
+
                         alert("User updated successfully");
-                        modal.style.display = "none";
-                        location.reload();
+                        editUserModal.style.display = "none";
                     } else {
                         alert("Failed to update user");
                     }
@@ -274,6 +291,16 @@
                     console.error('Error updating user:', error);
                     alert("An error occurred. Please try again.");
                 }
+            }
+
+            function updateTableRow(updatedUser) {
+                const selectedRow = document.querySelector(`input[name="selectedStaff"][value="${updatedUser.user_id}"]`).closest('tr');
+
+                selectedRow.querySelector('td:nth-child(2)').textContent = `${updatedUser.first_name} ${updatedUser.last_name}`;
+                selectedRow.querySelector('td:nth-child(3)').textContent = updatedUser.department.department_name;
+                selectedRow.querySelector('td:nth-child(4)').textContent = updatedUser.jobRole.job_role_name;
+                selectedRow.querySelector('td:nth-child(5)').textContent = updatedUser.email;
+                selectedRow.querySelector('td:nth-child(6)').textContent = updatedUser.systemRole.system_role_name;
             }
 
             async function handleAddFormSubmission(e) {

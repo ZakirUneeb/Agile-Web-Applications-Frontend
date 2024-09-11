@@ -5,6 +5,7 @@ const SkillEnrolment = db.skillEnrolment;
 const User = db.user;
 const Skill = db.skill;
 const SkillStrength = db.skillStrength;
+const SkillCategory = db.skillCategory;
 
 // Create a new skill enrolment
 const create = async (req, res) => {
@@ -29,7 +30,7 @@ const create = async (req, res) => {
     }
 };
 
-// Get all skill enrolments
+// Get all skill enrolments (for employees)
 const getAll = async (req, res) => {
     try {
         const skillEnrolments = await SkillEnrolment.findAll({
@@ -68,6 +69,55 @@ const getById = async (req, res) => {
     }
 };
 
+// Get skills by user ID and render them for admin view
+const renderSkillsByUserId = async (req, res) => {
+    const userId = req.params.user_id;
+
+    try {
+        const skillEnrolments = await SkillEnrolment.findAll({
+            where: { user_id: userId },
+            include: [
+                { model: User, as: 'user', attributes: ['first_name', 'last_name'] },
+                { model: Skill, as: 'skill', attributes: ['skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] }
+            ]
+        });
+
+        if (!skillEnrolments.length) {
+            return res.status(404).render('admin/view_staff_skills', { skills: [], user: null });
+        }
+
+        const user = skillEnrolments[0].user;
+        res.render('admin/view_staff_skills', { skills: skillEnrolments, user });
+    } catch (error) {
+        console.error('Error fetching skills:', error);
+        res.status(500).send('Internal server error');
+    }
+};
+
+// Get skill enrolments by strength ID
+const getByStrengthId = async (req, res) => {
+    const skillStrengthId = req.params.skill_strength_id;
+    try {
+        const skillEnrolments = await SkillEnrolment.findAll({
+            where: { skill_strength_id: skillStrengthId },
+            include: [
+                { model: User, as: 'user', attributes: ['user_id'] },
+                { model: Skill, as: 'skill', attributes: ['skill_id', 'skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id'] }
+            ]
+        });
+
+        if (!skillEnrolments.length) {
+            throw new Error("No skill enrolments found for skill strength id " + skillStrengthId);
+        }
+
+        res.status(200).json(skillEnrolments);
+    } catch (error) {
+        utilities.formatErrorResponse(res, 400, error.message);
+    }
+};
+
 // Get skill enrolments by user ID
 const getByUserId = async (req, res) => {
     const userId = req.params.user_id;
@@ -83,29 +133,6 @@ const getByUserId = async (req, res) => {
 
         if (!skillEnrolments.length) {
             throw new Error("No skill enrolments found for user id " + userId);
-        }
-
-        res.status(200).json(skillEnrolments);
-    } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
-    }
-};
-
-// Get skill enrolments by strength ID
-const getByStrengthId = async (req, res) => {
-    const skillStrengthId = req.params.skill_strength_id;
-    try {
-        const skillEnrolments = await SkillEnrolment.findAll({
-            where: { skill_strength_id: skillStrengthId },
-            include: [
-                { model: User, as: 'user', attributes: ['user_id'] },
-                { model: Skill, as: 'skill', attributes: ['skill_id', 'skill_name'] },
-                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id', 'skill_strength_name'] }
-            ]
-        });
-
-        if (!skillEnrolments.length) {
-            throw new Error("No skill enrolments found for skill strength id " + skillStrengthId);
         }
 
         res.status(200).json(skillEnrolments);
@@ -190,7 +217,7 @@ const getUserSkills = async (req, res) => {
                     as: 'skill',
                     attributes: ['skill_name'],
                     include: [
-                        { model: db.skillCategory, as: 'skillCategory', attributes: ['skill_category_name'] }
+                        { model: SkillCategory, as: 'skillCategory', attributes: ['skill_category_name'] }
                     ]
                 },
                 { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] } 
@@ -248,5 +275,15 @@ const viewSkillDetail = async (req, res) => {
     }
 };
 
-
-module.exports = {create,getAll,getById,getByUserId,getByStrengthId,update,deleteEnrolment,getUserSkills,viewSkillDetail};
+module.exports = {
+    create,
+    getAll,
+    getById,
+    getByUserId,
+    renderSkillsByUserId,
+    getByStrengthId,
+    update,
+    deleteEnrolment,
+    getUserSkills,
+    viewSkillDetail
+};
