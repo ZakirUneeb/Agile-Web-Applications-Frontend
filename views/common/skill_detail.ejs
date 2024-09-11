@@ -14,63 +14,30 @@
     <main class="skill-detail-container">
         <h2>My skills > <%= skill.skill_name %></h2>
         
-        <form id="edit-skill-form" action="/my_skills/update" method="POST" onsubmit="return confirmChanges()">
-            <input type="hidden" name="skill_enrolment_id" value="<%= skillEnrolmentId %>">
-            <input type="hidden" name="user_id" value="<%= user.userId %>">
-
-            <div class="skill-info">
-                <div>
-                    <h3>Skill Name</h3>
-                    <p><%= skill.skill_name %></p>
-                </div>
-
-                <div>
-                    <h3>Strength</h3>
-                    <select id="skill-strength" name="skill_strength_id">
-                        <% skillStrengths.forEach(function(strength) { %>
-                            <option value="<%= strength.skill_strength_id %>" 
-                                    <%= skillStrength.skill_strength_id === strength.skill_strength_id ? 'selected' : '' %>>
-                                <%= strength.skill_strength_name %>
-                            </option>
-                        <% }); %>
-                    </select>
-                </div>
-
-                <div>
-                    <h3>Expiry Date</h3>
-                    <input type="date" id="expiry-date" name="expiry_date" value="<%= expiryDate ? expiryDate.toISOString().slice(0, 10) : '' %>">
-                </div>
+        <div class="skill-info">
+            <div>
+                <h3>Skill Name</h3>
+                <p><%= skill.skill_name %></p>
             </div>
-
-            <div class="notes-section">
-                <h3>Notes</h3>
-                <textarea id="notes" name="notes" rows="4"><%= notes || '' %></textarea>
+            <div>
+                <h3>Strength</h3>
+                <p><%= skillStrength.skill_strength_name %></p>
             </div>
-
-            <div class="action-buttons">
-                <button type="submit" class="save-button">Save Changes</button>
-                <a href="/my_skills" class="cancel-button">Cancel</a>
+            <div>
+                <h3>Expiry Date</h3>
+                <p><%= expiryDate ? new Date(expiryDate).toDateString() : 'No expiry date set' %></p>
             </div>
-        </form>
+        </div>
+
+        <div class="notes-section">
+            <h3>Notes</h3>
+            <textarea readonly><%= notes || 'No notes available' %></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/my_skills" class="view-button">View all Skills</a>
+        </div>
     </main>
 
-    <script>
-        const initialStrength = document.getElementById('skill-strength').value;
-        const initialExpiryDate = document.getElementById('expiry-date').value;
-        const initialNotes = document.getElementById('notes').value;
-
-        function confirmChanges() {
-            const currentStrength = document.getElementById('skill-strength').value;
-            const currentExpiryDate = document.getElementById('expiry-date').value;
-            const currentNotes = document.getElementById('notes').value;
-
-            if (currentStrength !== initialStrength || currentExpiryDate !== initialExpiryDate || currentNotes !== initialNotes) {
-                return confirm("Changes have been made. Do you want to confirm the changes?");
-            }
-
-            return true;
-        }
-    </script>
-    
 </body>
 </html>
