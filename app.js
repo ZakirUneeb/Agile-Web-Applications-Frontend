@@ -46,7 +46,6 @@ const adminAllDepartmentsRouter = require('./routes/admin/all_departments');
 const adminAddDepartmentRouter = require('./routes/admin/add_department');
 const adminDeleteDepartmentRouter = require('./routes/admin/delete_department');
 const adminViewStaffByDepartmentRouter = require('./routes/admin/view_staff_by_department');
-const skillEnrolmentRoutes = require('./routes/skill_enrolment');
 
 const utilities = require('./utilities/utility');
 
@@ -74,7 +73,6 @@ app.use('/home', homeRouter);
 app.use('/profile', profileRouter);
 app.use('/my_skills', authenticateToken, mySkillsRouter);
 app.use('/manager/team', managerTeamRouter);
-app.use('/my_skills', skillEnrolmentRoutes);
 
 app.use("/api/departments", authenticateToken, departmentsRouter);
 app.use("/api/users", authenticateToken, usersRouter);
