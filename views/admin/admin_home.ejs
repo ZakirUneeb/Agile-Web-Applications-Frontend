@@ -1,4 +1,3 @@
-<!-- Zakir -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,14 +10,22 @@
     <header>
         <div class="navbar">
             <div class="navbar-left">
-                <img src="/img/G5.png" alt="Logo" class="logo">
-                <a href="/admin/all_staff"><button class="nav-button">Staff</button></a>
-                <a href="/admin/all_skills"><button class="nav-button">Skills</button></a>
-                <a href="/admin/all_departments"><button class="nav-button">Departments</button></a>
+                <a href="/home">
+                    <img src="/img/G5.png" alt="Company Logo" class="logo">
+                </a>
+                <a href="/admin/all_staff">
+                    <button class="nav-button" aria-label="Go to staff management page">Staff</button>
+                </a>
+                <a href="/admin/all_skills">
+                    <button class="nav-button" aria-label="Go to skills management page">Skills</button>
+                </a>
+                <a href="/admin/all_departments">
+                    <button class="nav-button" aria-label="Go to departments management page">Departments</button>
+                </a>
             </div>
             <div class="navbar-right">
                 <form action="/logout" method="POST" style="display:inline;">
-                    <button type="submit" class="logout-button">Log out</button>
+                    <button type="submit" class="logout-button" aria-label="Log out from the system">Log out</button>
                 </form>
             </div>        
         </div>

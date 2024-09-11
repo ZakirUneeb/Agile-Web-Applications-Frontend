@@ -1,3 +1,4 @@
+<!-- Zakir -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,10 +14,10 @@
             border-radius: 50%;
         }
         .manager {
-            background-color: #4CAF50; /* Green for managers */
+            background-color: #4CAF50;
         }
         .staff {
-            background-color: #FFC107; /* Yellow for staff */
+            background-color: #FFC107;
         }
         .role-cell {
             text-align: center;
@@ -28,40 +29,50 @@
         <div class="navbar">
             <div class="navbar-left">
                 <a href="/home">
-                    <img src="/img/G5.png" alt="Logo" class="logo">
+                    <img src="/img/G5.png" alt="Company Logo" class="logo">
                 </a>
-                <a href="/admin/all_staff"><button class="nav-button">Staff</button></a>
-                <a href="/admin/all_skills"><button class="nav-button">Skills</button></a>
-                <a href="/admin/all_departments"><button class="nav-button active">Departments</button></a>
+                <a href="/admin/all_staff">
+                    <button class="nav-button" aria-label="Navigate to staff management page">Staff</button>
+                </a>
+                <a href="/admin/all_skills">
+                    <button class="nav-button" aria-label="Navigate to skills management page">Skills</button>
+                </a>
+                <a href="/admin/all_departments">
+                    <button class="nav-button active" aria-label="Navigate to departments management page">Departments</button>
+                </a>
             </div>
             <div class="navbar-right">
                 <form action="/logout" method="POST" style="display:inline;">
-                    <button type="submit" class="logout-button">Log out</button>
+                    <button type="submit" class="logout-button" aria-label="Log out from the system">Log out</button>
                 </form>
             </div>
         </div>
+        <h2 class="breadcrumb-h2">
+            <a href="/admin/all_departments">All Departments</a> &nbsp;&gt;&nbsp;
+            <span><%= department.department_name %></span> &nbsp;&gt;&nbsp;
+            <span>Staff</span>
+        </h2>
     </header>
-    <h2><%= department.department_name %></h2>
     <div class="content">
         <div class="staff-table-container">
             <table class="staff-table">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Job Role</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Job Role</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% users.forEach(user => { %>
                         <tr>
-                            <td class="role-cell">
+                            <td class="role-cell" aria-label="User role">
                                 <% if (user.systemRole.system_role_name === 'MANAGER') { %>
-                                    <div class="role-indicator manager"></div>
+                                    <div class="role-indicator manager" aria-label="Manager role"></div>
                                 <% } else { %>
-                                    <div class="role-indicator staff"></div>
+                                    <div class="role-indicator staff" aria-label="Staff role"></div>
                                 <% } %>
                             </td>                            
                             <td><%= user.first_name %></td>
@@ -74,9 +85,10 @@
             </table>
         </div>
     </div>
-
     <div class="action-buttons">
-        <a href="/admin/all_departments"><button class="nav-button">Back to All Departments</button></a>
+        <a href="/admin/all_departments">
+            <button class="nav-button" aria-label="Back to departments list">Back to All Departments</button>
+        </a>
     </div>
 </body>
 </html>

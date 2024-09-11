@@ -1,4 +1,3 @@
-<!-- Zakir -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +11,7 @@
         <div class="navbar">
             <div class="navbar-left">
                 <a href="/home">
-                    <img src="/img/G5.png" alt="Logo" class="logo">
+                    <img src="/img/G5.png" alt="Company Logo" class="logo">
                 </a>
                 <a href="/admin/all_staff"><button class="nav-button active">Staff</button></a>
                 <a href="/admin/all_skills"><button class="nav-button">Skills</button></a>
@@ -20,27 +19,26 @@
             </div>
             <div class="navbar-right">
                 <form action="/logout" method="POST" style="display:inline;">
-                    <button type="submit" class="logout-button">Log out</button>
+                    <button type="submit" class="logout-button" aria-label="Log out from the system">Log out</button>
                 </form>
             </div>
         </div>
-        <% if (user) { %>
-            <h3>Skills of <%= user.first_name %> <%= user.last_name %></h3>
-        <% } else { %>
-            <h3>No skills found for this user.</h3>
-        <% } %>
+        <h2 class="breadcrumb-h2">
+            <a href="/admin/all_staff">All Staff</a> &nbsp;&gt;&nbsp;
+            <span><%= user.first_name %> <%= user.last_name %></span> &nbsp;&gt;&nbsp;
+            <span>Skills</span>
+        </h2>
     </header>
-
     <div class="content">
         <% if (skills.length > 0) { %>
             <div class="staff-table-container">
                 <table class="staff-table">
                     <thead>
                         <tr>
-                            <th>Skill Name</th>
-                            <th>Skill Strength</th>
-                            <th>Expiry Date</th>
-                            <th>Notes</th>
+                            <th scope="col">Skill Name</th>
+                            <th scope="col">Skill Strength</th>
+                            <th scope="col">Expiry Date</th>
+                            <th scope="col">Notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,10 +59,10 @@
     </div>
 
     <div class="action-buttons">
-        <button id="assignSkillBtn" class="green-button">Assign New Skill</button>
-        <button id="editSkillBtn" class="purple-button">Edit Selected Skill</button>
-        <button id="deleteSkillBtn" class="red-button">Delete Selected Skill</button>
-        <a href="/admin/all_staff"><button class="nav-button">Back to All Staff</button></a>
+        <button id="assignSkillBtn" class="green-button" aria-label="Assign a new skill">Assign New Skill</button>
+        <button id="editSkillBtn" class="purple-button" aria-label="Edit the selected skill">Edit Selected Skill</button>
+        <button id="deleteSkillBtn" class="red-button" aria-label="Delete the selected skill">Delete Selected Skill</button>
+        <a href="/admin/all_staff"><button class="blue-button" aria-label="Return to all staff">Back to All Staff</button></a>
     </div>
 </body>
 </html>

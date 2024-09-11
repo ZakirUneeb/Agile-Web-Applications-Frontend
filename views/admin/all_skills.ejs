@@ -12,15 +12,21 @@
         <div class="navbar">
             <div class="navbar-left">
                 <a href="/home">
-                    <img src="/img/G5.png" alt="Logo" class="logo">
+                    <img src="/img/G5.png" alt="Company Logo" class="logo">
                 </a>
-                <a href="/admin/all_staff"><button class="nav-button">Staff</button></a>
-                <a href="/admin/all_skills"><button class="nav-button active">Skills</button></a>
-                <a href="/admin/all_departments"><button class="nav-button">Departments</button></a>
+                <a href="/admin/all_staff">
+                    <button class="nav-button" aria-label="Navigate to staff management page">Staff</button>
+                </a>
+                <a href="/admin/all_skills">
+                    <button class="nav-button active" aria-label="Navigate to skills management page">Skills</button>
+                </a>
+                <a href="/admin/all_departments">
+                    <button class="nav-button" aria-label="Navigate to departments management page">Departments</button>
+                </a>
             </div>
             <div class="navbar-right">
                 <form action="/logout" method="POST" style="display:inline;">
-                    <button type="submit" class="logout-button">Log out</button>
+                    <button type="submit" class="logout-button" aria-label="Log out from the system">Log out</button>
                 </form>
             </div>
         </div>
@@ -41,6 +47,7 @@
                         <tr>
                             <td>
                                 <input type="radio" name="selectedSkill" value="<%= skill.skill_id %>"
+                                    aria-label="Select skill <%= skill.skill_name %>"
                                     data-skillname="<%= skill.skill_name %>"
                                     data-skillcategory="<%= skill.skill_category_id %>">
                             </td>
@@ -51,47 +58,44 @@
                 </tbody>
             </table>
         </div>
-
         <div class="action-buttons">
-            <button id="editSkillBtn" class="edit-skill-button">Edit Selected Skill</button>
-            <button id="addSkillBtn" class="add-skill-button">Add New Skill</button>
-            <button id="deleteSkillBtn" class="delete-skill-button">Delete Selected Skill</button>
+            <button id="editSkillBtn" class="edit-skill-button purple-button" aria-label="Edit the selected skill">Edit Selected Skill</button>
+            <button id="addSkillBtn" class="add-skill-button green-button" aria-label="Add a new skill">Add New Skill</button>
+            <button id="deleteSkillBtn" class="delete-skill-button red-button" aria-label="Delete the selected skill">Delete Selected Skill</button>
         </div>
     </div>
-
-    <div id="editSkillModal" class="modal">
+    <div id="editSkillModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="editSkillTitle">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Edit Skill</h2>
+            <span class="close" aria-label="Close modal">&times;</span>
+            <h2 id="editSkillTitle">Edit Skill</h2>
             <form id="editSkillForm" method="POST">
                 <input type="hidden" id="edit_skill_id" name="skill_id">
                 <div class="form-group">
                     <label for="skill_name">Skill Name:</label>
-                    <input type="text" id="skill_name" name="skill_name" required>
+                    <input type="text" id="skill_name" name="skill_name" required aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="skill_category_id">Skill Category:</label>
-                    <select id="skill_category_id" name="skill_category_id" required></select>
+                    <select id="skill_category_id" name="skill_category_id" required aria-required="true"></select>
                 </div>
-                <button type="submit" class="submit-button">Save Changes</button>
+                <button type="submit" class="submit-button" aria-label="Save changes to skill">Save Changes</button>
             </form>
         </div>
     </div>
-
-    <div id="addSkillModal" class="modal">
+    <div id="addSkillModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="addSkillTitle">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add New Skill</h2>
+            <span class="close" aria-label="Close modal">&times;</span>
+            <h2 id="addSkillTitle">Add New Skill</h2>
             <form id="addSkillForm">
                 <div class="form-group">
                     <label for="new_skill_name">Skill Name:</label>
-                    <input type="text" id="new_skill_name" name="skill_name" required>
+                    <input type="text" id="new_skill_name" name="skill_name" required aria-required="true">
                 </div>
                 <div class="form-group">
                     <label for="new_skill_category_id">Skill Category:</label>
-                    <select id="new_skill_category_id" name="skill_category_id" required></select>
+                    <select id="new_skill_category_id" name="skill_category_id" required aria-required="true"></select>
                 </div>
-                <button type="submit" class="submit-button">Add Skill</button>
+                <button type="submit" class="submit-button" aria-label="Submit new skill">Add Skill</button>
             </form>
         </div>
     </div>
@@ -113,12 +117,14 @@
                 }
                 populateEditForm(selectedSkill);
                 editSkillModal.style.display = "block";
+                editSkillModal.setAttribute('aria-hidden', 'false');
             };
 
             addSkillBtn.onclick = () => {
                 resetAddForm();
                 populateDropdown('/api/skill_categories', 'new_skill_category_id');
                 addSkillModal.style.display = "block";
+                addSkillModal.setAttribute('aria-hidden', 'false');
             };
 
             deleteSkillBtn.onclick = () => {
@@ -139,6 +145,8 @@
                 btn.onclick = () => {
                     editSkillModal.style.display = "none";
                     addSkillModal.style.display = "none";
+                    editSkillModal.setAttribute('aria-hidden', 'true');
+                    addSkillModal.setAttribute('aria-hidden', 'true');
                 };
             });
 
