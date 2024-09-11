@@ -11,5 +11,4 @@ router.get('/user/:user_id', controller.getByUserId);
 router.get('/strength/:skill_strength_id', controller.getByStrengthId);
 router.delete('/:skill_enrolment_id', controller.deleteEnrolment);
 
-
 module.exports = router;

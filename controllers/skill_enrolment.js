@@ -1,5 +1,4 @@
 // Created by Zakir Uneeb
-const router = require('../routes/skill_enrolment');
 const utilities = require('../utilities/utility');
 const db = require('../models');
 const SkillEnrolment = db.skillEnrolment;
@@ -7,7 +6,8 @@ const User = db.user;
 const Skill = db.skill;
 const SkillStrength = db.skillStrength;
 
-create = async (req, res) => {
+// Create a new skill enrolment
+const create = async (req, res) => {
     const { user_id, skill_id, skill_strength_id, expiry_date, notes } = req.body;
 
     if (!user_id || !skill_id || !skill_strength_id) {
@@ -29,7 +29,8 @@ create = async (req, res) => {
     }
 };
 
-getAll = async (req, res) => {
+// Get all skill enrolments
+const getAll = async (req, res) => {
     try {
         const skillEnrolments = await SkillEnrolment.findAll({
             include: [
@@ -45,14 +46,15 @@ getAll = async (req, res) => {
     }
 };
 
-getById = async (req, res) => {
+// Get skill enrolment by ID
+const getById = async (req, res) => {
     const id = req.params.skill_enrolment_id;
     try {
         const skillEnrolment = await SkillEnrolment.findByPk(id, {
             include: [
                 { model: User, as: 'user', attributes: ['user_id'] },
-                { model: Skill, as: 'skill', attributes: ['skill_id'] },
-                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id'] }
+                { model: Skill, as: 'skill', attributes: ['skill_id', 'skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id', 'skill_strength_name'] }
             ]
         });
 
@@ -66,15 +68,16 @@ getById = async (req, res) => {
     }
 };
 
-getByUserId = async (req, res) => {
+// Get skill enrolments by user ID
+const getByUserId = async (req, res) => {
     const userId = req.params.user_id;
     try {
         const skillEnrolments = await SkillEnrolment.findAll({
             where: { user_id: userId },
             include: [
                 { model: User, as: 'user', attributes: ['user_id'] },
-                { model: Skill, as: 'skill', attributes: ['skill_id'] },
-                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id'] }
+                { model: Skill, as: 'skill', attributes: ['skill_id', 'skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id', 'skill_strength_name'] }
             ]
         });
 
@@ -88,15 +91,16 @@ getByUserId = async (req, res) => {
     }
 };
 
-getByStrengthId = async (req, res) => {
+// Get skill enrolments by strength ID
+const getByStrengthId = async (req, res) => {
     const skillStrengthId = req.params.skill_strength_id;
     try {
         const skillEnrolments = await SkillEnrolment.findAll({
             where: { skill_strength_id: skillStrengthId },
             include: [
                 { model: User, as: 'user', attributes: ['user_id'] },
-                { model: Skill, as: 'skill', attributes: ['skill_id'] },
-                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id'] }
+                { model: Skill, as: 'skill', attributes: ['skill_id', 'skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_id', 'skill_strength_name'] }
             ]
         });
 
@@ -110,8 +114,8 @@ getByStrengthId = async (req, res) => {
     }
 };
 
-
-update = async (req, res) => {
+// Update skill enrolment by ID
+const update = async (req, res) => {
     const id = parseInt(req.body.skill_enrolment_id, 10);
 
     if (isNaN(id)) {
@@ -150,7 +154,8 @@ update = async (req, res) => {
     }
 };
 
-deleteEnrolment = async (req, res) => {
+// Delete skill enrolment by ID
+const deleteEnrolment = async (req, res) => {
     const id = req.params.skill_enrolment_id;
 
     try {
@@ -172,48 +177,49 @@ deleteEnrolment = async (req, res) => {
     }
 };
 
+// Get skills for the logged-in user
 const getUserSkills = async (req, res) => {
     const userId = req.user.userId; 
   
     try {
-      const skillEnrollments = await SkillEnrolment.findAll({
-        where: { user_id: userId },
-        include: [
-          {
-            model: Skill,
-            as: 'skill',
-            attributes: ['skill_name'],
+        const skillEnrollments = await SkillEnrolment.findAll({
+            where: { user_id: userId },
             include: [
-              { model: db.skillCategory, as: 'skillCategory', attributes: ['skill_category_name'] }
+                {
+                    model: Skill,
+                    as: 'skill',
+                    attributes: ['skill_name'],
+                    include: [
+                        { model: db.skillCategory, as: 'skillCategory', attributes: ['skill_category_name'] }
+                    ]
+                },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] } 
             ]
-          },
-          { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] } 
-        ]
-      });
-  
-
-      const categorizedSkills = {};
-      skillEnrollments.forEach(enrollment => {
-        const category = enrollment.skill.skillCategory.skill_category_name;
-        if (!categorizedSkills[category]) {
-          categorizedSkills[category] = [];
-        }
-        categorizedSkills[category].push({
-          skill_enrolment_id: enrollment.skill_enrolment_id,
-          skill: enrollment.skill,
-          skill_strength: enrollment.skillStrength ? enrollment.skillStrength.skill_strength_name : "Not available",
-          expiry_date: enrollment.expiry_date,
-          notes: enrollment.notes
         });
-      });
-  
-      res.render('common/my_skills', { categorizedSkills, user: req.user });
+    
+        const categorizedSkills = {};
+        skillEnrollments.forEach(enrollment => {
+            const category = enrollment.skill.skillCategory.skill_category_name;
+            if (!categorizedSkills[category]) {
+                categorizedSkills[category] = [];
+            }
+            categorizedSkills[category].push({
+                skill_enrolment_id: enrollment.skill_enrolment_id,
+                skill: enrollment.skill,
+                skill_strength: enrollment.skillStrength ? enrollment.skillStrength.skill_strength_name : "Not available",
+                expiry_date: enrollment.expiry_date,
+                notes: enrollment.notes
+            });
+        });
+    
+        res.render('common/my_skills', { categorizedSkills, user: req.user });
     } catch (error) {
-      console.error('Error fetching user skills:', error);
-      res.status(500).json({ message: "Failed to fetch skills" });
+        console.error('Error fetching user skills:', error);
+        res.status(500).json({ message: "Failed to fetch skills" });
     }
 };
 
+// View skill enrolment detail
 const viewSkillDetail = async (req, res) => {
     const skillEnrolmentId = req.query.skill_enrolment_id;
     
@@ -228,10 +234,11 @@ const viewSkillDetail = async (req, res) => {
         if (!skillEnrolment) {
             throw new Error("Skill enrolment not found");
         }
+
         res.render('common/skill_detail', {
             skill: skillEnrolment.skill, 
             skillStrength: skillEnrolment.skillStrength,
-            expiryDate: skillEnrolment.expiry_date,  
+            expiryDate: skillEnrolment.expiry_date,
             notes: skillEnrolment.notes,
             user: req.user 
         });
@@ -240,7 +247,6 @@ const viewSkillDetail = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch skill details" });
     }
 };
-
 
 
 module.exports = {create,getAll,getById,getByUserId,getByStrengthId,update,deleteEnrolment,getUserSkills,viewSkillDetail};
