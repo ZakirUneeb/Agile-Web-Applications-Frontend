@@ -1,0 +1,69 @@
+<!-- Jack -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Skills</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+
+    <%- include('navbar') %>
+
+    <main class="profile-container">
+        <h2>My Skills</h2>
+    
+        <div class="skills-list">
+            <% Object.keys(categorizedSkills).forEach(function(category) { %>
+                <div class="skill-category">
+                    <h3 class="skill-category-header" onclick="toggleCategory(this)"><%= category %></h3>
+                    <div class="skill-category-content">
+                        <ul>
+                            <% categorizedSkills[category].forEach(function(skill) { %>
+                                <li>
+                                    <input type="radio" name="skill" value="<%= skill.skill_enrolment_id %>">
+                                    <label><%= skill.skill.skill_name %></label>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    
+        <div class="action-buttons">
+            <form action="/my_skills/view" method="GET" id="view-skill-form">
+                <input type="hidden" name="skill_enrolment_id" id="selected-skill">
+                <button type="button" class="view-button" onclick="viewSkill()">View Skill</button>
+            </form>
+            <button type="button" class="delete-button">Delete Skill</button>
+            <button type="button" class="add-button">Add New Skills</button>
+        </div>
+    </main>
+    
+    <script>
+        // Function to toggle visibility of skill category content
+        function toggleCategory(element) {
+            const content = element.nextElementSibling;
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+    
+        // Function to view selected skill
+        function viewSkill() {
+            const selectedSkill = document.querySelector('input[name="skill"]:checked');
+            if (selectedSkill) {
+                document.getElementById('selected-skill').value = selectedSkill.value;
+                document.getElementById('view-skill-form').submit();
+            } else {
+                alert("Please select a skill to view.");
+            }
+        }
+    </script>
+    
+</body>
+</html>
