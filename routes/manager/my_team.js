@@ -40,9 +40,9 @@ router.get('/', authenticateToken, async (req, res) => {
                 first_name: manager.first_name,
                 department_id: manager.department_id,
                 department_name: manager.department.department_name,
-                systemRole: manager.systemRole // Pass systemRole to the view
+                systemRole: manager.systemRole
             },
-            manager: manager, // Pass the manager object as well
+            manager: manager,
             teamMembers: teamMembers
         });
         
