@@ -6,6 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Team</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        .action-buttons button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .action-buttons button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+        }
+        #team-members li.selected {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        #addSkillBtn, #removeSkillBtn {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,7 +56,11 @@
                 <div id="skills-list"></div>
             </div>
         </div>
-        <button id="addUserBtn" class="add-user-button">Add New User</button>
+        <div class="action-buttons">
+            <button id="addUserBtn">Add New User</button>
+            <button id="addSkillBtn">Add Skill</button>
+            <button id="removeSkillBtn">Remove Skill</button>
+        </div>
     </div>
 
     <div id="addUserModal" class="modal">
@@ -75,54 +106,125 @@
         </div>
     </div>
 
+    <div id="addSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Skill for <span id="skillUserName"></span></h2>
+            <form id="addSkillForm">
+                <input type="hidden" id="skillUserId" name="user_id">
+                <div class="form-group">
+                    <label for="skill_id">Skill:</label>
+                    <select id="skill_id" name="skill_id" required>
+                        <option value="">Select a skill</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="skill_strength_id">Skill Strength:</label>
+                    <select id="skill_strength_id" name="skill_strength_id" required>
+                        <option value="">Select skill strength</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Add Skill</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="removeSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Remove Skill for <span id="removeSkillUserName"></span></h2>
+            <form id="removeSkillForm">
+                <input type="hidden" id="removeSkillUserId" name="user_id">
+                <div class="form-group">
+                    <label for="remove_skill_id">Skill to Remove:</label>
+                    <select id="remove_skill_id" name="skill_enrolment_id" required>
+                        <option value="">Select a skill to remove</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Remove Skill</button>
+            </form>
+        </div>
+    </div>
+
     <script>
+        let selectedUserId = null;
+        let selectedUserName = '';
+
         document.addEventListener('DOMContentLoaded', function() {
             const teamMembersList = document.getElementById('team-members');
             const addUserBtn = document.getElementById("addUserBtn");
-            const modal = document.getElementById("addUserModal");
-            const modalContent = modal.querySelector('.modal-content');
-            const closeBtn = document.getElementsByClassName("close")[0];
+            const addSkillBtn = document.getElementById("addSkillBtn");
+            const removeSkillBtn = document.getElementById("removeSkillBtn");
+            const addUserModal = document.getElementById("addUserModal");
+            const addSkillModal = document.getElementById("addSkillModal");
+            const removeSkillModal = document.getElementById("removeSkillModal");
+            const addUserCloseBtn = addUserModal.querySelector(".close");
+            const addSkillCloseBtn = addSkillModal.querySelector(".close");
+            const removeSkillCloseBtn = removeSkillModal.querySelector(".close");
             const addUserForm = document.getElementById("addUserForm");
+            const addSkillForm = document.getElementById("addSkillForm");
+            const removeSkillForm = document.getElementById("removeSkillForm");
 
             teamMembersList.addEventListener('click', async (e) => {
                 if (e.target.tagName === 'LI') {
                     handleTeamMemberSelection(e.target);
+                    addSkillBtn.style.display = "inline-block";
+                    removeSkillBtn.style.display = "inline-block";
                 }
             });
 
             addUserBtn.onclick = (e) => {
                 e.stopPropagation();
-                modal.style.display = "block";
+                addUserModal.style.display = "block";
                 populateDropdowns();
             };
 
-            closeBtn.onclick = (e) => {
+            addSkillBtn.onclick = (e) => {
                 e.stopPropagation();
-                modal.style.display = "none";
-            };
-
-            modal.onclick = (event) => {
-                if (event.target === modal) {
-                    modal.style.display = "none";
+                if (selectedUserId) {
+                    showAddSkillModal(selectedUserId, selectedUserName);
+                } else {
+                    alert("Please select a team member first.");
                 }
             };
 
-            modalContent.onclick = (e) => {
+            removeSkillBtn.onclick = (e) => {
                 e.stopPropagation();
+                if (selectedUserId) {
+                    showRemoveSkillModal(selectedUserId, selectedUserName);
+                } else {
+                    alert("Please select a team member first.");
+                }
+            };
+
+            addUserCloseBtn.onclick = () => addUserModal.style.display = "none";
+            addSkillCloseBtn.onclick = () => addSkillModal.style.display = "none";
+            removeSkillCloseBtn.onclick = () => removeSkillModal.style.display = "none";
+
+            window.onclick = (event) => {
+                if (event.target === addUserModal) addUserModal.style.display = "none";
+                if (event.target === addSkillModal) addSkillModal.style.display = "none";
+                if (event.target === removeSkillModal) removeSkillModal.style.display = "none";
             };
 
             addUserForm.addEventListener("submit", handleFormSubmission);
+            addSkillForm.addEventListener("submit", handleSkillFormSubmission);
+            removeSkillForm.addEventListener("submit", handleRemoveSkillFormSubmission);
 
             setManagerDepartment();
         });
 
         async function handleTeamMemberSelection(memberElement) {
-            document.querySelectorAll('#team-members li').forEach(li => li.classList.remove('active'));
-            memberElement.classList.add('active');
+            document.querySelectorAll('#team-members li').forEach(li => {
+                li.classList.remove('active', 'selected');
+            });
+            memberElement.classList.add('active', 'selected');
 
-            const memberId = memberElement.dataset.id;
+            selectedUserId = memberElement.dataset.id;
+            selectedUserName = memberElement.textContent.trim().split(' - ')[0];
+
             try {
-                const response = await fetch(`/manager/team/member/${memberId}`);
+                const response = await fetch(`/manager/team/member/${selectedUserId}`);
                 const skills = await response.json();
                 displayMemberSkills(skills);
             } catch (error) {
@@ -152,15 +254,27 @@
                 
                 data.forEach(item => {
                     const option = document.createElement('option');
-                    const idField = selectElement.id === 'job_role_id' ? 'job_role_id' : 'system_role_id';
-                    const nameField = selectElement.id === 'job_role_id' ? 'job_role_name' : 'system_role_name';
+                    const idField = selectElement.id.includes('skill_strength') ? 'skill_strength_id' : 
+                                    (selectElement.id === 'job_role_id' ? 'job_role_id' : 
+                                    (selectElement.id === 'skill_id' ? 'skill_id' : 
+                                    (selectElement.id === 'remove_skill_id' ? 'skill_enrolment_id' : 'system_role_id')));
+                    const nameField = selectElement.id.includes('skill_strength') ? 'skill_strength_name' : 
+                                      (selectElement.id === 'job_role_id' ? 'job_role_name' : 
+                                      (selectElement.id === 'skill_id' ? 'skill_name' : 
+                                      (selectElement.id === 'remove_skill_id' ? 'skill.skill_name' : 'system_role_name')));
                     option.value = item[idField];
-                    option.textContent = item[nameField];
+                    option.textContent = selectElement.id === 'remove_skill_id' ? 
+                                         `${item.skill.skill_name} - ${item.skillStrength.skill_strength_name}` : 
+                                         item[nameField];
                     selectElement.appendChild(option);
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
-                alert('Failed to load options. Please try again.');
+                if (selectElement.id === 'remove_skill_id') {
+                    alert('User has no skills');
+                } else {
+                    alert('Failed to load options. Please try again.');
+                }
             }
         }
 
@@ -186,55 +300,168 @@
             fetchAndPopulateDropdown('/api/system_roles', document.getElementById('system_role_id'));
         }
 
-    async function handleFormSubmission(e) {
-    e.preventDefault();
-    console.log('Form submission started');
+        async function handleFormSubmission(e) {
+            e.preventDefault();
+            console.log('Form submission started');
 
-    const formData = new FormData(e.target);
-    const userData = Object.fromEntries(formData.entries());
+            const formData = new FormData(e.target);
+            const userData = Object.fromEntries(formData.entries());
 
-    ['department_id', 'job_role_id', 'system_role_id'].forEach(field => {
-        userData[field] = parseInt(userData[field], 10);
-    });
+            ['department_id', 'job_role_id', 'system_role_id'].forEach(field => {
+                userData[field] = parseInt(userData[field], 10);
+            });
 
-    console.log('Processed user data:', userData);
+            console.log('Processed user data:', userData);
 
-    try {
-        console.log('Sending request to /api/users');
-        const response = await fetch('/api/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData),
-        });
+            try {
+                console.log('Sending request to /api/users');
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData),
+                });
 
-        console.log('Response status:', response.status);
+                console.log('Response status:', response.status);
 
-        if (response.ok) {
-            const successData = await response.json();
-            console.log('User added successfully:', successData);
-            alert('User added successfully!');
-            closeModal(); 
-            refreshTeamList();
-        } else {
-            const errorData = await response.json();
-            console.error('Error response:', errorData);
-            alert(`Failed to add user: ${errorData.error?.message || errorData.message || 'Unknown error'}`);
+                if (response.ok) {
+                    const successData = await response.json();
+                    console.log('User added successfully:', successData);
+                    alert('User added successfully!');
+                    closeModal();
+                    refreshTeamList();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error response:', errorData);
+                    alert(`Failed to add user: ${errorData.error?.message || errorData.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Error adding user:', error);
+                alert('An error occurred. Please try again.');
+            }
         }
-    } catch (error) {
-        console.error('Error adding user:', error);
-        alert('An error occurred. Please try again.');
-    }
-}
 
-function closeModal() {
-    const modal = document.getElementById("addUserModal");
-    modal.style.display = "none";
-    document.getElementById("addUserForm").reset();
-}
+        function closeModal() {
+            document.getElementById("addUserModal").style.display = "none";
+            document.getElementById("addSkillModal").style.display = "none";
+            document.getElementById("removeSkillModal").style.display = "none";
+            document.getElementById("addUserForm").reset();
+            document.getElementById("addSkillForm").reset();
+            document.getElementById("removeSkillForm").reset();
+        }
 
-async function refreshTeamList() {
-    location.reload();
-}
+        async function refreshTeamList() {
+            location.reload();
+        }
+
+        async function showAddSkillModal(userId, userName) {
+            const modal = document.getElementById('addSkillModal');
+            document.getElementById('skillUserId').value = userId;
+            document.getElementById('skillUserName').textContent = userName;
+
+            await fetchAndPopulateDropdown('/api/skills', document.getElementById('skill_id'));
+            await fetchAndPopulateDropdown('/api/skill_strengths', document.getElementById('skill_strength_id'));
+
+            try {
+                await fetchUserSkills(userId);
+            } catch (error) {
+                console.error('Error fetching user skills:', error);
+
+            }
+
+            modal.style.display = "block";
+        }
+
+        async function showRemoveSkillModal(userId, userName) {
+            const modal = document.getElementById('removeSkillModal');
+            document.getElementById('removeSkillUserId').value = userId;
+            document.getElementById('removeSkillUserName').textContent = userName;
+
+            try {
+                const response = await fetch(`/api/skill_enrolments/user/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch user skills');
+                const skills = await response.json();
+                
+                if (skills.length === 0) {
+                    alert('User has no skills to remove');
+                } else {
+                    await fetchAndPopulateDropdown(`/api/skill_enrolments/user/${userId}`, document.getElementById('remove_skill_id'));
+                    modal.style.display = "block";
+                }
+            } catch (error) {
+                console.error('Error fetching user skills:', error);
+                alert('Failed to load user skills. Please try again.');
+            }
+        }
+
+        async function fetchUserSkills(userId) {
+            try {
+                const response = await fetch(`/api/skill_enrolments/user/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch user skills');
+                const skills = await response.json();
+                document.getElementById('addSkillForm').dataset.userSkills = JSON.stringify(skills);
+            } catch (error) {
+                console.error('Error fetching user skills:', error);
+                document.getElementById('addSkillForm').dataset.userSkills = '[]';
+            }
+        }
+
+        async function handleSkillFormSubmission(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const skillData = Object.fromEntries(formData.entries());
+
+            const userSkills = JSON.parse(e.target.dataset.userSkills || '[]');
+            const skillExists = userSkills.some(skill => skill.skill_id === parseInt(skillData.skill_id));
+
+            if (skillExists) {
+                alert('This user already has this skill.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/skill_enrolments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(skillData),
+                });
+
+                if (response.ok) {
+                    alert('Skill added successfully!');
+                    closeModal();
+                    handleTeamMemberSelection(document.querySelector(`#team-members li[data-id="${skillData.user_id}"]`));
+                } else {
+                    const errorData = await response.json();
+                    alert(`Failed to add skill: ${errorData.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Error adding skill:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        async function handleRemoveSkillFormSubmission(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const skillEnrolmentId = formData.get('skill_enrolment_id');
+
+            try {
+                const response = await fetch(`/api/skill_enrolments/${skillEnrolmentId}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    alert('Skill removed successfully!');
+                    closeModal();
+                    handleTeamMemberSelection(document.querySelector(`#team-members li[data-id="${selectedUserId}"]`));
+                } else {
+                    const errorData = await response.json();
+                    alert(`Failed to remove skill: ${errorData.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Error removing skill:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
     </script>
 </body>
 </html>
