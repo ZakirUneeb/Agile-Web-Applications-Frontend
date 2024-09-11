@@ -7,7 +7,7 @@ const Skill = db.skill;
 const SkillStrength = db.skillStrength;
 const SkillCategory = db.skillCategory;
 
-// Modified by Jack for Frontendd
+// Modified by Jack for Frontend
 const create = async (req, res) => {
     const { user_id, skill: skill_id, skill_strength: skill_strength_id, expiry_date, notes } = req.body;
 
@@ -148,7 +148,7 @@ const getByUserId = async (req, res) => {
     }
 };
 
-// Modidied by jack for frontend
+// Modified by Jack for Frontend
 const update = async (req, res) => {
     console.log("Incoming request: POST /my_skills/update");
     console.log("Request body:", req.body);
@@ -221,7 +221,7 @@ const deleteEnrolment = async (req, res) => {
     }
 };
 
-// Modidied by jack for frontend
+// Modified by Jack for Frontend
 const getUserSkills = async (req, res) => {
     const userId = req.user.userId;
 
@@ -310,7 +310,6 @@ const viewSkillDetail = async (req, res) => {
     }
 };
 
-
 module.exports = {
     create,
     getAll,
@@ -323,4 +322,3 @@ module.exports = {
     getUserSkills,
     viewSkillDetail
 };
-//conflict error
