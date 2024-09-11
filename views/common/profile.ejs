@@ -12,37 +12,49 @@
     <%- include('navbar') %>
 
     <main class="profile-container">
-        <h2>My Personal Details</h2>
-        <div class="profile-details">
-            <div class="profile-column">
-                <label>First Name</label>
-                <p><%= user.first_name %></p>
+        <h2>My profile</h2>
 
-                <label>Last Name</label>
-                <p><%= user.last_name %></p>
-
-                <label>E-mail</label>
-                <p><%= user.email %></p>
-
-                <label>Password</label>
-                <p><%= user.password %></p>
+        <form id="profileForm" action="/profile" method="POST" onsubmit="return confirmEdit()">
+            <input type="hidden" name="user_id" value="<%= user.user_id %>">
+            <div class="profile-details">
+                <div class="profile-column">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="<%= user.first_name %>" required>
+        
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="<%= user.last_name %>" required>
+        
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" value="<%= user.email %>" required>
+        
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password (Leave blank to keep)">
+                </div>
+        
+                <div class="profile-column">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" value="<%= user.department_name ? user.department_name : 'N/A' %>" disabled>
+                
+                    <label for="job_role">Job Role</label>
+                    <input type="text" id="job_role" value="<%= user.job_role_name ? user.job_role_name : 'N/A' %>" disabled>
+                
+                    <label for="system_role">System Role</label>
+                    <input type="text" id="system_role" value="<%= user.system_role_name ? user.system_role_name : 'N/A' %>" disabled>
+                
+                    <label for="date_joined">Date Joined</label>
+                    <input type="text" id="date_joined" value="<%= user.date_joined %>" disabled>
+                </div>
+                
             </div>
+            <button type="submit" class="save-button">Save</button>
+        </form>
 
-            <div class="profile-column">
-                <label>Department</label>
-                <p><%= user.department_name %></p>
-
-                <label>Job Role</label>
-                <p><%= user.job_role_name %></p>
-
-                <label>System Role</label>
-                <p><%= user.system_role_name %></p>
-
-                <label>Date Joined</label>
-                <p><%= user.date_joined %></p>
-            </div>
-        </div>
-        <button class="save-button">Save</button>
     </main>
+
+    <script>
+        function confirmEdit() {
+            return confirm('Are you sure you would like to edit your Personal Details?');
+        }
+    </script>
 </body>
 </html>
