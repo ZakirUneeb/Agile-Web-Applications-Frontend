@@ -12,15 +12,15 @@
         <div class="navbar">
             <div class="navbar-left">
                 <a href="/home">
-                    <img src="/img/G5.png" alt="Logo" class="logo">
+                    <img src="/img/G5.png" alt="Company Logo" class="logo">
                 </a>
-                <a href="/admin/all_staff"><button class="nav-button active">All Staff</button></a>
-                <a href="/admin/all_skills"><button class="nav-button">All Skills</button></a>
-                <a href="/admin/all_departments"><button class="nav-button">All Departments</button></a>
+                <a href="/admin/all_staff"><button class="nav-button active">Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button">Departments</button></a>
             </div>
             <div class="navbar-right">
                 <form action="/logout" method="POST" style="display:inline;">
-                    <button type="submit" class="logout-button">Log out</button>
+                    <button type="submit" class="logout-button" aria-label="Log out from the system">Log out</button>
                 </form>
             </div>
         </div>
@@ -43,6 +43,7 @@
                             <tr>
                                 <td>
                                     <input type="radio" name="selectedStaff" value="<%= member.user_id %>"
+                                        aria-labelledby="staff-<%= member.user_id %>"
                                         data-firstname="<%= member.first_name %>"
                                         data-lastname="<%= member.last_name %>"
                                         data-department="<%= member.department.department_id %>"
@@ -50,7 +51,7 @@
                                         data-email="<%= member.email %>"
                                         data-systemrole="<%= member.systemRole.system_role_id %>">
                                 </td>
-                                <td><%= member.first_name %> <%= member.last_name %></td>
+                                <td id="staff-<%= member.user_id %>"><%= member.first_name %> <%= member.last_name %></td>
                                 <td><%= member.department.department_name %></td>
                                 <td><%= member.jobRole.job_role_name %></td>
                                 <td><%= member.email %></td>
@@ -63,15 +64,15 @@
             </div>
         </div>
         <div class="action-buttons">
-        <button id="editUserBtn" class="edit-user-button">Edit Selected User</button>
-        <button id="addUserBtn" class="add-user-button">Add New User</button>
-        <button id="deleteUserBtn" class="delete-user-button">Delete Selected User</button>
-        <button id="viewSkillsBtn" class="view-skills-button">View Selected User Skills</button>
+            <button id="viewSkillsBtn" class="view-skills-button blue-button" aria-label="View skills of selected staff member">View Selected User Skills</button>
+            <button id="editUserBtn" class="edit-user-button purple-button" aria-label="Edit details of selected staff member">Edit Selected User</button>
+            <button id="addUserBtn" class="add-user-button green-button" aria-label="Add a new staff member">Add New User</button>
+            <button id="deleteUserBtn" class="delete-user-button red-button" aria-label="Delete selected staff member">Delete Selected User</button>
         </div>
-        <div id="editUserModal" class="modal">
+        <div id="editUserModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editUserTitle">
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Edit User</h2>
+                <span class="close" aria-label="Close Modal">&times;</span>
+                <h2 id="editUserTitle">Edit User</h2>
                 <form id="editUserForm">
                     <input type="hidden" id="edit_user_id" name="user_id">
                     <div class="form-group">
@@ -102,10 +103,10 @@
                 </form>
             </div>
         </div>
-        <div id="addUserModal" class="modal">
+        <div id="addUserModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="addUserTitle">
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Add New User</h2>
+                <span class="close" aria-label="Close Modal">&times;</span>
+                <h2 id="addUserTitle">Add New User</h2>
                 <form id="addUserForm">
                     <div class="form-group">
                         <label for="first_name">First Name:</label>
