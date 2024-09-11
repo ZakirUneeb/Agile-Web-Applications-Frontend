@@ -70,6 +70,7 @@ body {
   text-decoration: underline;
 }
 
+
 /* ---------------------------------------------- */
 /* Styles for the Navbar Jack */
 /* ---------------------------------------------- */
@@ -125,10 +126,12 @@ body {
 
 .content {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Ensure content starts at the top */
-  min-height: calc(100vh - 100px); /* Dynamic height for the content area */
-  padding: 20px; /* Reduced padding */
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px);
+  background-color: #f2f2f2;
+  color: #7a7a7a;
+  font-size: 24px;
 }
 
 .nav-button.active {
@@ -202,9 +205,11 @@ input[disabled] {
   background-color: #4E2672;
 }
 
+
 /* ---------------------------------------------- */
 /* Styles for the Team Page - Johnathan */
 /* ---------------------------------------------- */
+
 .page-content {
   padding: 20px;
 }
@@ -245,6 +250,7 @@ input[disabled] {
   background-color: #e0e0e0;
 }
 
+
 .add-user-button {
   display: block;
   margin: 20px auto;
@@ -256,7 +262,6 @@ input[disabled] {
   cursor: pointer;
 }
 
-/* Modal Styling */
 .modal {
   display: none;
   position: fixed;
@@ -318,76 +323,20 @@ input[disabled] {
   cursor: pointer;
 }
 
+
 /* -----------------------------------------*/
-/* Styles for Admin pages Zakir */
+/* Styles for all_staff on Admin page Zakir */
 /* -----------------------------------------*/
-.breadcrumb-h2 {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 10px;
-  margin-left: 0;
-  padding-left: 40px; /* Align the heading with the table */
-  padding-top: 40px;
-  display: flex;
-  align-items: center;
-<<<<<<< HEAD
-=======
-}
-
-.breadcrumb-h2 a {
-  color: #007bff;
-  text-decoration: none;
-  margin-right: 5px;
-}
-
-.breadcrumb-h2 a:hover {
-  text-decoration: underline;
-}
-
-.breadcrumb-h2 span {
-  color: #555;
-  margin-left: 5px;
-}
 
 .staff-table-container {
-  flex-grow: 1;
-  margin-top: 0;
-  max-height: calc(100vh - 250px);
+  max-height: 700px;
   overflow-y: auto;
-  padding: 10px;
-  background-color: #fff;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
->>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.breadcrumb-h2 a {
-  color: #007bff;
-  text-decoration: none;
-  margin-right: 5px;
-}
-
-.breadcrumb-h2 a:hover {
-  text-decoration: underline;
-}
-
-.breadcrumb-h2 span {
-  color: #555;
-  margin-left: 5px;
-}
-
-.staff-table-container {
-  flex-grow: 1; /* Allow table container to grow as more rows are added */
-  margin-top: 0; /* Reduce space above the table */
-  max-height: calc(100vh - 250px); /* Dynamically adjust max-height based on viewport */
-  overflow-y: auto; /* Allow vertical scrolling when necessary */
-  padding: 10px; /* Add slight padding inside the table container */
-  background-color: #fff; /* Ensure the table is clearly visible */
-  border-radius: 5px; /* Add border radius to match style */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for better presentation */
-}
-
-/* Table styling adjustments */
 .staff-table {
   width: 100%;
   border-collapse: collapse;
@@ -406,60 +355,20 @@ input[disabled] {
   z-index: 1;
 }
 
-<<<<<<< HEAD
-/* Adjust the font and padding for better readability */
-=======
->>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
-.staff-table th, .staff-table td {
-  font-size: 14px;
-  padding: 12px;
+.staff-table-container, .staff-table {
+  width: 95%;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .staff-table th:nth-child(6),
-  .staff-table td:nth-child(6),
-  .staff-table th:nth-child(7),
-  .staff-table td:nth-child(7) {
-      display: none;
-  }
-
-  .navbar-left {
-      flex-direction: column;
-      align-items: flex-start;
-  }
-
-  .staff-table-container {
-      overflow-x: auto;
-  }
-
-  .action-buttons {
-      flex-direction: column;
-      align-items: center;
-  }
-
-  .action-buttons button {
-      width: 80%;
-      margin-bottom: 10px;
-  }
-
-  .staff-table th, .staff-table td {
-    padding: 8px 4px;
-    font-size: 13px;
-  }
-}
-
-/* Action Buttons */
 .action-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 10px;
   background-color: #fff;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
 
 .action-buttons button {
@@ -470,122 +379,12 @@ input[disabled] {
   border: none;
   border-radius: 4px;
   color: white;
-}
-
-.purple-button {
-  background-color: #800080;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.purple-button:hover {
-  background-color: #6a006a;
-}
-
-.green-button {
   background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
 }
 
-.green-button:hover {
+.action-buttons button:hover {
   background-color: #45a049;
 }
-
-.red-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.red-button:hover {
-  background-color: #d32f2f;
-}
-
-.blue-button {
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.blue-button:hover {
-  background-color: #1976d2;
-}
-
-<<<<<<< HEAD
-=======
-/* Accessibility Focus Styles */
->>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
-button:focus, a:focus {
-  outline: 2px solid #4A90E2;
-}
-
-<<<<<<< HEAD
-/* Mobile and tablet responsive design */
-@media (max-width: 768px) {
-  .staff-table th:nth-child(6),
-  .staff-table td:nth-child(6),
-  .staff-table th:nth-child(7),
-  .staff-table td:nth-child(7) {
-    display: none;
-  }
-
-  .navbar-left {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .staff-table-container {
-    overflow-x: auto;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .action-buttons button {
-    width: 80%;
-    margin-bottom: 10px;
-  }
-
-  .staff-table th, .staff-table td {
-    padding: 8px 4px;
-    font-size: 13px;
-  }
-}
-
-=======
->>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
-.modal[aria-modal="true"] {
-  outline: none;
-}
-
-.action-buttons button:focus {
-  outline: 3px solid #0052cc;
-  outline-offset: 2px;
-}
-
-.close:focus {
-  outline: 3px solid #ff0000;
-}
-
-input[type="radio"]:focus {
-  outline: 3px solid #4A90E2;
-}
-
 /* -----------------------------------------*/
 /* My Skills Section            - Jack      */
 /* -----------------------------------------*/
@@ -636,7 +435,49 @@ input[type="radio"]:focus {
   content: none;
 }
 
-/* My Skills Details */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+.action-buttons .view-button {
+  background-color: #5a47ab;
+}
+
+.action-buttons .delete-button {
+  background-color: #ff4b4b;
+}
+
+.action-buttons .add-button {
+  background-color: #43d86b;
+}
+
+.action-buttons button:hover {
+  opacity: 0.9;
+}
+
+.skills-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* -----------------------------------------*/
+/* My Skills Details            - Jack      */
+/* -----------------------------------------*/
 .skill-detail-container {
   padding: 30px;
   background-color: #f8f8f8;
@@ -685,7 +526,6 @@ input[type="radio"]:focus {
   background-color: #f9f9f9;
 }
 
-/* Action Buttons */
 .action-buttons {
   margin-top: 20px;
   text-align: center;
@@ -704,32 +544,30 @@ input[type="radio"]:focus {
   background-color: #4a368e;
 }
 
-<<<<<<< HEAD
+
 /* -----------------------------------------*/
 /* My Skills Add New Skills     - Jack      */
 /* -----------------------------------------*/
 
-=======
->>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
 .modal {
-  display: none;
+  display: none; 
   position: fixed;
-  z-index: 1;
+  z-index: 1; 
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
 }
 
 .modal-content {
   background-color: white;
-  margin: 5% auto;
+  margin: 5% auto; /* Reduced margin for better positioning */
   padding: 20px;
   border: 1px solid #888;
-  width: 40%;
-  max-width: 600px;
+  width: 40%; /* Increased width for better alignment */
+  max-width: 600px; /* Cap the maximum width */
   border-radius: 8px;
 }
 
