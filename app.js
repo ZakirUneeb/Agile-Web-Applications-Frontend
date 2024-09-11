@@ -61,7 +61,7 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(setCurrentPage);  // Apply setCurrentPage middleware globally
+app.use(setCurrentPage);  // Apply setCurrentPage middleware globallyy
 
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.url}`);

@@ -7,7 +7,7 @@ const Skill = db.skill;
 const SkillStrength = db.skillStrength;
 const SkillCategory = db.skillCategory;
 
-// Modified by Jack for Frontend
+// Modified by Jack for Frontendd
 const create = async (req, res) => {
     const { user_id, skill: skill_id, skill_strength: skill_strength_id, expiry_date, notes } = req.body;
 
