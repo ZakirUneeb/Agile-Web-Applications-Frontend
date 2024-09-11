@@ -205,7 +205,6 @@ input[disabled] {
 /* ---------------------------------------------- */
 /* Styles for the Team Page - Johnathan */
 /* ---------------------------------------------- */
-
 .page-content {
   padding: 20px;
 }
@@ -257,6 +256,7 @@ input[disabled] {
   cursor: pointer;
 }
 
+/* Modal Styling */
 .modal {
   display: none;
   position: fixed;
@@ -330,6 +330,35 @@ input[disabled] {
   padding-top: 40px;
   display: flex;
   align-items: center;
+<<<<<<< HEAD
+=======
+}
+
+.breadcrumb-h2 a {
+  color: #007bff;
+  text-decoration: none;
+  margin-right: 5px;
+}
+
+.breadcrumb-h2 a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-h2 span {
+  color: #555;
+  margin-left: 5px;
+}
+
+.staff-table-container {
+  flex-grow: 1;
+  margin-top: 0;
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+>>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
 }
 
 .breadcrumb-h2 a {
@@ -377,12 +406,50 @@ input[disabled] {
   z-index: 1;
 }
 
+<<<<<<< HEAD
 /* Adjust the font and padding for better readability */
+=======
+>>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
 .staff-table th, .staff-table td {
   font-size: 14px;
   padding: 12px;
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .staff-table th:nth-child(6),
+  .staff-table td:nth-child(6),
+  .staff-table th:nth-child(7),
+  .staff-table td:nth-child(7) {
+      display: none;
+  }
+
+  .navbar-left {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+
+  .staff-table-container {
+      overflow-x: auto;
+  }
+
+  .action-buttons {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .action-buttons button {
+      width: 80%;
+      margin-bottom: 10px;
+  }
+
+  .staff-table th, .staff-table td {
+    padding: 8px 4px;
+    font-size: 13px;
+  }
+}
+
+/* Action Buttons */
 .action-buttons {
   display: flex;
   justify-content: space-between;
@@ -457,10 +524,15 @@ input[disabled] {
   background-color: #1976d2;
 }
 
+<<<<<<< HEAD
+=======
+/* Accessibility Focus Styles */
+>>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
 button:focus, a:focus {
   outline: 2px solid #4A90E2;
 }
 
+<<<<<<< HEAD
 /* Mobile and tablet responsive design */
 @media (max-width: 768px) {
   .staff-table th:nth-child(6),
@@ -495,6 +567,8 @@ button:focus, a:focus {
   }
 }
 
+=======
+>>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
 .modal[aria-modal="true"] {
   outline: none;
 }
@@ -562,49 +636,7 @@ input[type="radio"]:focus {
   content: none;
 }
 
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.action-buttons button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  color: white;
-}
-
-.action-buttons .view-button {
-  background-color: #5a47ab;
-}
-
-.action-buttons .delete-button {
-  background-color: #ff4b4b;
-}
-
-.action-buttons .add-button {
-  background-color: #43d86b;
-}
-
-.action-buttons button:hover {
-  opacity: 0.9;
-}
-
-.skills-list {
-  max-height: 300px;
-  overflow-y: auto;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-/* -----------------------------------------*/
-/* My Skills Details            - Jack      */
-/* -----------------------------------------*/
+/* My Skills Details */
 .skill-detail-container {
   padding: 30px;
   background-color: #f8f8f8;
@@ -653,6 +685,7 @@ input[type="radio"]:focus {
   background-color: #f9f9f9;
 }
 
+/* Action Buttons */
 .action-buttons {
   margin-top: 20px;
   text-align: center;
@@ -671,29 +704,32 @@ input[type="radio"]:focus {
   background-color: #4a368e;
 }
 
+<<<<<<< HEAD
 /* -----------------------------------------*/
 /* My Skills Add New Skills     - Jack      */
 /* -----------------------------------------*/
 
+=======
+>>>>>>> 48fbb868c5f6f2bca3fe29498bb4b5689c45e132
 .modal {
-  display: none; 
+  display: none;
   position: fixed;
-  z-index: 1; 
+  z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgba(0,0,0,0.4); 
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
   background-color: white;
-  margin: 5% auto; /* Reduced margin for better positioning */
+  margin: 5% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 40%; /* Increased width for better alignment */
-  max-width: 600px; /* Cap the maximum width */
+  width: 40%;
+  max-width: 600px;
   border-radius: 8px;
 }
 
