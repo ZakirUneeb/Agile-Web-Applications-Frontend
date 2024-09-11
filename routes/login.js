@@ -1,15 +1,12 @@
-// File: C:\repos\Agile-Web-Applications-Frontend\routes\login.js
-
+//Jack
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/login');
 
-// Serve the login page on GET /login
 router.get('/', (req, res) => {
     res.render('login');
 });
 
-// Handle the login form submission on POST /login
-router.post('/', controller.login);  // Note the POST route is just '/'
+router.post('/', controller.login);
 
 module.exports = router;

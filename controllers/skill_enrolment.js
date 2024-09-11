@@ -7,16 +7,27 @@ const Skill = db.skill;
 const SkillStrength = db.skillStrength;
 const SkillCategory = db.skillCategory;
 
-// Create a new skill enrolment
+// Modified by Jack for Frontend
 const create = async (req, res) => {
-    const { user_id, skill_id, skill_strength_id, expiry_date, notes } = req.body;
+    const { user_id, skill: skill_id, skill_strength: skill_strength_id, expiry_date, notes } = req.body;
 
-    if (!user_id || !skill_id || !skill_strength_id) {
-        return utilities.formatErrorResponse(res, 400, "Missing fields required");
+    if (!user_id || !skill_id || !skill_strength_id || !expiry_date) {
+        return res.send('<script>alert("Form not completed. Please fill out all fields."); window.history.back();</script>');
     }
 
     try {
-        const skillEnrolment = await SkillEnrolment.create({
+        const existingEnrolment = await SkillEnrolment.findOne({
+            where: {
+                user_id: parseInt(user_id, 10),
+                skill_id: parseInt(skill_id, 10)
+            }
+        });
+
+        if (existingEnrolment) {
+            return res.send('<script>alert("Skill Already Enrolled"); window.history.back();</script>');
+        }
+
+        await SkillEnrolment.create({
             user_id: parseInt(user_id, 10),
             skill_id: parseInt(skill_id, 10),
             skill_strength_id: parseInt(skill_strength_id, 10),
@@ -24,13 +35,13 @@ const create = async (req, res) => {
             notes
         });
 
-        res.status(201).json(skillEnrolment);
+        res.redirect('/my_skills');
     } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
+        console.error('Error during skill enrolment creation:', error);
+        res.send(`<script>alert("Error: ${error.message}"); window.history.back();</script>`);
     }
 };
 
-// Get all skill enrolments (for employees)
 const getAll = async (req, res) => {
     try {
         const skillEnrolments = await SkillEnrolment.findAll({
@@ -47,7 +58,6 @@ const getAll = async (req, res) => {
     }
 };
 
-// Get skill enrolment by ID
 const getById = async (req, res) => {
     const id = req.params.skill_enrolment_id;
     try {
@@ -69,7 +79,6 @@ const getById = async (req, res) => {
     }
 };
 
-// Get skills by user ID and render them for admin view
 const renderSkillsByUserId = async (req, res) => {
     const userId = req.params.user_id;
 
@@ -95,7 +104,6 @@ const renderSkillsByUserId = async (req, res) => {
     }
 };
 
-// Get skill enrolments by strength ID
 const getByStrengthId = async (req, res) => {
     const skillStrengthId = req.params.skill_strength_id;
     try {
@@ -118,7 +126,6 @@ const getByStrengthId = async (req, res) => {
     }
 };
 
-// Get skill enrolments by user ID
 const getByUserId = async (req, res) => {
     const userId = req.params.user_id;
     try {
@@ -141,47 +148,57 @@ const getByUserId = async (req, res) => {
     }
 };
 
-// Update skill enrolment by ID
+// Modidied by jack for frontend
 const update = async (req, res) => {
-    const id = parseInt(req.body.skill_enrolment_id, 10);
+    console.log("Incoming request: POST /my_skills/update");
+    console.log("Request body:", req.body);
 
-    if (isNaN(id)) {
-        return utilities.formatErrorResponse(res, 400, "Invalid skill_enrolment_id");
+    const skill_enrolment_id = parseInt(req.body.skill_enrolment_id, 10);
+    const user_id = parseInt(req.body.user_id, 10);
+    const skill_strength_id = parseInt(req.body.skill_strength_id, 10);
+    const expiry_date = req.body.expiry_date;
+    const notes = req.body.notes;
+
+    if (isNaN(skill_enrolment_id) || isNaN(user_id) || isNaN(skill_strength_id) || !expiry_date) {
+        console.error("Error: Missing required fields");
+        return res.status(400).send('<script>alert("Missing required fields!"); window.history.back();</script>');
     }
 
-    const skillEnrolmentUpdate = {
-        user_id: parseInt(req.body.user_id, 10),
-        skill_id: parseInt(req.body.skill_id, 10),
-        skill_strength_id: parseInt(req.body.skill_strength_id, 10),
-        expiry_date: req.body.expiry_date,
-        notes: req.body.notes
-    };
-
     try {
-        if (
-            isNaN(skillEnrolmentUpdate.user_id) ||
-            isNaN(skillEnrolmentUpdate.skill_id) ||
-            isNaN(skillEnrolmentUpdate.skill_strength_id)
-        ) {
-            throw new Error("Missing required fields");
+        const currentEnrolment = await SkillEnrolment.findByPk(skill_enrolment_id);
+
+        if (!currentEnrolment) {
+            console.error("Skill enrolment not found");
+            return res.status(400).send('<script>alert("Skill enrolment not found!"); window.history.back();</script>');
         }
 
-        const [updated] = await SkillEnrolment.update(skillEnrolmentUpdate, {
-            where: { skill_enrolment_id: id }
+        const hasChanges = (
+            currentEnrolment.skill_strength_id !== skill_strength_id ||
+            currentEnrolment.expiry_date !== expiry_date ||
+            currentEnrolment.notes !== notes
+        );
+
+        if (!hasChanges) {
+            console.log("No changes detected.");
+            return res.send('<script>alert("No changes made!"); window.location.href="/my_skills";</script>');
+        }
+
+        await SkillEnrolment.update({
+            skill_strength_id,
+            expiry_date,
+            notes
+        }, {
+            where: { skill_enrolment_id }
         });
 
-        if (updated) {
-            const updatedSkillEnrolment = await SkillEnrolment.findByPk(id);
-            res.status(200).json(updatedSkillEnrolment);
-        } else {
-            throw new Error("Skill Enrolment not found");
-        }
+        console.log("Skill enrolment updated successfully.");
+        return res.redirect('/my_skills');
     } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
+        console.error("Error during update:", error.message);
+        return res.status(400).send(`<script>alert("Error: ${error.message}"); window.history.back();</script>`);
     }
 };
 
-// Delete skill enrolment by ID
 const deleteEnrolment = async (req, res) => {
     const id = req.params.skill_enrolment_id;
 
@@ -204,10 +221,10 @@ const deleteEnrolment = async (req, res) => {
     }
 };
 
-// Get skills for the logged-in user
+// Modidied by jack for frontend
 const getUserSkills = async (req, res) => {
-    const userId = req.user.userId; 
-  
+    const userId = req.user.userId;
+
     try {
         const skillEnrollments = await SkillEnrolment.findAll({
             where: { user_id: userId },
@@ -223,7 +240,15 @@ const getUserSkills = async (req, res) => {
                 { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] } 
             ]
         });
-    
+
+        const skillCategories = await SkillCategory.findAll({
+            attributes: ['skill_category_id', 'skill_category_name']
+        });
+
+        const skillStrengths = await SkillStrength.findAll({
+            attributes: ['skill_strength_id', 'skill_strength_name']
+        });
+
         const categorizedSkills = {};
         skillEnrollments.forEach(enrollment => {
             const category = enrollment.skill.skillCategory.skill_category_name;
@@ -238,15 +263,19 @@ const getUserSkills = async (req, res) => {
                 notes: enrollment.notes
             });
         });
-    
-        res.render('common/my_skills', { categorizedSkills, user: req.user });
+
+        res.render('common/my_skills', { 
+            categorizedSkills, 
+            skillCategories, 
+            skillStrengths, 
+            user: req.user 
+        });
     } catch (error) {
         console.error('Error fetching user skills:', error);
         res.status(500).json({ message: "Failed to fetch skills" });
     }
 };
 
-// View skill enrolment detail
 const viewSkillDetail = async (req, res) => {
     const skillEnrolmentId = req.query.skill_enrolment_id;
     
@@ -254,7 +283,7 @@ const viewSkillDetail = async (req, res) => {
         const skillEnrolment = await SkillEnrolment.findByPk(skillEnrolmentId, {
             include: [
                 { model: Skill, as: 'skill', attributes: ['skill_name'] },
-                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] }
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name', 'skill_strength_id'] }
             ]
         });
 
@@ -262,18 +291,25 @@ const viewSkillDetail = async (req, res) => {
             throw new Error("Skill enrolment not found");
         }
 
+        const skillStrengths = await SkillStrength.findAll({
+            attributes: ['skill_strength_id', 'skill_strength_name']
+        });
+
         res.render('common/skill_detail', {
             skill: skillEnrolment.skill, 
             skillStrength: skillEnrolment.skillStrength,
             expiryDate: skillEnrolment.expiry_date,
             notes: skillEnrolment.notes,
-            user: req.user 
+            user: req.user, 
+            skillEnrolmentId: skillEnrolmentId,
+            skillStrengths
         });
     } catch (error) {
         console.error('Error fetching skill enrolment details:', error);
         res.status(500).json({ message: "Failed to fetch skill details" });
     }
 };
+
 
 module.exports = {
     create,
