@@ -14,9 +14,9 @@
                 <a href="/home">
                     <img src="/img/G5.png" alt="Logo" class="logo">
                 </a>
-                <a href="/admin/all_staff"><button class="nav-button">All Staff</button></a>
-                <a href="/admin/all_skills"><button class="nav-button">All Skills</button></a>
-                <a href="/admin/all_departments"><button class="nav-button">All Departments</button></a>
+                <a href="/admin/all_staff"><button class="nav-button active">Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button">Departments</button></a>
             </div>
             <div class="navbar-right">
                 <form action="/logout" method="POST" style="display:inline;">
@@ -61,6 +61,9 @@
     </div>
 
     <div class="action-buttons">
+        <button id="assignSkillBtn" class="green-button">Assign New Skill</button>
+        <button id="editSkillBtn" class="purple-button">Edit Selected Skill</button>
+        <button id="deleteSkillBtn" class="red-button">Delete Selected Skill</button>
         <a href="/admin/all_staff"><button class="nav-button">Back to All Staff</button></a>
     </div>
 </body>

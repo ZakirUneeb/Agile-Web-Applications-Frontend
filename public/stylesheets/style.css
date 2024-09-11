@@ -311,7 +311,7 @@ body {
 
 
 /* -----------------------------------------*/
-/* Styles for all_staff on Admin page Zakir */
+/* Styles for Admin pages Zakir */
 /* -----------------------------------------*/
 
 .staff-table-container {
@@ -342,7 +342,7 @@ body {
 }
 
 .staff-table-container, .staff-table {
-  width: 95%;
+  width: 98%;
 }
 
 .action-buttons {
@@ -365,11 +365,56 @@ body {
   border: none;
   border-radius: 4px;
   color: white;
-  background-color: #4CAF50;
 }
 
-.action-buttons button:hover {
+.purple-button {
+  background-color: #800080;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.purple-button:hover {
+  background-color: #6a006a;
+}
+
+.green-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.green-button:hover {
   background-color: #45a049;
 }
 
+.red-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
 
+.red-button:hover {
+  background-color: #d32f2f;
+}
+
+.blue-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.blue-button:hover {
+  background-color: #1976d2;
+}
