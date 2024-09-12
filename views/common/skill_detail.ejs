@@ -14,30 +14,46 @@
     <main class="skill-detail-container">
         <h2>My skills > <%= skill.skill_name %></h2>
         
-        <div class="skill-info">
-            <div>
-                <h3>Skill Name</h3>
-                <p><%= skill.skill_name %></p>
+        <form id="update-skill-form" action="/my_skills/update" method="POST" onsubmit="return confirmChanges()">
+            <input type="hidden" name="skill_enrolment_id" value="<%= skillEnrolment.skill_enrolment_id %>">
+            
+            <div class="skill-info">
+                <div>
+                    <h3>Skill Name</h3>
+                    <p><%= skill.skill_name %></p>
+                </div>
+                <div>
+                    <h3>Strength</h3>
+                    <select name="skill_strength_id" id="skill-strength">
+                        <% skillStrengths.forEach(function(strength) { %>
+                            <option value="<%= strength.skill_strength_id %>" <%= strength.skill_strength_id === skillStrength.skill_strength_id ? 'selected' : '' %> >
+                                <%= strength.skill_strength_name %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div>
+                    <h3>Expiry Date</h3>
+                    <input type="date" name="expiry_date" value="<%= expiryDate ? new Date(expiryDate).toISOString().split('T')[0] : '' %>">
+                </div>
             </div>
-            <div>
-                <h3>Strength</h3>
-                <p><%= skillStrength.skill_strength_name %></p>
-            </div>
-            <div>
-                <h3>Expiry Date</h3>
-                <p><%= expiryDate ? new Date(expiryDate).toDateString() : 'No expiry date set' %></p>
-            </div>
-        </div>
 
-        <div class="notes-section">
-            <h3>Notes</h3>
-            <textarea readonly><%= notes || 'No notes available' %></textarea>
-        </div>
+            <div class="notes-section">
+                <h3>Notes</h3>
+                <textarea name="notes"><%= notes || 'No notes available' %></textarea>
+            </div>
 
-        <div class="action-buttons">
-            <a href="/my_skills" class="view-button">View all Skills</a>
-        </div>
+            <div class="action-buttons">
+                <button type="submit" class="view-button">Save Changes</button>
+            </div>
+        </form>
     </main>
 
+    <script>
+        function confirmChanges() {
+            return confirm("Do you want to save these changes?");
+        }
+    </script>
+    
 </body>
 </html>

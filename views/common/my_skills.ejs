@@ -35,25 +35,58 @@
         <div class="action-buttons">
             <form action="/my_skills/view" method="GET" id="view-skill-form">
                 <input type="hidden" name="skill_enrolment_id" id="selected-skill">
-                <button type="button" class="view-button" onclick="viewSkill()">View Skill</button>
+                <button type="button" class="view-button" onclick="viewSkill()">View/Edit Skill</button>
             </form>
-            <button type="button" class="delete-button">Delete Skill</button>
-            <button type="button" class="add-button">Add New Skills</button>
+            <button type="button" class="delete-button" onclick="deleteSkill()">Delete Skill</button>
+            <button type="button" class="add-button" onclick="showAddSkillModal()">Add New Skills</button>
         </div>
     </main>
-    
+
+    <div id="addSkillModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="hideAddSkillModal()">&times;</span>
+            <h2>Add New Skill</h2>
+            <form id="add-skill-form" action="/my_skills/add" method="POST" onsubmit="return validateForm()">
+                <label for="skill-category">Skill Category:</label>
+                <select id="skill-category" name="skill_category" onchange="loadSkillsForCategory()">
+                    <option value="">Select Category</option>
+                    <% skillCategories.forEach(function(category) { %>
+                        <option value="<%= category.skill_category_id %>"><%= category.skill_category_name %></option>
+                    <% }); %>
+                </select>
+            
+                <label for="skill">Skill:</label>
+                <select id="skill" name="skill" disabled>
+                    <option value="">Select Skill</option>
+                </select>
+            
+                <label for="skill-strength">Skill Strength:</label>
+                <select id="skill-strength" name="skill_strength">
+                    <option value="">Select Strength</option>
+                    <% skillStrengths.forEach(function(strength) { %>
+                        <option value="<%= strength.skill_strength_id %>"><%= strength.skill_strength_name %></option>
+                    <% }); %>
+                </select>
+                
+                <label for="expiry-date">Expiry Date:</label>
+                <input type="date" id="expiry-date" name="expiry_date">
+            
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes" rows="4"></textarea>
+            
+                <input type="hidden" name="user_id" value="<%= user.userId %>">
+                
+                <button type="submit" class="add-button">Add Skill</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Function to toggle visibility of skill category content
         function toggleCategory(element) {
             const content = element.nextElementSibling;
-            if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block";
-            } else {
-                content.style.display = "none";
-            }
+            content.style.display = content.style.display === "block" ? "none" : "block";
         }
-    
-        // Function to view selected skill
+
         function viewSkill() {
             const selectedSkill = document.querySelector('input[name="skill"]:checked');
             if (selectedSkill) {
@@ -61,6 +94,77 @@
                 document.getElementById('view-skill-form').submit();
             } else {
                 alert("Please select a skill to view.");
+            }
+        }
+
+        function showAddSkillModal() {
+            document.getElementById('addSkillModal').style.display = 'block';
+        }
+
+        function hideAddSkillModal() {
+            document.getElementById('addSkillModal').style.display = 'none';
+        }
+
+        function loadSkillsForCategory() {
+            const categoryId = document.getElementById('skill-category').value;
+            const skillSelect = document.getElementById('skill');
+            
+            if (categoryId) {
+                skillSelect.disabled = false;
+
+                fetch(`/api/skills/category/${categoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        skillSelect.innerHTML = '<option value="">Select Skill</option>';
+                        data.forEach(skill => {
+                            const option = document.createElement('option');
+                            option.value = skill.skill_id;
+                            option.textContent = skill.skill_name;
+                            skillSelect.appendChild(option);
+                        });
+                    });
+            } else {
+                skillSelect.disabled = true;
+                skillSelect.innerHTML = '<option value="">Select Skill</option>';
+            }
+        }
+
+        function validateForm() {
+            const category = document.getElementById('skill-category').value;
+            const skill = document.getElementById('skill').value;
+            const strength = document.getElementById('skill-strength').value;
+            const expiryDate = document.getElementById('expiry-date').value;
+
+            if (!category || !skill || !strength || !expiryDate) {
+                alert("Incomplete - Please fill in all required fields.");
+                return false;
+            }
+            return true;
+        }
+
+        function deleteSkill() {
+            const selectedSkill = document.querySelector('input[name="skill"]:checked');
+            if (selectedSkill) {
+                const skillEnrolmentId = selectedSkill.value;
+                if (confirm("Are you sure you want to delete this skill?")) {
+                    fetch(`/my_skills/delete/${skillEnrolmentId}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Skill deleted successfully.");
+                            location.reload();
+                        } else {
+                            alert("Failed to delete skill.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting skill:', error);
+                        alert("An error occurred while deleting the skill.");
+                    });
+                }
+            } else {
+                alert("Please select a skill to delete.");
             }
         }
     </script>
