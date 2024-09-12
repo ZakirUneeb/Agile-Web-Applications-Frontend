@@ -331,23 +331,23 @@
             }
 
             async function deleteUser(userId) {
-            try {
-                const response = await fetch(`/admin/delete_staff/${userId}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                });
+                try {
+                    const response = await fetch(`/admin/delete_staff/${userId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                    });
 
-                if (response.ok) {
-                    alert("User deleted successfully");
-                    location.reload();
-                } else {
-                    alert("Failed to delete user");
+                    if (response.ok) {
+                        alert("User deleted successfully");
+                        location.reload();
+                    } else {
+                        alert("Failed to delete user");
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    alert("An error occurred. Please try again.");
                 }
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                alert("An error occurred. Please try again.");
             }
-        }
         });
     </script>
 </body>
