@@ -83,17 +83,26 @@ const renderSkillsByUserId = async (req, res) => {
             ]
         });
 
+        let user;
         if (!skillEnrolments.length) {
-            return res.status(404).render('admin/view_staff_skills', { skills: [], user: null });
-        }
+            user = await User.findByPk(userId, {
+                attributes: ['first_name', 'last_name']
+            });
 
-        const user = skillEnrolments[0].user;
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
+
+            return res.render('admin/view_staff_skills', { skills: [], user });
+        }
+        user = skillEnrolments[0].user;
         res.render('admin/view_staff_skills', { skills: skillEnrolments, user });
     } catch (error) {
         console.error('Error fetching skills:', error);
         res.status(500).send('Internal server error');
     }
 };
+
 
 // Get skill enrolments by strength ID
 const getByStrengthId = async (req, res) => {
