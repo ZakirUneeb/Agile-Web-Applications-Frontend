@@ -23,6 +23,7 @@ const managerTeamRouter = require('./routes/manager/my_team');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 const mySkillsRouter = require('./routes/my_skills');
+const skillEnrolmentRoutes = require('./routes/skill_enrolment');
 
 const departmentsRouter = require('./routes/departments');
 const usersRouter = require('./routes/user');
@@ -60,7 +61,7 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(setCurrentPage);  // Apply setCurrentPage middleware globally
+app.use(setCurrentPage);
 
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.url}`);
@@ -73,6 +74,7 @@ app.use('/home', homeRouter);
 app.use('/profile', profileRouter);
 app.use('/my_skills', authenticateToken, mySkillsRouter);
 app.use('/manager/team', managerTeamRouter);
+app.use('/my_skills', skillEnrolmentRoutes);
 
 app.use("/api/departments", authenticateToken, departmentsRouter);
 app.use("/api/users", authenticateToken, usersRouter);
