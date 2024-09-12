@@ -46,7 +46,10 @@ const adminDeleteSkillRouter = require('./routes/admin/delete_skill');
 const adminAllDepartmentsRouter = require('./routes/admin/all_departments');
 const adminAddDepartmentRouter = require('./routes/admin/add_department');
 const adminDeleteDepartmentRouter = require('./routes/admin/delete_department');
+const adminEditDepartmentRouter = require('./routes/admin/edit_department');
 const adminViewStaffByDepartmentRouter = require('./routes/admin/view_staff_by_department');
+const adminAllJobRolesRouter = require('./routes/admin/all_job_roles');
+const adminViewStaffByJobRolesRouter = require('./routes/admin/view_staff_by_jobrole');
 
 const utilities = require('./utilities/utility');
 
@@ -99,7 +102,10 @@ app.use("/admin/delete_skill", authenticateToken, adminDeleteSkillRouter);
 app.use('/admin/all_departments', authenticateToken, adminAllDepartmentsRouter);
 app.use('/admin/add_department', authenticateToken, adminAddDepartmentRouter);
 app.use('/admin/delete_department', authenticateToken, adminDeleteDepartmentRouter);
+app.use('/admin/edit_department', authenticateToken, adminEditDepartmentRouter);
 app.use('/admin/view_staff_by_department', authenticateToken, adminViewStaffByDepartmentRouter);
+app.use('/admin', authenticateToken, adminAllJobRolesRouter);
+app.use('/admin', authenticateToken, adminViewStaffByJobRolesRouter);
 
 // Catch all for unrecognized endpoints
 app.use((req, res) => {
