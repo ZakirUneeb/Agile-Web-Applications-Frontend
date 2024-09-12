@@ -127,9 +127,9 @@ body {
 .content {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Ensure content starts at the top */
-  min-height: calc(100vh - 100px); /* Dynamic height for the content area */
-  padding: 20px; /* Reduced padding */
+  justify-content: flex-start;
+  min-height: calc(100vh - 100px);
+  padding: 20px;
 }
 
 .nav-button.active {
@@ -325,12 +325,20 @@ input[disabled] {
 /* -----------------------------------------*/
 /* Styles for Admin pages Zakir */
 /* -----------------------------------------*/
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: calc(100vh - 100px);
+  padding: 20px;
+}
+
 .breadcrumb-h2 {
   font-size: 18px;
   color: #555;
   margin-bottom: 10px;
   margin-left: 0;
-  padding-left: 40px; /* Align the heading with the table */
+  padding-left: 40px;
   padding-top: 40px;
   display: flex;
   align-items: center;
@@ -352,17 +360,16 @@ input[disabled] {
 }
 
 .staff-table-container {
-  flex-grow: 1; /* Allow table container to grow as more rows are added */
-  margin-top: 0; /* Reduce space above the table */
-  max-height: calc(100vh - 250px); /* Dynamically adjust max-height based on viewport */
-  overflow-y: auto; /* Allow vertical scrolling when necessary */
-  padding: 10px; /* Add slight padding inside the table container */
-  background-color: #fff; /* Ensure the table is clearly visible */
-  border-radius: 5px; /* Add border radius to match style */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for better presentation */
+  flex-grow: 1;
+  margin-top: 0; 
+  max-height: calc(100vh - 250px); 
+  overflow-y: auto; 
+  padding: 10px; 
+  background-color: #fff; 
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Table styling adjustments */
 .staff-table {
   width: 100%;
   border-collapse: collapse;
@@ -381,7 +388,6 @@ input[disabled] {
   z-index: 1;
 }
 
-/* Adjust the font and padding for better readability */
 .staff-table th, .staff-table td {
   font-size: 14px;
   padding: 12px;
