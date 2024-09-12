@@ -23,7 +23,7 @@
                             <% categorizedSkills[category].forEach(function(skill) { %>
                                 <li>
                                     <input type="radio" name="skill" value="<%= skill.skill_enrolment_id %>">
-                                    <label><%= skill.skill.skill_name %></label>
+                                    <label><%= skill.skill.skill_name %> - <%= skill.skill_strength %></label>
                                 </li>
                             <% }); %>
                         </ul>
@@ -31,6 +31,7 @@
                 </div>
             <% }); %>
         </div>
+        
     
         <div class="action-buttons">
             <form action="/my_skills/view" method="GET" id="view-skill-form">

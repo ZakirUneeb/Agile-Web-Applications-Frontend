@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../../middleware/authenticateToken');
+const { getExpiringSkills } = require('../../controllers/skill_enrolment');
 const db = require('../../models');
 const User = db.user;
 
@@ -20,12 +21,14 @@ router.get('/', authenticateToken, async (req, res) => {
             return res.status(404).send('User not found');
         }
 
+        const expiringSkills = await getExpiringSkills(req.user.userId);
+
         let viewName = 'common/home';
         if (user.systemRole.system_role_name.toUpperCase() === 'ADMIN') {
             viewName = 'admin/admin_home';
         }
 
-        res.render(viewName, { user, currentPage: 'home' });
+        res.render(viewName, { user, expiringSkills, currentPage: 'home' });
     } catch (error) {
         console.error('Error fetching home:', error);
         res.status(500).send('Internal Server Error');
