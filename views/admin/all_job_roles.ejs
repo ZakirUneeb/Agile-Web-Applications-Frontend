@@ -1,0 +1,215 @@
+<!-- Zakir -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Job Roles</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home"><img src="/img/G5.png" alt="Company Logo" class="logo"></a>
+                <a href="/admin/all_staff"><button class="nav-button" aria-label="Navigate to staff management page">Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button" aria-label="Navigate to skills management page">Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button" aria-label="Navigate to departments management page">Departments</button></a>
+                <a href="/admin/all_job_roles"><button class="nav-button active" aria-label="Navigate to job roles management page">Job Roles</button></a>
+            </div>
+        </div>
+    </header>
+    <div class="admin-content">
+        <div class="staff-table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Job Role Name</th>
+                        <th>Number of Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% jobRoles.forEach(role => { %>
+                        <tr>
+                            <td><input type="radio" name="selectedJobRole" value="<%= role.job_role_id %>" data-jobrolename="<%= role.job_role_name %>" aria-label="Select <%= role.job_role_name %> job role"></td>
+                            <td><%= role.job_role_name %></td>
+                            <td><%= role.userCount %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <div class="action-buttons">
+            <button id="viewStaffBtn" class="blue-button" aria-label="View staff in the selected job role">View Staff</button>
+            <button id="addJobRoleBtn" class="green-button" aria-label="Add a new job role">Add New Job Role</button>
+            <button id="editJobRoleBtn" class="purple-button" aria-label="Edit a job role">Edit Selected Job Role</button>
+            <button id="deleteJobRoleBtn" class="red-button" aria-label="Delete a job role">Delete selected Job Role</button>
+        </div>
+    </div>
+    <div id="addJobRoleModal" class="modal" aria-hidden="true" role="dialog">
+        <div class="modal-content">
+            <span class="close" aria-label="Close Modal">&times;</span>
+            <h2>Add New Job Role</h2>
+            <form id="addJobRoleForm">
+                <div class="form-group">
+                    <label for="job_role_name">Job Role Name:</label>
+                    <input type="text" id="job_role_name" name="job_role_name" required>
+                </div>
+                <button type="submit" class="submit-button">Add Job Role</button>
+            </form>
+        </div>
+    </div>
+    <div id="editJobRoleModal" class="modal" aria-hidden="true" role="dialog">
+        <div class="modal-content">
+            <span class="close" aria-label="Close Modal">&times;</span>
+            <h2>Edit Job Role</h2>
+            <form id="editJobRoleForm">
+                <input type="hidden" id="edit_job_role_id" name="job_role_id">
+                <div class="form-group">
+                    <label for="edit_job_role_name">Job Role Name:</label>
+                    <input type="text" id="edit_job_role_name" name="job_role_name" required>
+                </div>
+                <button type="submit" class="submit-button">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const viewStaffBtn = document.getElementById('viewStaffBtn');
+            const addJobRoleBtn = document.getElementById('addJobRoleBtn');
+            const editJobRoleBtn = document.getElementById('editJobRoleBtn');
+            const deleteJobRoleBtn = document.getElementById('deleteJobRoleBtn');
+            const addJobRoleModal = document.getElementById('addJobRoleModal');
+            const editJobRoleModal = document.getElementById('editJobRoleModal');
+            const closeBtns = document.getElementsByClassName('close');
+
+            viewStaffBtn.onclick = () => {
+                const selectedJobRole = document.querySelector('input[name="selectedJobRole"]:checked');
+                if (!selectedJobRole) {
+                    alert("Please select a job role.");
+                    return;
+                }
+                const jobRoleId = selectedJobRole.value;
+                window.location.href = `/admin/view_staff_by_jobrole/${jobRoleId}`;
+            };
+
+            addJobRoleBtn.onclick = () => {
+                addJobRoleModal.style.display = "block";
+                addJobRoleModal.setAttribute("aria-hidden", "false");
+            };
+
+            editJobRoleBtn.onclick = () => {
+                const selectedJobRole = document.querySelector('input[name="selectedJobRole"]:checked');
+                if (!selectedJobRole) {
+                    alert("Please select a job role to edit.");
+                    return;
+                }
+
+                const jobRoleId = selectedJobRole.value;
+                const jobRoleName = selectedJobRole.getAttribute('data-jobrolename');
+
+                document.getElementById('edit_job_role_id').value = jobRoleId;
+                document.getElementById('edit_job_role_name').value = jobRoleName;
+
+                editJobRoleModal.style.display = "block";
+                editJobRoleModal.setAttribute("aria-hidden", "false");
+            };
+
+            deleteJobRoleBtn.onclick = async () => {
+                const selectedJobRole = document.querySelector('input[name="selectedJobRole"]:checked');
+                if (!selectedJobRole) {
+                    alert("Please select a job role to delete.");
+                    return;
+                }
+                
+                const confirmed = confirm("Are you sure you want to delete this job role?");
+                if (!confirmed) return;
+
+                const jobRoleId = selectedJobRole.value;
+
+                try {
+                    const response = await fetch(`/admin/delete_job_role/${jobRoleId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        alert('Job Role deleted successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to delete Job Role');
+                    }
+                } catch (error) {
+                    console.error('Error deleting job role:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            };
+
+            Array.from(closeBtns).forEach(btn => {
+                btn.onclick = () => {
+                    addJobRoleModal.style.display = "none";
+                    editJobRoleModal.style.display = "none";
+                    addJobRoleModal.setAttribute("aria-hidden", "true");
+                    editJobRoleModal.setAttribute("aria-hidden", "true");
+                };
+            });
+
+            document.getElementById('addJobRoleForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const jobRoleName = document.getElementById('job_role_name').value;
+                const formData = { job_role_name: jobRoleName };
+
+                try {
+                    const response = await fetch('/admin/add_job_role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                    });
+
+                    if (response.ok) {
+                        alert('Job Role added successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to add Job Role');
+                    }
+                } catch (error) {
+                    console.error('Error adding job role:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
+            document.getElementById('editJobRoleForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const jobRoleId = document.getElementById('edit_job_role_id').value;
+                const jobRoleName = document.getElementById('edit_job_role_name').value;
+
+                const formData = {
+                    job_role_id: jobRoleId,
+                    job_role_name: jobRoleName
+                };
+
+                try {
+                    const response = await fetch(`/admin/edit_job_role/${jobRoleId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                    });
+
+                    if (response.ok) {
+                        alert('Job Role updated successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to update Job Role');
+                    }
+                } catch (error) {
+                    console.error('Error updating job role:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

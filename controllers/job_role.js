@@ -66,9 +66,10 @@ const update = async (req, res) => {
         const updatedJobRole = await JobRole.findByPk(job_role_id);
         res.status(200).json(updatedJobRole);
     } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
+        res.status(400).json({ message: error.message });
     }
 };
+
 
 const deleteJobRole = async (req, res) => {
     const { job_role_id } = req.params;
@@ -83,4 +84,49 @@ const deleteJobRole = async (req, res) => {
     }
 };
 
-module.exports = { getAll, getById, getByName, create, update, deleteJobRole };
+const renderAllJobRoles = async (req, res) => {
+    try {
+        const jobRoles = await JobRole.findAll({
+            include: [{
+                model: db.user,
+                as: 'users',
+                attributes: ['user_id'],
+            }],
+        });
+        res.render('admin/all_job_roles', {
+            jobRoles: jobRoles.map(role => ({
+                ...role.dataValues,
+                userCount: role.users.length,
+            })),
+        });
+    } catch (error) {
+        res.status(400).send('Error loading job roles');
+    }
+};
+
+const renderStaffByJobRole = async (req, res) => {
+    const jobRoleId = req.params.job_role_id;
+
+    try {
+        const jobRole = await JobRole.findByPk(jobRoleId, {
+            include: [{
+                model: db.user,
+                as: 'users',
+                include: [{ model: db.systemRole, as: 'systemRole' }],
+            }],
+        });
+
+        if (!jobRole) {
+            return res.status(404).send('Job Role not found');
+        }
+
+        res.render('admin/view_staff_by_jobrole', {
+            users: jobRole.users,
+            jobRole: jobRole,
+        });
+    } catch (error) {
+        res.status(400).send('Error loading staff by job role');
+    }
+};
+
+module.exports = { getAll, getById, getByName, create, update, deleteJobRole, renderAllJobRoles, renderStaffByJobRole };

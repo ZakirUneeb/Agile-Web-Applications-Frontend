@@ -1,0 +1,57 @@
+<!-- Zakir -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff in Job Role</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home"><img src="/img/G5.png" alt="Company Logo" class="logo"></a>
+                <a href="/admin/all_staff"><button class="nav-button">Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button">Skills</button></a>
+                <a href="/admin/all_departments"><button class="nav-button">Departments</button></a>
+                <a href="/admin/all_job_roles"><button class="nav-button active">Job Roles</button></a>
+            </div>
+        </div>
+        <h2 class="breadcrumb-h2">
+            <a href="/admin/all_job_roles">All Job Roles</a> &nbsp;&gt;&nbsp;
+            <span><%= jobRole.job_role_name %></span> &nbsp;&gt;&nbsp;
+            <span>Staff</span>
+        </h2>
+    </header>
+    <div class="admin-content">
+        <div class="staff-table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">System Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.first_name %></td>
+                            <td><%= user.last_name %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.systemRole.system_role_name %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <a href="/admin/all_job_roles">
+            <button class="blue-button">Back to All Job Roles</button>
+        </a>
+    </div>
+</body>
+</html>

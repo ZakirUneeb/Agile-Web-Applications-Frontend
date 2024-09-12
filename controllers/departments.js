@@ -76,30 +76,26 @@ deleting = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    const { department_id, department_name } = req.body;
 
-update = async (req, res) =>{
-
-    const id =req.body.department_id;
-
-    const department = {
-        department_name: req.body.department_name
-    };
-
-    try{
-        if (id==null ||
-            department.department_name==null){
+    try {
+        if (!department_id || !department_name) {
             throw new Error("Missing essential fields");
         }
-    await Department.update(department,
-                {where: { department_id: id }}
-    );
-    res.status(200).json(department);
+
+        const department = await Department.findByPk(department_id);
+        if (!department) {
+            throw new Error("Department not found");
+        }
+
+        await department.update({ department_name });
+
+        res.status(200).json(department);
+    } catch (error) {
+        utilities.formatErrorResponse(res, 400, error.message);
     }
-    
-    catch (error){
-        utilities.formatErrorResponse(res,400,error.message);
-    }
-}
+};
 
 // Zakir - Function to get users by their department
 const getUsersByDepartment = async (departmentId = null) => {
