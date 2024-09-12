@@ -6,6 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 800px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .notification {
+            background-color: #ffe6e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification h3 {
+            margin-top: 0;
+            color: #d9534f;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .notification ul {
+            padding-left: 20px;
+        }
+
+        .notification li {
+            margin-bottom: 8px;
+            list-style-type: disc;
+            color: #555;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
 </head>
 <body>
 
@@ -13,8 +78,28 @@
 
     <div class="content">
         <h2>Welcome, <%= user.first_name %></h2>
+
+        <% if (expiringSkills && expiringSkills.length > 0) { %>
+            <div class="notification">
+                <h3>Expiring Skills</h3>
+                <ul>
+                    <% expiringSkills.forEach(function(skill) { %>
+                        <li>
+                            <strong><%= skill.skill.skill_name %></strong> 
+                            (Strength: <%= skill.skillStrength.skill_strength_name %>) 
+                            will expire on <%= new Date(skill.expiry_date).toLocaleDateString() %>.
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } else { %>
+            <div class="notification">
+                <p>No skills expiring soon.</p>
+            </div>
+        <% } %>
+
+        <a href="/my_skills" class="btn-primary">View All Skills</a>
     </div>
+
 </body>
 </html>
-
-

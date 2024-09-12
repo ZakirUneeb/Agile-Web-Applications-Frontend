@@ -119,8 +119,6 @@ const renderSkillsByUserId = async (req, res) => {
     }
 };
 
-
-// Get skill enrolments by strength ID
 const getByStrengthId = async (req, res) => {
     const skillStrengthId = req.params.skill_strength_id;
     try {
@@ -301,6 +299,32 @@ const viewSkillDetail = async (req, res) => {
     }
 };
 
+const getExpiringSkills = async (userId) => {
+    const currentDate = new Date();
+    const nextMonth = new Date();
+    nextMonth.setMonth(currentDate.getMonth() + 1);
+
+    try {
+        const expiringSkills = await SkillEnrolment.findAll({
+            where: {
+                user_id: userId,
+                expiry_date: {
+                    [db.Sequelize.Op.between]: [currentDate, nextMonth]
+                }
+            },
+            include: [
+                { model: Skill, as: 'skill', attributes: ['skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] }
+            ]
+        });
+        return expiringSkills;
+    } catch (error) {
+        console.error('Error fetching expiring skills:', error);
+        throw new Error('Error fetching expiring skills');
+    }
+};
+
+
 
 module.exports = {
     create,
@@ -312,5 +336,6 @@ module.exports = {
     update,
     deleteEnrolment,
     getUserSkills,
-    viewSkillDetail
+    viewSkillDetail,
+    getExpiringSkills
 };
