@@ -60,8 +60,8 @@ const getAll = async (req, res) => {
         });
         res.render('employee_report', { skillEnrolments: skillEnrolments });
     } catch (error) {
-        console.log('Error retrieving skill enrollments:', error);
-        res.status(500).send('Error retrieving skill enrollments');
+        console.log('Error retrieving skill enrolments:', error);
+        res.status(500).send('Error retrieving skill enrolments');
     }
 };
 

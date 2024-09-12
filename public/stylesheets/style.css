@@ -942,4 +942,16 @@ input[type="radio"]:focus {
   cursor: pointer;
 }
 
+#skillChart {
+  max-width: 600px;
+  margin: 20px auto;
+}
 
+
+.welcome-text {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  color: #333;
+}

@@ -6,15 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
     <%- include('navbar') %>
 
     <div class="content">
-        <h2>Welcome, <%= user.first_name %></h2>
+        <h2 class="welcome-text">Welcome, <%= user.first_name %></h2>
+
+        <div style="width: 50%; margin: 0 auto;">
+            <canvas id="skillChart"></canvas>
+        </div>
     </div>
+
+    <script>
+      const skillData = <%- JSON.stringify(userSkillData) %>;
+
+      const ctx = document.getElementById('skillChart').getContext('2d');
+      const skillChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+              labels: skillData.map(skill => skill.skill_name),
+              datasets: [{
+                  label: 'Skill Enrollments',
+                  data: skillData.map(skill => skill.enrollmentCount),
+                  backgroundColor: [
+                      '#FF6384',
+                      '#36A2EB',
+                      '#FFCE56',
+                      '#4BC0C0',
+                      '#9966FF',
+                      '#FF9F40'
+                  ],
+                  hoverOffset: 4
+              }]
+          },
+          options: {
+              responsive: true,
+              plugins: {
+                  legend: {
+                      position: 'top',
+                  },
+                  title: {
+                      display: true,
+                      text: 'Your Skill Enrollments'
+                  }
+              }
+          }
+      });
+    </script>
 </body>
 </html>
-
-
