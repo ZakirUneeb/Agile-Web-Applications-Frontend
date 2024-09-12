@@ -106,9 +106,15 @@ body {
   background-color: #e0e0e0;
 }
 
+.nav-button.active {
+  background-color: #d0d0d0;
+  border-color: #b0b0b0;
+}
+
 .navbar-right {
   display: flex;
   align-items: center;
+  gap: 20px;
 }
 
 .logout-button {
@@ -122,19 +128,6 @@ body {
 
 .logout-button:hover {
   background-color: #e04444;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: calc(100vh - 100px);
-  padding: 20px;
-}
-
-.nav-button.active {
-  background-color: #d0d0d0;
-  border-color: #b0b0b0; 
 }
 
 /* ---------------------------------------------- */
@@ -182,7 +175,6 @@ body {
   font-size: 16px;
 }
 
-/* Greyed out inputs (non-editable) */
 input[disabled] {
   background-color: #f5f5f5;
   color: #999;
@@ -699,11 +691,11 @@ input[type="radio"]:focus {
 
 .modal-content {
   background-color: white;
-  margin: 5% auto; /* Reduced margin for better positioning */
+  margin: 5% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 40%; /* Increased width for better alignment */
-  max-width: 600px; /* Cap the maximum width */
+  width: 40%;
+  max-width: 600px;
   border-radius: 8px;
 }
 
@@ -753,3 +745,201 @@ input[type="radio"]:focus {
 .modal-content .add-button:hover {
   opacity: 0.9;
 }
+
+
+
+.bell-icon {
+  position: relative;
+  margin-right: 40px;
+  cursor: pointer;
+}
+
+
+
+.notification-bell {
+    position: relative;
+    display: inline-block;
+}
+
+
+.icon {
+    height: 24px;
+    width: 24px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 250px;
+    padding: 10px;
+    z-index: 10;
+}
+
+.notification-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-dropdown li {
+    padding: 5px 0;
+}
+
+.notification-dropdown li:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+}
+
+.notification-bell:hover .notification-dropdown {
+    display: block;
+}
+
+.notification-list {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  border-left: 5px solid transparent;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.notification-item.expire-soon {
+  background-color: #ffe0e0;
+  border-left-color: #ff4d4d;
+}
+
+.notification-item.expire-later {
+  background-color: #fff5cc;
+  border-left-color: #ffcc00;
+}
+
+.notification-item:hover {
+  background-color: #e9e9e9;
+}
+
+.notification-date {
+  font-weight: bold;
+  color: #333;
+}
+
+.notification-text {
+  margin: 0;
+}
+
+/* Notification dropdown styling */
+.notification-bell {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-bell .bell-icon {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.notification-bell .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.notification-bell .notification-count {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.notification-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 250px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.notification-bell:hover .notification-dropdown {
+  display: block;
+}
+
+.notification-dropdown ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-item {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.background-red {
+  background-color: #ffdddd;
+  border-left: 5px solid #e60000;
+}
+
+.background-yellow {
+  background-color: #fff4cc;
+  border-left: 5px solid #ffcc00;
+}
+
+.background-normal {
+  background-color: #f0f0f0;
+  border-left: 5px solid #cccccc;
+}
+
+.notification-dropdown p {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px; 
+}
+
+.logout-button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #ff4d4d;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+

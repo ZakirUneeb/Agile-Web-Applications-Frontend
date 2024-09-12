@@ -299,6 +299,8 @@ const viewSkillDetail = async (req, res) => {
     }
 };
 
+
+//Jack
 const getExpiringSkills = async (userId) => {
     const currentDate = new Date();
     const nextMonth = new Date();
@@ -313,8 +315,7 @@ const getExpiringSkills = async (userId) => {
                 }
             },
             include: [
-                { model: Skill, as: 'skill', attributes: ['skill_name'] },
-                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] }
+                { model: Skill, as: 'skill', attributes: ['skill_name'] }
             ]
         });
         return expiringSkills;
@@ -323,6 +324,7 @@ const getExpiringSkills = async (userId) => {
         throw new Error('Error fetching expiring skills');
     }
 };
+
 
 
 

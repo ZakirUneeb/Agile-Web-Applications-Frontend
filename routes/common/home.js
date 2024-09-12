@@ -20,7 +20,6 @@ router.get('/', authenticateToken, async (req, res) => {
         if (!user) {
             return res.status(404).send('User not found');
         }
-
         const expiringSkills = await getExpiringSkills(req.user.userId);
 
         let viewName = 'common/home';
