@@ -15,9 +15,6 @@ const SystemRole = db.systemRole;
 
 login = async (req, res) => {
     const { email, password } = req.body;
-
-    console.log('Login attempt for email:', email);
-
     try {
         const user = await User.findOne({
             where: { email },
@@ -25,18 +22,13 @@ login = async (req, res) => {
         });
 
         if (!user) {
-            console.log('User not found:', email);
-            return res.status(401).json({ message: 'Authentication failed' });
+            return res.redirect('/login?error=invalid');
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
-
         if (!isPasswordValid) {
-            console.log('Password invalid for email:', email);
-            return res.status(401).json({ message: 'Authentication failed' });
+            return res.redirect('/login?error=invalid');
         }
-
-        console.log('User authenticated:', email);
 
         const token = jwt.sign(
             { userId: user.user_id, email: user.email, systemRole: user.systemRole.system_role_name },
@@ -45,14 +37,12 @@ login = async (req, res) => {
         );
 
         res.cookie('token', token, { httpOnly: true });
-
-        console.log('Token set in cookie');
-
         res.redirect('/home');
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.redirect('/login?error=server');
     }
 };
+
 
 module.exports = { login };

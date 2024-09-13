@@ -6,7 +6,7 @@ const controller = require('../controllers/login');
 
 // Serve the login page on GET /login
 router.get('/', (req, res) => {
-    res.render('login');
+    res.render('login', { query: req.query })
 });
 
 // Handle the login form submission on POST /login
