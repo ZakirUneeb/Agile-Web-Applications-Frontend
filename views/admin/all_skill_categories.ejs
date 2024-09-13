@@ -20,7 +20,6 @@
             </div>
         </div>
     </header>
-
     <div class="admin-content">
         <div class="staff-table-container">
             <table class="staff-table">
@@ -34,7 +33,7 @@
                 <tbody>
                     <% categories.forEach(category => { %>
                         <tr>
-                            <td><input type="radio" name="selectedCategory" value="<%= category.skill_category_id %>" aria-label="Select <%= category.skill_category_name %> category"></td>
+                            <td><input type="radio" name="selectedCategory" value="<%= category.skill_category_id %>" data-categoryname="<%= category.skill_category_name %>" aria-label="Select <%= category.skill_category_name %> category"></td>
                             <td><%= category.skill_category_name %></td>
                             <td><%= category.skillCount %></td>
                         </tr>
@@ -45,10 +44,10 @@
         <div class="action-buttons">
             <button id="viewSkillsBtn" class="blue-button" aria-label="View skills in selected category">View Skills</button>
             <button id="addCategoryBtn" class="green-button" aria-label="Add a new skill category">Add New Category</button>
+            <button id="editCategoryBtn" class="purple-button" aria-label="Edit the selected skill category">Edit Selected Category</button>
             <button id="deleteCategoryBtn" class="red-button" aria-label="Delete a skill category">Delete Selected Category</button>
         </div>
     </div>
-
     <div id="addCategoryModal" class="modal" aria-hidden="true" role="dialog">
         <div class="modal-content">
             <span class="close" aria-label="Close Modal">&times;</span>
@@ -62,18 +61,51 @@
             </form>
         </div>
     </div>
+    <div id="editCategoryModal" class="modal" aria-hidden="true" role="dialog">
+        <div class="modal-content">
+            <span class="close" aria-label="Close Modal">&times;</span>
+            <h2>Edit Skill Category</h2>
+            <form id="editCategoryForm">
+                <input type="hidden" id="edit_category_id" name="skill_category_id">
+                <div class="form-group">
+                    <label for="edit_category_name">Category Name:</label>
+                    <input type="text" id="edit_category_name" name="skill_category_name" required>
+                </div>
+                <button type="submit" class="submit-button">Save Changes</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const addCategoryBtn = document.getElementById('addCategoryBtn');
+            const editCategoryBtn = document.getElementById('editCategoryBtn');
             const deleteCategoryBtn = document.getElementById('deleteCategoryBtn');
             const viewSkillsBtn = document.getElementById('viewSkillsBtn');
             const addCategoryModal = document.getElementById('addCategoryModal');
+            const editCategoryModal = document.getElementById('editCategoryModal');
             const closeBtns = document.getElementsByClassName('close');
 
             addCategoryBtn.onclick = () => {
                 addCategoryModal.style.display = "block";
                 addCategoryModal.setAttribute("aria-hidden", "false");
+            };
+
+            editCategoryBtn.onclick = () => {
+                const selectedCategory = document.querySelector('input[name="selectedCategory"]:checked');
+                if (!selectedCategory) {
+                    alert("Please select a category to edit.");
+                    return;
+                }
+
+                const categoryId = selectedCategory.value;
+                const categoryName = selectedCategory.getAttribute('data-categoryname');
+
+                document.getElementById('edit_category_id').value = categoryId;
+                document.getElementById('edit_category_name').value = categoryName;
+
+                editCategoryModal.style.display = "block";
+                editCategoryModal.setAttribute("aria-hidden", "false");
             };
 
             deleteCategoryBtn.onclick = async () => {
@@ -120,7 +152,9 @@
             Array.from(closeBtns).forEach(btn => {
                 btn.onclick = () => {
                     addCategoryModal.style.display = "none";
+                    editCategoryModal.style.display = "none";
                     addCategoryModal.setAttribute("aria-hidden", "true");
+                    editCategoryModal.setAttribute("aria-hidden", "true");
                 };
             });
 
@@ -144,6 +178,31 @@
                     }
                 } catch (error) {
                     console.error('Error adding category:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+
+            document.getElementById('editCategoryForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const categoryId = document.getElementById('edit_category_id').value;
+                const categoryName = document.getElementById('edit_category_name').value;
+
+                try {
+                    const response = await fetch(`/admin/all_skill_categories/edit_skill_category/${categoryId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ skill_category_id: categoryId, skill_category_name: categoryName }),
+                    });
+
+                    if (response.ok) {
+                        alert('Category updated successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to update category');
+                    }
+                } catch (error) {
+                    console.error('Error updating category:', error);
                     alert('An error occurred. Please try again.');
                 }
             });

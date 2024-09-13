@@ -32,4 +32,6 @@ router.delete('/delete_skill_category/:skill_category_id', skillCategoryControll
 
 router.get('/view_skills_by_category/:skill_category_id', skillController.getByCategory);
 
+router.post('/edit_skill_category/:skill_category_id', skillCategoryController.update);
+
 module.exports = router;
