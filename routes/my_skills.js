@@ -7,6 +7,7 @@ const skillController = require('../controllers/skill_enrolment');
 
 router.get('/', authenticateToken, fetchExpiringSkills, skillController.getUserSkills);
 router.get('/view', authenticateToken, fetchExpiringSkills, skillController.viewSkillDetail);
+router.delete('/delete/:skill_enrolment_id', skillController.deleteEnrolment);
 
 router.post('/add', authenticateToken, async (req, res) => {
     try {
