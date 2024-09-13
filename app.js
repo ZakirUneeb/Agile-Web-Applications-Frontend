@@ -77,7 +77,7 @@ app.use('/home', homeRouter);
 app.use('/profile', profileRouter);
 app.use('/my_skills', authenticateToken, mySkillsRouter);
 app.use('/manager/team', managerTeamRouter);
-app.use('/my_skills', skillEnrolmentRoutes);
+app.use('/skill_enrolments', skillEnrolmentRoutes);
 
 app.use("/api/departments", authenticateToken, departmentsRouter);
 app.use("/api/users", authenticateToken, usersRouter);
