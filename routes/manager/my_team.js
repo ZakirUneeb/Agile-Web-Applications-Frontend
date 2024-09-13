@@ -9,6 +9,7 @@ const JobRole = db.jobRole;
 const SkillEnrolment = db.skillEnrolment;
 const Skill = db.skill;
 const SkillStrength = db.skillStrength;
+const { getExpiringSkills } = require('../../controllers/skill_enrolment');
 
 router.get('/', authenticateToken, async (req, res) => {
     try {
@@ -34,6 +35,8 @@ router.get('/', authenticateToken, async (req, res) => {
                 { model: JobRole, as: 'jobRole' }
             ]
         });
+
+        const expiringSkills = await getExpiringSkills(req.user.userId);
         
         res.render('manager/team', {
             user: {
@@ -43,7 +46,9 @@ router.get('/', authenticateToken, async (req, res) => {
                 systemRole: manager.systemRole // Pass systemRole to the view
             },
             manager: manager, // Pass the manager object as well
-            teamMembers: teamMembers
+            teamMembers: teamMembers,
+            expiringSkills: expiringSkills,
+            currentPage: 'team'  
         });
         
         

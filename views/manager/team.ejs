@@ -419,10 +419,12 @@
             }
 
             try {
-                const response = await fetch('/api/skill_enrolments', {
+                console.log('Sending skill data:', skillData);
+                const response = await fetch('/api/skill_enrolments/add', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(skillData),
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
