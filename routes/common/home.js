@@ -6,6 +6,7 @@ const db = require('../../models');
 const User = db.user;
 const SkillEnrolment = db.skillEnrolment;
 const Skill = db.skill;
+const SkillStrength = db.skillStrength;
 
 router.get('/', authenticateToken, async (req, res) => {
     try {
@@ -26,7 +27,10 @@ router.get('/', authenticateToken, async (req, res) => {
 
         const skillEnrollments = await SkillEnrolment.findAll({
             where: { user_id: req.user.userId },
-            include: [{ model: Skill, as: 'skill', attributes: ['skill_name'] }]
+            include: [
+                { model: Skill, as: 'skill', attributes: ['skill_name'] },
+                { model: SkillStrength, as: 'skillStrength', attributes: ['skill_strength_name'] }
+            ]
         });
 
         const userSkillData = skillEnrollments.reduce((acc, enrollment) => {
@@ -44,6 +48,21 @@ router.get('/', authenticateToken, async (req, res) => {
             enrollmentCount: userSkillData[skill_name]
         }));
 
+        const skillStrengthData = skillEnrollments.reduce((acc, enrollment) => {
+            const strength = enrollment.skillStrength ? enrollment.skillStrength.skill_strength_name : 'Unknown';
+            if (!acc[strength]) {
+                acc[strength] = 1;
+            } else {
+                acc[strength]++;
+            }
+            return acc;
+        }, {});
+
+        const skillStrengthDataArray = Object.keys(skillStrengthData).map(strength => ({
+            strength,
+            count: skillStrengthData[strength]
+        }));
+
         let viewName = 'common/home';
         if (user.systemRole.system_role_name.toUpperCase() === 'ADMIN') {
             viewName = 'admin/admin_home';
@@ -53,6 +72,7 @@ router.get('/', authenticateToken, async (req, res) => {
             user,
             expiringSkills,
             userSkillData: userSkillDataArray, 
+            skillStrengthData: skillStrengthDataArray,
             currentPage: 'home'
         });
     } catch (error) {

@@ -6,7 +6,7 @@ body {
 }
 
 /* ---------------------------------------------- */
-/* Styles for the Login Page Jack */
+/* General Styles for Login Page - Jack */
 /* ---------------------------------------------- */
 .login-container {
   display: flex;
@@ -70,22 +70,21 @@ body {
   text-decoration: underline;
 }
 
-
-/* ---------------------------------------------- */
-/* Styles for the Navbar Jack */
-/* ---------------------------------------------- */
+/* Base styles for the navbar */
 .navbar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
   padding: 10px 20px;
+  background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-left {
+.navbar-left, .navbar-right {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap; /* Prevents wrapping inside left and right sections */
 }
 
 .logo {
@@ -106,17 +105,6 @@ body {
   background-color: #e0e0e0;
 }
 
-.nav-button.active {
-  background-color: #d0d0d0;
-  border-color: #b0b0b0;
-}
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
 .logout-button {
   padding: 8px 16px;
   border: none;
@@ -130,11 +118,37 @@ body {
   background-color: #e04444;
 }
 
-/* ---------------------------------------------- */
-/* Styles for the Profile Page Jack */
-/* ---------------------------------------------- */
 
-/* Updated Profile Page CSS */
+@media (max-width: 768px) {
+  .navbar {
+    justify-content: space-between;
+  }
+
+  .navbar-left {
+    flex: 1 0 100%; 
+    justify-content: space-between;
+  }
+
+  .navbar-right {
+    flex: 1 0 100%;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-button, .logout-button {
+    padding: 8px;
+  }
+}
+
+
+
+
+
+/* ---------------------------------------------- */
+/* Profile Page Styles - Jack */
+/* ---------------------------------------------- */
 .profile-container {
   padding: 30px;
   background-color: #f8f8f8;
@@ -195,11 +209,9 @@ input[disabled] {
   background-color: #4E2672;
 }
 
-
 /* ---------------------------------------------- */
-/* Styles for the Team Page - Johnathan */
+/* Team Page Styles - Johnathan */
 /* ---------------------------------------------- */
-
 .page-content {
   padding: 20px;
 }
@@ -240,16 +252,15 @@ input[disabled] {
   background-color: #e0e0e0;
 }
 
-
 .add-user-button {
-  display: block;
+  display:block;
   margin: 20px auto;
   padding: 10px 20px;
   background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .modal {
@@ -277,7 +288,7 @@ input[disabled] {
   color: #aaa;
   float: right;
   font-size: 28px;
-  font-weight: bold;
+  font-weight:bold;
   cursor: pointer;
 }
 
@@ -313,9 +324,8 @@ input[disabled] {
   cursor: pointer;
 }
 
-
 /* -----------------------------------------*/
-/* Styles for Admin pages Zakir */
+/* Admin Page Styles - Zakir */
 /* -----------------------------------------*/
 .admin-content {
   display: flex;
@@ -353,11 +363,11 @@ input[disabled] {
 
 .staff-table-container {
   flex-grow: 1;
-  margin-top: 0; 
-  max-height: calc(100vh - 250px); 
-  overflow-y: auto; 
-  padding: 10px; 
-  background-color: #fff; 
+  margin-top: 0;
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -513,10 +523,10 @@ button:focus, a:focus {
 input[type="radio"]:focus {
   outline: 3px solid #4A90E2;
 }
-/* -----------------------------------------*/
-/* My Skills Section            - Jack      */
-/* -----------------------------------------*/
 
+/* -----------------------------------------*/
+/* My Skills Section - Jack */
+/* -----------------------------------------*/
 .skills-container {
   padding: 30px;
   background-color: #f8f8f8;
@@ -603,8 +613,52 @@ input[type="radio"]:focus {
   border-radius: 5px;
 }
 
+input[type="radio"] {
+  appearance: none;
+  width: 20px; 
+  height: 20px; 
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  vertical-align: middle;
+  margin-right: 5px;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="radio"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #ccc;
+}
+
+input[type="radio"].competent::before {
+  background-color: #80E080; /* Darker pastel green */
+}
+
+input[type="radio"].intermediate::before {
+  background-color: #FFFF99; /* Darker pastel yellow */
+}
+
+input[type="radio"].beginner::before {
+  background-color: #FFC0CB; /* Darker pastel pink */
+}
+
+label {
+  vertical-align: middle;
+  line-height: 20px; /* Adjust line-height to match radio button height */
+}
+
+
+
+
 /* -----------------------------------------*/
-/* My Skills Details            - Jack      */
+/* My Skills Details - Jack */
 /* -----------------------------------------*/
 .skill-detail-container {
   padding: 30px;
@@ -674,9 +728,8 @@ input[type="radio"]:focus {
 
 
 /* -----------------------------------------*/
-/* My Skills Add New Skills     - Jack      */
+/* My Skills Add New Skills - Jack */
 /* -----------------------------------------*/
-
 .modal {
   display: none; 
   position: fixed;
@@ -866,7 +919,7 @@ input[type="radio"]:focus {
 }
 
 .notification-bell .notification-count {
-  position: absolute;
+  position:absolute;
   top: -5px;
   right: -10px;
   background-color: red;
@@ -942,16 +995,54 @@ input[type="radio"]:focus {
   cursor: pointer;
 }
 
-#skillChart {
-  max-width: 600px;
-  margin: 20px auto;
-}
+/* -----------------------------------------*/
+/* Styles for the Home Page - Jack */
+/* -----------------------------------------*/
 
-
+/* Style for the welcome text */
 .welcome-text {
-  font-size: 36px;
+  font-size: 48px;
   font-weight: bold;
   text-align: center;
   margin-top: 20px;
-  color: #333;
+  color: #4A90E2; /* Choose a pleasing color */
+  font-family: 'Arial', sans-serif; /* Use a clean, modern font */
+}
+
+/* Container for the charts to display them side by side */
+.chart-container {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 40px;
+}
+
+/* Ensure charts have appropriate size */
+.chart-box {
+  width: 400px; /* Adjust the size as needed */
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+  .chart-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chart-box {
+    width: 90%;
+  }
+}
+
+
+.skill-competent {
+  color: green;
+}
+
+.skill-intermediate {
+  color: orange;
+}
+
+.skill-beginner {
+  color: red;
 }
