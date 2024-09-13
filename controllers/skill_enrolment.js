@@ -185,7 +185,12 @@ const update = async (req, res) => {
             where: { skill_enrolment_id }
         });
 
-        res.redirect('/my_skills');
+        
+        if (req.originalUrl.includes('/my_skills')) {
+            return res.redirect('/my_skills');
+        } else {
+            return res.status(201).json(skillEnrolment);
+        }
     } catch (error) {
         console.error('Error updating skill enrolment:', error);
         utilities.formatErrorResponse(res, 400, error.message);
