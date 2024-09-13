@@ -138,7 +138,7 @@
                 const jobRoleId = selectedJobRole.value;
 
                 try {
-                    const response = await fetch(`/admin/delete_job_role/${jobRoleId}`, {
+                    const response = await fetch(`/admin/all_job_roles/delete/${jobRoleId}`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -170,7 +170,7 @@
                 const formData = { job_role_name: jobRoleName };
 
                 try {
-                    const response = await fetch('/admin/add_job_role', {
+                    const response = await fetch('/admin/all_job_roles/add', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formData),
@@ -200,7 +200,7 @@
                 };
 
                 try {
-                    const response = await fetch(`/admin/edit_job_role/${jobRoleId}`, {
+                    const response = await fetch(`/admin/all_job_roles/edit/${jobRoleId}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formData),

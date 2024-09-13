@@ -65,12 +65,19 @@ const getByCategory = async (req, res) => {
             where: { skill_category_id: categoryId },
             include: [{ model: SkillCategory, as: 'skillCategory', attributes: ['skill_category_name'] }]
         });
+
         if (skills.length === 0) {
-            throw new Error("Unable to find Skills with category id " + categoryId);
+            return res.status(404).send('No skills found for this category.');
         }
-        res.status(200).json(skills);
+
+        const category = await SkillCategory.findByPk(categoryId);
+
+        res.render('admin/view_skills_by_category', {
+            skills: skills,
+            category: category
+        });
     } catch (error) {
-        utilities.formatErrorResponse(res, 400, error.message);
+        res.status(400).send('Error loading skills by category');
     }
 };
 

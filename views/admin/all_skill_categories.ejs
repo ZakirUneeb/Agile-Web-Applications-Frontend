@@ -14,8 +14,9 @@
                 <a href="/home"><img src="/img/G5.png" alt="Company Logo" class="logo"></a>
                 <a href="/admin/all_staff"><button class="nav-button" aria-label="Navigate to staff management page">Staff</button></a>
                 <a href="/admin/all_skills"><button class="nav-button" aria-label="Navigate to skills management page">Skills</button></a>
-                <a href="/admin/all_departments"><button class="nav-button" aria-label="Navigate to departments management page">Departments</button></a>
                 <a href="/admin/all_skill_categories"><button class="nav-button active" aria-label="Navigate to skill categories page">Skill Categories</button></a>
+                <a href="/admin/all_departments"><button class="nav-button" aria-label="Navigate to departments management page">Departments</button></a>
+                <a href="/admin/all_job_roles"><button class="nav-button" aria-label="Navigate to job roles management page">Job Roles</button></a>
             </div>
         </div>
     </header>
@@ -42,6 +43,7 @@
             </table>
         </div>
         <div class="action-buttons">
+            <button id="viewSkillsBtn" class="blue-button" aria-label="View skills in selected category">View Skills</button>
             <button id="addCategoryBtn" class="green-button" aria-label="Add a new skill category">Add New Category</button>
             <button id="deleteCategoryBtn" class="red-button" aria-label="Delete a skill category">Delete Selected Category</button>
         </div>
@@ -65,6 +67,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const addCategoryBtn = document.getElementById('addCategoryBtn');
             const deleteCategoryBtn = document.getElementById('deleteCategoryBtn');
+            const viewSkillsBtn = document.getElementById('viewSkillsBtn');
             const addCategoryModal = document.getElementById('addCategoryModal');
             const closeBtns = document.getElementsByClassName('close');
 
@@ -101,6 +104,17 @@
                     console.error('Error deleting category:', error);
                     alert('An error occurred. Please try again.');
                 }
+            };
+
+            viewSkillsBtn.onclick = () => {
+                const selectedCategory = document.querySelector('input[name="selectedCategory"]:checked');
+                if (!selectedCategory) {
+                    alert("Please select a category to view skills.");
+                    return;
+                }
+
+                const categoryId = selectedCategory.value;
+                window.location.href = `/admin/all_skill_categories/view_skills_by_category/${categoryId}`;
             };
 
             Array.from(closeBtns).forEach(btn => {

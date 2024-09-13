@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const skillCategoryController = require('../../controllers/skill_category');
+const skillController = require('../../controllers/skill');
 const db = require('../../models');
 
 router.get('/', async (req, res) => {
@@ -28,5 +29,7 @@ router.get('/', async (req, res) => {
 router.post('/add_skill_category', skillCategoryController.create);
 
 router.delete('/delete_skill_category/:skill_category_id', skillCategoryController.deleteCategory);
+
+router.get('/view_skills_by_category/:skill_category_id', skillController.getByCategory);
 
 module.exports = router;

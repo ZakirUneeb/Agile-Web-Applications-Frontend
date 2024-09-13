@@ -1,0 +1,49 @@
+<!-- Zakir -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills by Category</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="/home"><img src="/img/G5.png" alt="Company Logo" class="logo"></a>
+                <a href="/admin/all_staff"><button class="nav-button" aria-label="Navigate to staff management page">Staff</button></a>
+                <a href="/admin/all_skills"><button class="nav-button" aria-label="Navigate to skills management page">Skills</button></a>
+                <a href="/admin/all_skill_categories"><button class="nav-button active" aria-label="Navigate to skill categories page">Skill Categories</button></a>
+                <a href="/admin/all_departments"><button class="nav-button" aria-label="Navigate to departments management page">Departments</button></a>
+                <a href="/admin/all_job_roles" aria-label="Navigate to job role management page"><button class="nav-button">Job Roles</button></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-content">
+        <h2>Skills in <%= category.skill_category_name %> Category</h2>
+        <div class="staff-table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th>Skill Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% skills.forEach(skill => { %>
+                        <tr>
+                            <td><%= skill.skill_name %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <div class="action-buttons">
+            <a href="/admin/all_skill_categories">
+                <button class="blue-button" aria-label="Back to skill categories">Back to Categories</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
