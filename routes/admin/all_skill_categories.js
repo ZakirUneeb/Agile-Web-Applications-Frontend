@@ -3,7 +3,6 @@ const router = express.Router();
 const skillCategoryController = require('../../controllers/skill_category');
 const db = require('../../models');
 
-// Route to render all skill categories with the skill count
 router.get('/', async (req, res) => {
     try {
         const categories = await db.skillCategory.findAll({
@@ -26,10 +25,8 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Route to add a new skill category
 router.post('/add_skill_category', skillCategoryController.create);
 
-// Route to delete a skill category
 router.delete('/delete_skill_category/:skill_category_id', skillCategoryController.deleteCategory);
 
 module.exports = router;
