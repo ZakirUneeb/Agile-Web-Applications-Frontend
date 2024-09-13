@@ -10,43 +10,46 @@ const SkillCategory = db.skillCategory;
 const create = async (req, res) => {
     console.log("Incoming request body:", req.body);
 
-    const { user_id, skill: skill_id, skill_strength: skill_strength_id, expiry_date, notes } = req.body;
+    const { 
+        user_id, 
+        skill: skill_id, 
+        skill_id: skillIdAlternative,
+        skill_strength: skill_strength_id, 
+        skill_strength_id: skillStrengthAlternative, 
+        expiry_date, 
+        notes 
+    } = req.body;
 
-    if (!user_id) console.log("Missing user_id");
-    if (!skill_id) console.log("Missing skill_id");
-    if (!skill_strength_id) console.log("Missing skill_strength_id");
+    const finalSkillId = skill_id || skillIdAlternative;
+    const finalSkillStrengthId = skill_strength_id || skillStrengthAlternative;
 
-    if (!user_id || !skill_id || !skill_strength_id) {
-        return res.status(400).json({
-            error: {
-                status: 400,
-                message: "Missing required fields"
-            }
-        });
+    if (!user_id || !finalSkillId || !finalSkillStrengthId) {
+        return utilities.formatErrorResponse(res, 400, "Missing required fields");
     }
 
     try {
         const skillEnrolment = await SkillEnrolment.create({
             user_id: parseInt(user_id, 10),
-            skill_id: parseInt(skill_id, 10),
-            skill_strength_id: parseInt(skill_strength_id, 10),
+            skill_id: parseInt(finalSkillId, 10),
+            skill_strength_id: parseInt(finalSkillStrengthId, 10),
             expiry_date,
             notes
         });
 
         console.log("Skill enrolment created:", skillEnrolment);
 
-        res.redirect('/my_skills');
+        if (req.originalUrl.includes('/my_skills')) {
+            return res.redirect('/my_skills');
+        } else {
+            return res.status(201).json(skillEnrolment);
+        }
+
     } catch (error) {
         console.log("Error creating skill enrolment:", error.message);
-        return res.status(400).json({
-            error: {
-                status: 400,
-                message: error.message
-            }
-        });
+        return utilities.formatErrorResponse(res, 400, error.message);
     }
 };
+
 
 
 const getAll = async (req, res) => {
