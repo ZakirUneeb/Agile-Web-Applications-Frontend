@@ -29,8 +29,33 @@
             background-color: #e0e0e0;
             font-weight: bold;
         }
-        #addSkillBtn, #removeSkillBtn {
+        #addSkillBtn, #editSkillBtn, #removeSkillBtn {
             display: none;
+        }
+        skill-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .skill-name {
+            font-weight: bold;
+        }
+        .skill-expiry {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .skill-strength {
+            font-style: italic;
+        }
+        .skill-notes {
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: #555;
         }
     </style>
 </head>
@@ -59,6 +84,7 @@
         <div class="action-buttons">
             <button id="addUserBtn">Add New User</button>
             <button id="addSkillBtn">Add Skill</button>
+            <button id="editSkillBtn">Edit Skill</button>
             <button id="removeSkillBtn">Remove Skill</button>
         </div>
     </div>
@@ -124,10 +150,51 @@
                         <option value="">Select skill strength</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="expiry_date">Expiry Date:</label>
+                    <input type="date" id="expiry_date" name="expiry_date">
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes" rows="3"></textarea>
+                </div>
                 <button type="submit" class="submit-button">Add Skill</button>
             </form>
         </div>
     </div>
+
+    <div id="editSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Skill for <span id="editSkillUserName"></span></h2>
+            <form id="editSkillForm">
+                <input type="hidden" id="editSkillUserId" name="user_id">
+                <input type="hidden" id="editSkillEnrolmentId" name="skill_enrolment_id">
+                <div class="form-group">
+                    <label for="edit_skill_id">Skill:</label>
+                    <select id="edit_skill_id" name="skill_id" required>
+                        <option value="">Select a skill</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_skill_strength_id">Skill Strength:</label>
+                    <select id="edit_skill_strength_id" name="skill_strength_id" required>
+                        <option value="">Select skill strength</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_expiry_date">Expiry Date:</label>
+                    <input type="date" id="edit_expiry_date" name="expiry_date">
+                </div>
+                <div class="form-group">
+                    <label for="edit_notes">Notes:</label>
+                    <textarea id="edit_notes" name="notes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Update Skill</button>
+            </form>
+        </div>
+    </div>
+
 
     <div id="removeSkillModal" class="modal">
         <div class="modal-content">
@@ -164,11 +231,29 @@
             const addUserForm = document.getElementById("addUserForm");
             const addSkillForm = document.getElementById("addSkillForm");
             const removeSkillForm = document.getElementById("removeSkillForm");
+            const editSkillBtn = document.getElementById("editSkillBtn");
+            const editSkillModal = document.getElementById("editSkillModal");
+            const editSkillCloseBtn = editSkillModal.querySelector(".close");
+            const editSkillForm = document.getElementById("editSkillForm");
+
+            editSkillBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (selectedUserId) {
+                    showEditSkillModal(selectedUserId, selectedUserName);
+                } else {
+                    alert("Please select a team member first.");
+                }
+            };
+
+            editSkillCloseBtn.onclick = () => editSkillModal.style.display = "none";
+
+            editSkillForm.addEventListener("submit", handleEditSkillFormSubmission);
 
             teamMembersList.addEventListener('click', async (e) => {
                 if (e.target.tagName === 'LI') {
                     handleTeamMemberSelection(e.target);
                     addSkillBtn.style.display = "inline-block";
+                    editSkillBtn.style.display = "inline-block";
                     removeSkillBtn.style.display = "inline-block";
                 }
             });
@@ -464,6 +549,105 @@
                 alert('An error occurred. Please try again.');
             }
         }
+
+        function displayMemberSkills(skills) {
+            const skillsList = document.getElementById('skills-list');
+            if (skills.length === 0) {
+                skillsList.innerHTML = '<p>No skills recorded for this team member.</p>';
+            } else {
+                skillsList.innerHTML = skills.map(skill => `
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">${skill.skill.skill_name}</span>
+                            <span class="skill-expiry">${skill.expiry_date ? 'Expires: ' + new Date(skill.expiry_date).toLocaleDateString() : 'No expiry date'}</span>
+                        </div>
+                        <div class="skill-strength">${skill.skillStrength.skill_strength_name}</div>
+                        ${skill.notes ? `<div class="skill-notes">Notes: ${skill.notes}</div>` : ''}
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function showEditSkillModal(userId, userName) {
+            const modal = document.getElementById('editSkillModal');
+            document.getElementById('editSkillUserId').value = userId;
+            document.getElementById('editSkillUserName').textContent = userName;
+
+            try {
+                const response = await fetch(`/api/skill_enrolments/user/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch user skills');
+                const skills = await response.json();
+                
+                if (skills.length === 0) {
+                    alert('User has no skills to edit');
+                    return;
+                }
+
+                const skillSelect = document.getElementById('edit_skill_id');
+                skillSelect.innerHTML = '<option value="">Select a skill to edit</option>';
+                skills.forEach(skill => {
+                    const option = document.createElement('option');
+                    option.value = skill.skill_enrolment_id;
+                    option.textContent = `${skill.skill.skill_name} - ${skill.skillStrength.skill_strength_name}`;
+                    option.dataset.skill = JSON.stringify(skill);
+                    skillSelect.appendChild(option);
+                });
+
+                skillSelect.onchange = function() {
+                    const selectedSkill = JSON.parse(this.options[this.selectedIndex].dataset.skill);
+                    populateEditForm(selectedSkill);
+                };
+
+                await fetchAndPopulateDropdown('/api/skill_strengths', document.getElementById('edit_skill_strength_id'));
+
+                modal.style.display = "block";
+            } catch (error) {
+                console.error('Error fetching user skills:', error);
+                alert('Failed to load user skills. Please try again.');
+            }
+        }
+
+        function populateEditForm(skill) {
+            document.getElementById('editSkillEnrolmentId').value = skill.skill_enrolment_id;
+            document.getElementById('edit_skill_strength_id').value = skill.skill_strength_id;
+            document.getElementById('edit_expiry_date').value = skill.expiry_date ? new Date(skill.expiry_date).toISOString().split('T')[0] : '';
+            document.getElementById('edit_notes').value = skill.notes || '';
+        }
+
+        async function handleEditSkillFormSubmission(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            const skillData = {
+                skill_enrolment_id: formData.get('skill_enrolment_id'),
+                skill_strength_id: formData.get('skill_strength_id'),
+                expiry_date: formData.get('expiry_date'),
+                notes: formData.get('notes')
+            };
+
+            try {
+                console.log('Sending updated skill data:', skillData);
+                const response = await fetch('/api/skill_enrolments', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(skillData),
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const updatedSkill = await response.json();
+            alert('Skill updated successfully!');
+            closeModal();
+            handleTeamMemberSelection(document.querySelector(`#team-members li[data-id="${updatedSkill.user_id}"]`));
+        } else {
+            const errorData = await response.json();
+            alert(`Failed to update skill: ${errorData.message || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error updating skill:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
     </script>
 </body>
 </html>
