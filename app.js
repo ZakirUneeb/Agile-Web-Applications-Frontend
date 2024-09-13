@@ -50,6 +50,7 @@ const adminEditDepartmentRouter = require('./routes/admin/edit_department');
 const adminViewStaffByDepartmentRouter = require('./routes/admin/view_staff_by_department');
 const adminAllJobRolesRouter = require('./routes/admin/all_job_roles');
 const adminViewStaffByJobRolesRouter = require('./routes/admin/view_staff_by_jobrole');
+const adminSkillCategoriesRouter = require('./routes/admin/all_skill_categories');
 
 const utilities = require('./utilities/utility');
 
@@ -104,8 +105,9 @@ app.use('/admin/add_department', authenticateToken, adminAddDepartmentRouter);
 app.use('/admin/delete_department', authenticateToken, adminDeleteDepartmentRouter);
 app.use('/admin/edit_department', authenticateToken, adminEditDepartmentRouter);
 app.use('/admin/view_staff_by_department', authenticateToken, adminViewStaffByDepartmentRouter);
-app.use('/admin', authenticateToken, adminAllJobRolesRouter);
-app.use('/admin', authenticateToken, adminViewStaffByJobRolesRouter);
+app.use('/admin/all_job_roles', authenticateToken, adminAllJobRolesRouter); 
+app.use('/admin/view_staff_by_jobrole', authenticateToken, adminViewStaffByJobRolesRouter);
+app.use('/admin/all_skill_categories', authenticateToken, adminSkillCategoriesRouter);
 
 // Catch all for unrecognized endpoints
 app.use((req, res) => {
