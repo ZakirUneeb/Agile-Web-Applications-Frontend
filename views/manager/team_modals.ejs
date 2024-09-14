@@ -1,0 +1,172 @@
+ <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New User</h2>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="department_name">Department:</label>
+                    <input type="text" id="department_name" name="department_name" readonly>
+                    <input type="hidden" id="department_id" name="department_id">
+                </div>
+                <div class="form-group">
+                    <label for="job_role_id">Job Role:</label>
+                    <select id="job_role_id" name="job_role_id" required>
+                        <option value="">Select a job role</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="system_role_id">System Role:</label>
+                    <select id="system_role_id" name="system_role_id" required>
+                        <option value="">Select a system role</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit User</h2>
+            <form id="editUserForm">
+                <input type="hidden" id="edit_user_id" name="user_id">
+                <div class="form-group">
+                    <label for="edit_first_name">First Name:</label>
+                    <input type="text" id="edit_first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_last_name">Last Name:</label>
+                    <input type="text" id="edit_last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_email">Email:</label>
+                    <input type="email" id="edit_email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_password">Password:</label>
+                    <input type="password" id="edit_password" name="password">
+                    <small>Leave blank to keep current password</small>
+                </div>
+                <div class="form-group">
+                    <label for="edit_department_name">Department:</label>
+                    <input type="text" id="edit_department_name" name="department_name" readonly>
+                    <input type="hidden" id="edit_department_id" name="department_id">
+                </div>
+                <div class="form-group">
+                    <label for="edit_job_role_id">Job Role:</label>
+                    <select id="edit_job_role_id" name="job_role_id" required>
+                        <option value="">Select a job role</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_system_role_id">System Role:</label>
+                    <select id="edit_system_role_id" name="system_role_id" required>
+                        <option value="">Select a system role</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Update User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Skill Modal -->
+    <div id="addSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Skill for <span id="skillUserName"></span></h2>
+            <form id="addSkillForm">
+                <input type="hidden" id="skillUserId" name="user_id">
+                <div class="form-group">
+                    <label for="skill_id">Skill:</label>
+                    <select id="skill_id" name="skill_id" required>
+                        <option value="">Select a skill</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="skill_strength_id">Skill Strength:</label>
+                    <select id="skill_strength_id" name="skill_strength_id" required>
+                        <option value="">Select skill strength</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expiry_date">Expiry Date:</label>
+                    <input type="date" id="expiry_date" name="expiry_date">
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Add Skill</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Skill Modal -->
+    <div id="editSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Skill for <span id="editSkillUserName"></span></h2>
+            <form id="editSkillForm">
+                <input type="hidden" id="editSkillUserId" name="user_id">
+                <input type="hidden" id="editSkillEnrolmentId" name="skill_enrolment_id">
+                <div class="form-group">
+                    <label for="edit_skill_id">Skill:</label>
+                    <select id="edit_skill_id" name="skill_id" required>
+                        <option value="">Select a skill</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_skill_strength_id">Skill Strength:</label>
+                    <select id="edit_skill_strength_id" name="skill_strength_id" required>
+                        <option value="">Select skill strength</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_expiry_date">Expiry Date:</label>
+                    <input type="date" id="edit_expiry_date" name="expiry_date">
+                </div>
+                <div class="form-group">
+                    <label for="edit_notes">Notes:</label>
+                    <textarea id="edit_notes" name="notes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Update Skill</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Remove Skill Modal -->
+    <div id="removeSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Remove Skill for <span id="removeSkillUserName"></span></h2>
+            <form id="removeSkillForm">
+                <input type="hidden" id="removeSkillUserId" name="user_id">
+                <div class="form-group">
+                    <label for="remove_skill_id">Skill to Remove:</label>
+                    <select id="remove_skill_id" name="skill_enrolment_id" required>
+                        <option value="">Select a skill to remove</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Remove Skill</button>
+            </form>
+        </div>
+    </div>

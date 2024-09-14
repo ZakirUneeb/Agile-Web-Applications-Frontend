@@ -174,9 +174,9 @@ const update = async (req, res) => {
             first_name: req.body.first_name || user.first_name,
             last_name: req.body.last_name || user.last_name,
             email: req.body.email || user.email,
-            department_id: user.department_id,
-            job_role_id: user.job_role_id,
-            system_role_id: user.system_role_id,
+            department_id: req.body.department_id || user.department_id,
+            job_role_id: req.body.job_role_id || user.job_role_id,
+            system_role_id: req.body.system_role_id || user.system_role_id,
             date_joined: user.date_joined
         };
 
