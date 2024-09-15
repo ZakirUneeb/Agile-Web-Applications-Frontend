@@ -72,14 +72,32 @@ const getByCategory = async (req, res) => {
 
         const category = await SkillCategory.findByPk(categoryId);
 
-        res.render('admin/view_skills_by_category', {
-            skills: skills,
-            category: category
-        });
+        console.log('Accept Header:', req.get('Accept'));
+
+        if (req.get('Accept') && req.get('Accept').includes('application/json')) {
+            console.log('Returning JSON response');
+            return res.status(200).json(skills);
+        } else {
+            console.log('Rendering HTML page');
+            return res.render('admin/view_skills_by_category', {
+                skills: skills,
+                category: category
+            });
+        }
     } catch (error) {
-        res.status(400).send('Error loading skills by category');
+        console.error('Error loading skills by category:', error.message);
+
+        if (req.get('Accept') && req.get('Accept').includes('application/json')) {
+            return res.status(400).json({ message: 'Error loading skills by category', error: error.message });
+        } else {
+            return res.status(400).send('Error loading skills by category');
+        }
     }
 };
+
+
+
+
 
 const create = async (req, res) => {
     const { skill_name, skill_category_id } = req.body;

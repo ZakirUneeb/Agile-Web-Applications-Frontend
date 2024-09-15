@@ -109,13 +109,26 @@
         function loadSkillsForCategory() {
             const categoryId = document.getElementById('skill-category').value;
             const skillSelect = document.getElementById('skill');
-            
+
             if (categoryId) {
                 skillSelect.disabled = false;
 
-                fetch(`/api/skills/category/${categoryId}`)
-                    .then(response => response.json())
-                    .then(data => {
+                fetch(`/api/skills/category/${categoryId}`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Skills data fetched:", data);
+                    if (data.length === 0) {
+                        skillSelect.innerHTML = '<option value="">No skills found</option>';
+                    } else {
                         skillSelect.innerHTML = '<option value="">Select Skill</option>';
                         data.forEach(skill => {
                             const option = document.createElement('option');
@@ -123,12 +136,18 @@
                             option.textContent = skill.skill_name;
                             skillSelect.appendChild(option);
                         });
-                    });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching skills:', error);
+                    alert("Failed to load skills. Please try again.");
+                });
             } else {
                 skillSelect.disabled = true;
                 skillSelect.innerHTML = '<option value="">Select Skill</option>';
             }
         }
+
 
         function validateForm() {
             const category = document.getElementById('skill-category').value;
