@@ -64,10 +64,14 @@
     <%- include('../common/navbar') %>
     <%- include('team_modals') %>
 
+    <div id="user-data" 
+     data-department-id="<%= user.department_id %>" 
+     data-department-name="<%= user.department_name %>">
+</div>
 
     <div class="page-content">
         <div class="team-header">
-            <h2>My Team - <%= manager.department_name %></h2>
+            <h2>My Team - <%= user.department_name %></h2>
         </div>
         <div class="container">
             <div class="team-list">

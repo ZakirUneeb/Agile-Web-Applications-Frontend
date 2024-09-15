@@ -99,11 +99,16 @@ function displayMemberSkills(skills) {
 }
 
 function setManagerDepartment() {
+    const userDataDiv = document.getElementById('user-data');
     const departmentIdInput = document.getElementById('department_id');
     const departmentNameInput = document.getElementById('department_name');
-    if (departmentIdInput && departmentNameInput) {
-        departmentIdInput.value = '<%= manager.department_id %>';
-        departmentNameInput.value = decodeHTMLEntities('<%= manager.department_name %>');
+    
+    if (userDataDiv && departmentIdInput && departmentNameInput) {
+        const departmentId = userDataDiv.getAttribute('data-department-id');
+        const departmentName = userDataDiv.getAttribute('data-department-name');
+        
+        departmentIdInput.value = departmentId;
+        departmentNameInput.value = decodeHTMLEntities(departmentName);
     }
 }
 
