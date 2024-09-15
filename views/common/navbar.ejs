@@ -7,6 +7,8 @@
 
         <% if (user && user.systemRole && user.systemRole.system_role_name && user.systemRole.system_role_name.toUpperCase() !== 'STAFF') { %>
             <a href="/manager/team"><button class="nav-button <%= currentPage === 'team' ? 'active' : '' %>">My Team</button></a>
+            <a href="/admin/all_skills"><button class="nav-button" aria-label="Navigate to skills management page">Skills</button></a>
+            <a href="/admin/all_skill_categories"><button class="nav-button active" aria-label="Navigate to skill categories page">Skill Categories</button></a>
         <% } %>
     </div>
     <div class="navbar-right">
